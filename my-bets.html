@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SkillBet — Mes Paris</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #7c3aed;
+      --pink: #ec4899;
+      --purple-light: #a855f7;
+    }
+    html, body {
+      height: 100%; overflow: hidden;
+      font-family: 'Exo 2', sans-serif; color: #fff;
+      background:
+        radial-gradient(1200px 800px at 20% 10%, rgba(124,58,237,.26), transparent 60%),
+        radial-gradient(900px 600px at 40% 80%, rgba(236,72,153,.22), transparent 55%),
+        #070b1f;
+    }
+
+    /* ── BG blobs ── */
+    .bg-blobs { position: fixed; inset: 0; pointer-events: none; z-index: 0; filter: blur(70px); opacity: .85; }
+    .blob {
+      position: absolute; width: 460px; height: 460px; border-radius: 999px;
+      background:
+        radial-gradient(circle at 35% 35%, rgba(124,58,237,.95), transparent 60%),
+        radial-gradient(circle at 65% 65%, rgba(236,72,153,.90), transparent 62%);
+      animation: floaty 5s ease-in-out infinite;
+    }
+    .b1 { top: -140px; left: -140px; }
+    .b2 { top: 12%; right: -180px; animation-delay: -1s; }
+    .b3 { bottom: -200px; left: 30%; animation-delay: -2s; }
+    @keyframes floaty { 0%,100%{transform:translate3d(0,0,0) scale(1)} 50%{transform:translate3d(40px,-30px,0) scale(1.08)} }
+
+    .page { position: relative; z-index: 1; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+    .content-layout { display: flex; flex: 1; align-items: flex-start; overflow: hidden; min-height: 0; }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: relative; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 36px; height: 64px;
+      background: rgba(5,8,22,0.85); backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,255,255,0.05); flex-shrink: 0;
+    }
+    .nav-left { display: flex; align-items: center; }
+    .nav-logo img { height: 30px; display: block; mix-blend-mode: screen; }
+    .nav-center { display: flex; align-items: center; gap: 22px; position: absolute; left: 50%; transform: translateX(-50%); }
+    .nav-right { display: flex; align-items: center; gap: 14px; margin-left: auto; }
+    .nav-live img { height: 38px; display: block; }
+    .nav-icon {
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px; padding: 5px 9px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; text-decoration: none;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .nav-icon:hover { background: rgba(255,255,255,0.12); }
+    .nav-icon.active { background: rgba(168,85,247,0.22); border-color: rgba(168,85,247,0.5); }
+    .nav-icon img { height: 22px; display: block; }
+    .nav-balance {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; padding: 7px 16px;
+    }
+    .nav-balance-label { font-size: 10px; color: rgba(255,255,255,0.35); font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; }
+    .nav-balance-val { font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700; color: #4ade80; }
+
+    /* ── SIDEBAR GAUCHE ── */
+    .sidebar-left {
+      width: 210px; flex-shrink: 0; height: 100%;
+      overflow-y: auto; background: rgba(5,8,22,0.65);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      padding: 20px 0 40px;
+      scrollbar-width: thin; scrollbar-color: rgba(168,85,247,0.3) transparent;
+    }
+    .sidebar-left::-webkit-scrollbar { width: 4px; }
+    .sidebar-left::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.3); border-radius: 4px; }
+
+    .sl-title {
+      font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+      color: rgba(255,255,255,0.3); padding: 0 18px; margin-bottom: 10px;
+    }
+    .sl-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 18px; cursor: pointer;
+      border-left: 2px solid transparent;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .sl-item:hover { background: rgba(168,85,247,0.1); }
+    .sl-item.active { border-left-color: var(--purple-light); background: rgba(168,85,247,0.15); }
+    .sl-item-left { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.72); }
+    .sl-item.active .sl-item-left { color: #fff; }
+    .sl-badge {
+      font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 20px;
+      background: rgba(168,85,247,0.3); color: #c084fc;
+    }
+    .sl-badge.live { background: rgba(239,68,68,0.22); color: #f87171; }
+    .sl-badge.green { background: rgba(74,222,128,0.18); color: #4ade80; }
+    .sl-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 12px 18px; }
+    .sl-game {
+      display: flex; align-items: center; gap: 10px; padding: 9px 18px; cursor: pointer;
+      border-left: 2px solid transparent; transition: background 0.15s, border-color 0.15s; text-decoration: none;
+    }
+    .sl-game:hover { background: rgba(168,85,247,0.1); }
+    .sl-game.active { border-left-color: var(--purple-light); background: rgba(168,85,247,0.15); }
+    .sl-game-icon { width: 22px; height: 22px; border-radius: 5px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+    .sl-game-icon img { width: 22px; height: 22px; object-fit: contain; }
+    .sl-game-name { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.7); }
+    .sl-game.active .sl-game-name { color: #fff; }
+
+    /* ── MAIN CONTENT ── */
+    .main-content {
+      flex: 1; min-width: 0; height: 100%;
+      overflow-y: auto; padding: 28px 32px 48px;
+      scrollbar-width: thin; scrollbar-color: rgba(168,85,247,0.2) transparent;
+    }
+    .main-content::-webkit-scrollbar { width: 4px; }
+    .main-content::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.3); border-radius: 4px; }
+
+    /* ── PAGE HEADER ── */
+    .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+    .page-title { font-family: 'Rajdhani', sans-serif; font-size: 26px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+    .page-title span { color: var(--purple-light); }
+    .header-actions { display: flex; align-items: center; gap: 8px; }
+    .btn-action {
+      display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px; cursor: pointer;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.4px;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09);
+      color: rgba(255,255,255,0.55); transition: background 0.15s, color 0.15s;
+    }
+    .btn-action:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85); }
+
+    /* ── STATS SUMMARY ── */
+    .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 22px; }
+    .stat-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px; padding: 16px 18px; display: flex; flex-direction: column; gap: 3px;
+    }
+    .stat-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.3); }
+    .stat-val { font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700; line-height: 1.1; }
+    .stat-val.green  { color: #4ade80; }
+    .stat-val.red    { color: #f87171; }
+    .stat-val.yellow { color: #fde047; }
+    .stat-val.purple { color: var(--purple-light); }
+    .stat-sub { font-size: 10px; color: rgba(255,255,255,0.25); margin-top: 2px; }
+
+    /* ── ROI prominent ── */
+    .stat-roi { font-size: 16px; font-weight: 700; color: #4ade80; margin-top: 1px; }
+    .stat-roi.neg { color: #ff6b6b; }
+
+    /* ── RECORDS + BREAKDOWN ── */
+    .insight-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+      margin-bottom: 20px;
+    }
+    .insight-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px; padding: 16px 18px; display: flex; flex-direction: column; gap: 4px;
+    }
+    .insight-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+      color: rgba(255,255,255,0.3); margin-bottom: 2px;
+    }
+    .insight-val {
+      font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700;
+      color: #fff; line-height: 1.1;
+    }
+    .insight-val.green { color: #4ade80; }
+    .insight-meta { font-size: 11px; color: rgba(255,255,255,0.38); font-weight: 600; }
+    .insight-badge {
+      align-self: flex-start; margin-top: 4px;
+      font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 4px;
+      background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.3);
+    }
+
+    /* breakdown list */
+    .breakdown-list { display: flex; flex-direction: column; gap: 9px; margin-top: 8px; }
+    .bk-row { display: flex; align-items: center; gap: 10px; }
+    .bk-game {
+      display: flex; align-items: center; gap: 7px;
+      width: 126px; flex-shrink: 0;
+    }
+    .bk-icon { width: 18px; height: 18px; border-radius: 4px; overflow: hidden; flex-shrink: 0; display: flex; align-items: center; }
+    .bk-icon img { width: 18px; height: 18px; object-fit: contain; }
+    .bk-name { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.65); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bk-pills { display: flex; gap: 4px; flex-shrink: 0; }
+    .bk-pill {
+      font-size: 9px; font-weight: 800; padding: 1px 6px; border-radius: 3px; letter-spacing: 0.2px;
+    }
+    .bk-pill.g { background: rgba(34,197,94,0.15);  color: #22c55e; }
+    .bk-pill.l { background: rgba(239,68,68,0.15);  color: #ef4444; }
+    .bk-pill.a { background: rgba(245,158,11,0.13); color: #f59e0b; }
+    .bk-bar-wrap {
+      flex: 1; height: 4px; background: rgba(255,255,255,0.07); border-radius: 3px; overflow: hidden;
+    }
+    .bk-bar {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, var(--purple), var(--purple-light));
+    }
+    .bk-bar.neg { background: linear-gradient(90deg, #ef4444, #f87171); }
+    .bk-net {
+      font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700;
+      width: 66px; text-align: right; flex-shrink: 0;
+    }
+    .bk-net.pos   { color: #4ade80; }
+    .bk-net.neg   { color: #ff6b6b; }
+    .bk-net.muted { color: rgba(255,255,255,0.28); font-family: 'Exo 2', sans-serif; font-size: 10px; font-weight: 600; }
+
+    /* ── FILTER TABS (holds export) ── */
+    .filter-tabs {
+      display: flex; align-items: center; gap: 2px; margin-bottom: 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .filter-tab {
+      font-family: 'Exo 2', sans-serif; font-size: 13px; font-weight: 700;
+      padding: 10px 20px; cursor: pointer; border-bottom: 2px solid transparent;
+      color: rgba(255,255,255,0.38); transition: color 0.15s, border-color 0.15s;
+      letter-spacing: 0.2px; margin-bottom: -1px; user-select: none;
+    }
+    .filter-tab:hover { color: rgba(255,255,255,0.7); }
+    .filter-tab.active { color: #fff; border-bottom-color: var(--purple-light); }
+    .ftc {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 18px; height: 18px; border-radius: 20px; padding: 0 5px;
+      font-size: 10px; font-weight: 800; margin-left: 6px;
+      background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.4);
+    }
+    .filter-tab.active .ftc { background: var(--purple); color: #fff; }
+    .filter-tabs-spacer { flex: 1; }
+    .btn-export {
+      display: flex; align-items: center; gap: 5px;
+      border: 1px solid #252a3a; padding: 6px 14px; border-radius: 6px;
+      font-size: 12px; color: #9ca3af; cursor: pointer; background: none;
+      margin-bottom: 2px; font-family: 'Exo 2', sans-serif; font-weight: 600;
+      transition: border-color 0.15s, color 0.15s; white-space: nowrap;
+    }
+    .btn-export:hover { border-color: var(--purple-light); color: #c084fc; }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+      color: rgba(255,255,255,0.22); margin-bottom: 8px; margin-top: 18px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
+
+    /* ── BET CARDS (Winamax-style) ── */
+    .bet-list { display: flex; flex-direction: column; }
+
+    .bet-row {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px; padding: 14px 20px; margin-bottom: 10px;
+      position: relative; overflow: hidden; cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .bet-row::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    }
+    .bet-row.win::before     { background: #4ade80; }
+    .bet-row.loss::before    { background: #f87171; }
+    .bet-row.live::before    { background: #ef4444; }
+    .bet-row.pending::before { background: #fde047; }
+    .bet-row:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.14); }
+
+    /* top row */
+    .bc-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; }
+    .bc-game {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.32);
+      letter-spacing: 0.8px; text-transform: uppercase;
+    }
+    .bet-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+
+    /* middle row */
+    .bc-mid { display: flex; align-items: center; gap: 12px; margin-bottom: 9px; }
+    .bc-match {
+      font-family: 'Rajdhani', sans-serif; font-size: 17px; font-weight: 700;
+      color: rgba(255,255,255,0.92); flex: 1; letter-spacing: 0.3px; white-space: nowrap;
+    }
+    .bc-score {
+      font-family: 'Rajdhani', sans-serif; font-size: 17px; font-weight: 700;
+      color: #fff; letter-spacing: 2px; flex-shrink: 0;
+    }
+    .bc-odd {
+      font-family: 'Rajdhani', sans-serif; font-size: 17px; font-weight: 700;
+      color: var(--purple-light); flex-shrink: 0; min-width: 36px; text-align: right;
+    }
+    .bc-live-badge {
+      display: flex; align-items: center; gap: 4px;
+      background: rgba(239,68,68,0.14); border: 1px solid rgba(239,68,68,0.32);
+      color: #f87171; font-size: 9px; font-weight: 800; letter-spacing: 1px;
+      padding: 2px 8px; border-radius: 20px; flex-shrink: 0;
+    }
+    .bc-pending-badge {
+      background: rgba(234,179,8,0.14); border: 1px solid rgba(234,179,8,0.3);
+      color: #fde047; font-size: 9px; font-weight: 800; letter-spacing: 1px;
+      padding: 2px 9px; border-radius: 20px; flex-shrink: 0;
+    }
+    .bet-red-dot { width: 5px; height: 5px; border-radius: 50%; background: #ef4444; animation: pulse 1.2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* cash out */
+    .cash-out-btn {
+      background: rgba(245,158,11,0.15); border: 1px solid #f59e0b; color: #f59e0b;
+      font-size: 12px; padding: 4px 12px; border-radius: 6px; cursor: pointer; flex-shrink: 0;
+      font-family: 'Exo 2', sans-serif; font-weight: 700;
+      transition: background 0.15s;
+    }
+    .cash-out-btn:hover { background: rgba(245,158,11,0.25); }
+    .cash-out-confirm {
+      display: none; margin-top: 8px; margin-bottom: 2px;
+      background: rgba(245,158,11,0.07); border: 1px solid rgba(245,158,11,0.22);
+      border-radius: 8px; padding: 10px 14px;
+      align-items: center; gap: 10px;
+    }
+    .cash-out-confirm.visible { display: flex; }
+    .cash-out-confirm-text { font-size: 13px; font-weight: 700; color: #f59e0b; flex: 1; }
+    .cash-out-confirm-btn {
+      font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 5px;
+      cursor: pointer; font-family: 'Exo 2', sans-serif;
+    }
+    .cash-out-confirm-btn.ok { background: rgba(245,158,11,0.22); border: 1px solid #f59e0b; color: #f59e0b; }
+    .cash-out-confirm-btn.ok:hover { background: rgba(245,158,11,0.38); }
+    .cash-out-confirm-btn.cancel {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.42); margin-left: 4px;
+    }
+    .cash-out-confirm-btn.cancel:hover { background: rgba(255,255,255,0.1); }
+
+    /* bottom row */
+    .bc-bot { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .bc-left {
+      display: flex; align-items: center; flex: 1; min-width: 0;
+      font-size: 12px; color: rgba(255,255,255,0.42); font-weight: 600;
+    }
+    .bc-right {
+      font-size: 12px; color: rgba(255,255,255,0.35); font-weight: 600;
+      flex-shrink: 0; white-space: nowrap;
+    }
+    .bc-right .pos { color: #4ade80; font-weight: 700; }
+    .bc-right .neg { color: #ff6b6b; font-weight: 700; }
+
+    /* market type pill */
+    .market-pill {
+      background: #1e2130; color: #6b7280; font-size: 10px;
+      padding: 2px 8px; border-radius: 4px; margin-right: 7px;
+      flex-shrink: 0; font-family: 'Exo 2', sans-serif; font-weight: 700;
+      letter-spacing: 0.2px; white-space: nowrap;
+    }
+
+    /* meta: ref + timestamp */
+    .bc-meta {
+      display: flex; justify-content: flex-end; gap: 12px;
+      font-size: 10px; color: #374151; margin-top: 8px;
+    }
+
+    /* status badges — spec 6 */
+    .bet-status {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase;
+      padding: 3px 10px; border-radius: 4px; flex-shrink: 0; white-space: nowrap;
+    }
+    .bet-status.win     { background: rgba(34,197,94,0.15);  color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+    .bet-status.loss    { background: rgba(239,68,68,0.15);   color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+    .bet-status.pending { background: rgba(245,158,11,0.15);  color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+    .bet-status.live    { background: rgba(239,68,68,0.13);   color: #f87171; border: 1px solid rgba(239,68,68,0.32); }
+  </style>
+</head>
+<body>
+  <div class="bg-blobs">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+
+  <div class="page">
+    <nav>
+      <div class="nav-left">
+        <a class="nav-logo" href="index.html"><img src="../Designs/SKB LOGO.png" alt="SkillBet"/></a>
+      </div>
+      <div class="nav-center">
+        <div class="nav-live"><img src="img_M/live 4.png" alt="LIVE"/></div>
+        <a href="my-bets.html" class="nav-icon active"><img src="img_M/bets.png" alt="Mes Paris"/></a>
+        <a href="#" class="nav-icon"><img src="img_M/teams.png" alt="Équipes"/></a>
+      </div>
+      <div class="nav-right">
+        <div class="nav-balance">
+          <span class="nav-balance-label">Solde</span>
+          <span class="nav-balance-val">£ 1 240.50</span>
+        </div>
+      </div>
+    </nav>
+
+    <div class="content-layout">
+
+      <!-- ── SIDEBAR GAUCHE ── -->
+      <aside class="sidebar-left">
+        <div class="sl-title">Statut</div>
+
+        <div class="sl-item active" onclick="filterSidebar('all', this)">
+          <div class="sl-item-left">📋&nbsp; Tous les paris</div>
+          <span class="sl-badge">8</span>
+        </div>
+        <div class="sl-item" onclick="filterSidebar('live', this)">
+          <div class="sl-item-left">🔴&nbsp; En cours</div>
+          <span class="sl-badge live">2</span>
+        </div>
+        <div class="sl-item" onclick="filterSidebar('won', this)">
+          <div class="sl-item-left">✅&nbsp; Gagnés</div>
+          <span class="sl-badge green">4</span>
+        </div>
+        <div class="sl-item" onclick="filterSidebar('lost', this)">
+          <div class="sl-item-left">❌&nbsp; Perdus</div>
+          <span class="sl-badge" style="background:rgba(248,113,113,0.18);color:#f87171;">2</span>
+        </div>
+
+        <div class="sl-divider"></div>
+        <div class="sl-title">Jeux</div>
+
+        <a class="sl-game" href="#" onclick="return false">
+          <div class="sl-game-icon"><img src="img_M/logocs2.png" alt="CS2"/></div>
+          <span class="sl-game-name">Counter-Strike 2</span>
+        </a>
+        <a class="sl-game" href="#" onclick="return false">
+          <div class="sl-game-icon"><img src="img_M/logo lol.png" alt="LoL"/></div>
+          <span class="sl-game-name">League of Legends</span>
+        </a>
+        <a class="sl-game" href="#" onclick="return false">
+          <div class="sl-game-icon"><img src="img_M/logo valo.png" alt="Valorant"/></div>
+          <span class="sl-game-name">Valorant</span>
+        </a>
+        <a class="sl-game" href="#" onclick="return false">
+          <div class="sl-game-icon"><img src="img_M/logo dota2.png" alt="Dota 2"/></div>
+          <span class="sl-game-name">Dota 2</span>
+        </a>
+        <a class="sl-game" href="#" onclick="return false">
+          <div class="sl-game-icon"><img src="img_M/logo rocket league.png" alt="RL"/></div>
+          <span class="sl-game-name">Rocket League</span>
+        </a>
+      </aside>
+
+      <!-- ── MAIN CONTENT ── -->
+      <main class="main-content">
+
+        <div class="page-header">
+          <h1 class="page-title">Mes <span>Paris</span></h1>
+          <div class="header-actions">
+            <div class="btn-action">📅 7 derniers jours</div>
+          </div>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <span class="stat-label">Total paris</span>
+            <span class="stat-val purple">8</span>
+            <span class="stat-sub">7 derniers jours</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Gagnés</span>
+            <span class="stat-val green">4</span>
+            <span class="stat-sub">7 derniers jours</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Perdus</span>
+            <span class="stat-val red">2</span>
+            <span class="stat-sub">7 derniers jours</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">En attente</span>
+            <span class="stat-val yellow">2</span>
+            <span class="stat-sub">7 derniers jours</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Gains nets</span>
+            <span class="stat-val green">+£69</span>
+            <span class="stat-roi">↑ +44.8%</span>
+            <span class="stat-sub">7 derniers jours</span>
+          </div>
+        </div>
+
+        <!-- RECORDS + BREAKDOWN -->
+        <div class="insight-row">
+
+          <!-- Meilleure mise -->
+          <div class="insight-card">
+            <span class="insight-label">Meilleure mise</span>
+            <span class="insight-val">£30</span>
+            <span class="insight-meta">Vitality vs NAVI</span>
+            <span class="insight-badge">Gagné · cote 1.45</span>
+          </div>
+
+          <!-- Meilleur gain -->
+          <div class="insight-card">
+            <span class="insight-label">Meilleur gain</span>
+            <span class="insight-val green">+£43.50</span>
+            <span class="insight-meta">Vitality vs NAVI</span>
+            <span class="insight-badge">Gagné · mise £30</span>
+          </div>
+
+        </div>
+
+        <!-- FILTER TABS -->
+        <div class="filter-tabs">
+          <div class="filter-tab active" id="tab-all"  onclick="switchTab('all', this)">Tous<span class="ftc">8</span></div>
+          <div class="filter-tab"        id="tab-live" onclick="switchTab('live', this)">En cours<span class="ftc">2</span></div>
+          <div class="filter-tab"        id="tab-won"  onclick="switchTab('won', this)">Gagnés<span class="ftc">4</span></div>
+          <div class="filter-tab"        id="tab-lost" onclick="switchTab('lost', this)">Perdus<span class="ftc">2</span></div>
+          <div class="filter-tabs-spacer"></div>
+          <button class="btn-export">⬇ Exporter</button>
+        </div>
+
+        <!-- PARIS -->
+        <div class="bet-list" id="betList">
+
+          <div class="section-label" id="lbl-live">En cours</div>
+
+          <!-- LIVE -->
+          <div class="bet-row live" data-status="live" onclick="window.location.href='match.html'">
+            <div class="bc-top">
+              <div class="bc-game"><span class="bet-dot" style="background:#a855f7"></span>CS2 · ESL Pro League S21</div>
+              <span class="bet-status live">Live</span>
+            </div>
+            <div class="bc-mid">
+              <div class="bc-match">NaVi vs FaZe</div>
+              <div class="bc-score">13 – 8</div>
+              <div class="bc-live-badge"><span class="bet-red-dot"></span>LIVE</div>
+              <button class="cash-out-btn" onclick="showCashOut(event, this)">Cash out £38.10</button>
+              <div class="bc-odd">1.85</div>
+            </div>
+            <div class="cash-out-confirm" id="co-navi-faze">
+              <span class="cash-out-confirm-text">Confirmer le cash out : £38.10 ?</span>
+              <button class="cash-out-confirm-btn ok" onclick="event.stopPropagation()">Confirmer</button>
+              <button class="cash-out-confirm-btn cancel" onclick="hideCashOut(event,'co-navi-faze')">Annuler</button>
+            </div>
+            <div class="bc-bot">
+              <div class="bc-left"><span class="market-pill">Vainqueur du match</span>NaVi à gagner · Map 2 en cours</div>
+              <div class="bc-right">Mise £25 · Potentiel <span class="pos">£46.25</span></div>
+            </div>
+            <div class="bc-meta"><span>#SKB-20260513-001</span><span>Aujourd'hui · 20:15 CET</span></div>
+          </div>
+
+          <!-- PENDING -->
+          <div class="bet-row pending" data-status="pending">
+            <div class="bc-top">
+              <div class="bc-game"><span class="bet-dot" style="background:#f97316"></span>Dota 2 · DreamLeague S24</div>
+              <span class="bet-status pending">En attente</span>
+            </div>
+            <div class="bc-mid">
+              <div class="bc-match">Spirit vs OG</div>
+              <div class="bc-pending-badge">À VENIR</div>
+              <div class="bc-odd">2.50</div>
+            </div>
+            <div class="bc-bot">
+              <div class="bc-left"><span class="market-pill">Vainqueur du match</span>Spirit à gagner</div>
+              <div class="bc-right">Mise £10 · Potentiel <span class="pos">£25.00</span></div>
+            </div>
+            <div class="bc-meta"><span>#SKB-20260513-002</span><span>Demain · 18:00 CET</span></div>
+          </div>
+
+          <div class="section-label" id="lbl-settled" style="margin-top:20px">Terminés</div>
+
+          <!-- WIN -->
+          <div class="bet-row win" data-status="won" onclick="window.location.href='match.html'">
+            <div class="bc-top">
+              <div class="bc-game"><span class="bet-dot" style="background:#a855f7"></span>CS2 · ESL Pro League S21</div>
+              <span class="bet-status win">Gagné</span>
+            </div>
+            <div class="bc-mid">
+              <div class="bc-match">NaVi vs Spirit</div>
+              <div class="bc-score">0 – 2</div>
+              <div class="bc-odd">1.55</div>
+            </div>
+            <div class="bc-bot">
+              <div class="bc-left"><span class="market-pill">Vainqueur du match</span>Spirit à gagner</div>
+              <div class="bc-right">Mise £20 · Gains <span class="pos">+£31.00</span></div>
+            </div>
+            <div class="bc-meta"><span>#SKB-20260512-001</span><span>Hier · 20:30 CET</span></div>
+          </div>
+
+          <!-- WIN -->
+          <div class="bet-row win" data-status="won">
+            <div class="bc-top">
+              <div class="bc-game"><span class="bet-dot" style="background:#3b82f6"></span>LoL · LEC Spring Split</div>
+              <span class="bet-status win">Gagné</span>
+            </div>
+            <div class="bc-mid">
+              <div class="bc-match">T1 vs Gen.G</div>
+              <div class="bc-score">2 – 0</div>
+              <div class="bc-odd">1.65</div>
+            </div>
+            <div class="bc-bot">
+              <div class="bc-left"><span class="market-pill">Vainqueur du match</span>T1 à gagner</div>
+              <div class="bc-right">Mise £15 · Gains <span class="pos">+£24.75</span></div>
+            </div>
+            <div class="bc-meta"><span>#SKB-20260511-002</span><span>Avant-hier · 15:00 CET</span></div>
+          </div>
+
+          <!-- WIN -->
+          <div class="bet-row win" data-status="won">
+            <div class="bc-top">
+              <div class="bc-game"><span class="bet-dot" style="background:#a855f7"></span>CS2 · BLAST Premier Spring</div>
+              <span class="bet-status win">Gagné</span>
+            </div>
+            <div class="bc-mid">
+              <div class="bc-match">Vitality vs NAVI</div>
+              <div class="bc-score">2 – 1</div>
+              <div class="bc-odd">1.45</div>
+            </div>
+            <div class="bc-bot">
+              <div class="bc-left"><span class="market-pill">Vainqueur du match</span>Vitality à gagner</div>
+              <div class="bc-right">Mise £30 · Gains <span class="pos">+£43.50</span></div>
+            </div>
+            <div class="bc-meta"><span>#SKB-20260513-003</span><span>13/05/2026 · 17:00 CET</span></div>
+          </div>
+
+          <!-- WIN -->
+          <div class="bet-row win" data-status="won">
+            <div class="bc-top">
+              <div class="bc-game"><span class="bet-dot" style="background:#f97316"></span>Rocket League · RLCS 2025</div>
+              <span class="bet-status win">Gagné</span>
+            </div>
+            <div class="bc-mid">
+              <div class="bc-match">KC vs G2</div>
+              <div class="bc-score">3 – 2</div>
+              <div class="bc-odd">1.70</div>
+            </div>
+            <div class="bc-bot">
+              <div class="bc-left"><span class="market-pill">Vainqueur du match</span>KC à gagner</div>
+              <div class="bc-right">Mise £15 · Gains <span class="pos">+£25.50</span></div>
+            </div>
+            <div class="bc-meta"><span>#SKB-20260511-001</span><span>11/05/2026 · 19:30 CET</span></div>
+          </div>
+
+          <!-- LOSS -->
+          <div class="bet-row loss" data-status="lost">
+            <div class="bc-top">
+              <div class="bc-game"><span class="bet-dot" style="background:#f43f5e"></span>Valorant · VCT Americas</div>
+              <span class="bet-status loss">Perdu</span>
+            </div>
+            <div class="bc-mid">
+              <div class="bc-match">Cloud9 vs 100T</div>
+              <div class="bc-score">13 – 11</div>
+              <div class="bc-odd">1.88</div>
+            </div>
+            <div class="bc-bot">
+              <div class="bc-left"><span class="market-pill">Total rounds</span>Plus de 26.5 rounds</div>
+              <div class="bc-right">Mise £8 · Gains <span class="neg">−£8.00</span></div>
+            </div>
+            <div class="bc-meta"><span>#SKB-20260512-003</span><span>12/05/2026 · 21:00 CET</span></div>
+          </div>
+
+          <!-- LOSS -->
+          <div class="bet-row loss" data-status="lost">
+            <div class="bc-top">
+              <div class="bc-game"><span class="bet-dot" style="background:#3b82f6"></span>LoL · LCK Spring</div>
+              <span class="bet-status loss">Perdu</span>
+            </div>
+            <div class="bc-mid">
+              <div class="bc-match">BLG vs JDG</div>
+              <div class="bc-score">2 – 0</div>
+              <div class="bc-odd">1.35</div>
+            </div>
+            <div class="bc-bot">
+              <div class="bc-left"><span class="market-pill">Vainqueur du match</span>JDG à gagner</div>
+              <div class="bc-right">Mise £12 · Gains <span class="neg">−£12.00</span></div>
+            </div>
+            <div class="bc-meta"><span>#SKB-20260512-002</span><span>12/05/2026 · 11:00 CET</span></div>
+          </div>
+
+        </div><!-- /bet-list -->
+      </main>
+    </div>
+  </div>
+
+  <script>
+    /* ── Cash out UI ── */
+    function showCashOut(e, btn) {
+      e.stopPropagation();
+      var confirm = btn.closest('.bet-row').querySelector('.cash-out-confirm');
+      confirm.classList.toggle('visible');
+    }
+    function hideCashOut(e, id) {
+      e.stopPropagation();
+      document.getElementById(id).classList.remove('visible');
+    }
+
+    function switchTab(name, el) {
+      document.querySelectorAll('.filter-tab').forEach(function(t) { t.classList.remove('active'); });
+      el.classList.add('active');
+
+      var rows = document.querySelectorAll('.bet-row');
+      rows.forEach(function(r) {
+        var s = r.getAttribute('data-status');
+        if (name === 'all') {
+          r.style.display = '';
+        } else if (name === 'live') {
+          r.style.display = (s === 'live' || s === 'pending') ? '' : 'none';
+        } else if (name === 'won') {
+          r.style.display = s === 'won' ? '' : 'none';
+        } else if (name === 'lost') {
+          r.style.display = s === 'lost' ? '' : 'none';
+        }
+      });
+
+      var lblLive     = document.getElementById('lbl-live');
+      var lblSettled  = document.getElementById('lbl-settled');
+      if (name === 'won' || name === 'lost') {
+        lblLive.style.display = 'none';
+        lblSettled.style.display = '';
+      } else if (name === 'live') {
+        lblLive.style.display = '';
+        lblSettled.style.display = 'none';
+      } else {
+        lblLive.style.display = '';
+        lblSettled.style.display = '';
+      }
+    }
+
+    function filterSidebar(name, el) {
+      document.querySelectorAll('.sl-item').forEach(function(i) { i.classList.remove('active'); });
+      el.classList.add('active');
+      var tabMap = { all: 'all', live: 'live', won: 'won', lost: 'lost' };
+      var tabEl = document.getElementById('tab-' + (tabMap[name] || 'all'));
+      if (tabEl) switchTab(tabMap[name] || 'all', tabEl);
+    }
+  </script>
+</body>
+</html>
