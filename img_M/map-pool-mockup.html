@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@700&family=Exo+2:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Exo 2', sans-serif; color: #fff;
+      background: transparent; display: flex; justify-content: center; align-items: flex-start;
+      min-height: 100vh; padding: 0;
+    }
+
+    .card {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      overflow: visible;
+      position: relative;
+    }
+    .card::before { display: none; }
+
+    /* ── HEADER ── */
+    .mp-header {
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      align-items: center; padding: 16px 24px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      position: relative; z-index: 1;
+    }
+    .mp-team {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 800;
+    }
+    .mp-team-left { color: #c084fc; }
+    .mp-team-right { justify-content: flex-end; color: #f472b6; }
+    .mp-team-logo {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 900;
+    }
+    .mp-title {
+      font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700;
+      color: rgba(255,255,255,0.85); letter-spacing: 1px; text-transform: uppercase;
+      text-align: center;
+    }
+
+    /* ── COLUMN HEADERS ── */
+    .mp-col-headers {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr) 160px repeat(5, 1fr);
+      padding: 8px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      position: relative; z-index: 1;
+    }
+    .mp-col-hdr {
+      font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.32);
+      text-transform: uppercase; letter-spacing: 0.6px; text-align: center;
+    }
+    .mp-col-hdr.map-col { text-align: center; color: rgba(255,255,255,0.45); }
+
+    /* ── ROWS ── */
+    .mp-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr) 160px repeat(5, 1fr);
+      padding: 10px 24px; align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      position: relative; z-index: 1;
+      transition: background 0.15s;
+    }
+    .mp-row:last-child { border-bottom: none; }
+    .mp-row:hover { background: rgba(255,255,255,0.03); }
+
+    .mp-stat {
+      font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700;
+      color: rgba(255,255,255,0.8); text-align: center;
+    }
+    .mp-stat.dash { color: rgba(255,255,255,0.25); }
+    .mp-stat.high { color: #a78bfa; }
+    .mp-stat.low  { color: rgba(255,255,255,0.45); }
+
+    /* ── MAP BADGE ── */
+    .mp-map-badge {
+      border-radius: 8px; padding: 6px 10px;
+      font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 800;
+      text-align: center; letter-spacing: 0.4px;
+      position: relative; overflow: hidden;
+    }
+    .mp-map-badge span { position: relative; z-index: 1; }
+    .mp-map-badge::before {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(0,0,0,0.35);
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+
+  <!-- Header -->
+  <div class="mp-header">
+    <div class="mp-team mp-team-left">
+      <img src="NAVI_Logo_2020.png" style="width:28px;height:28px;object-fit:contain;mix-blend-mode:multiply;"/>
+      Natus Vincere
+    </div>
+    <div class="mp-title">Map Pool</div>
+    <div class="mp-team mp-team-right">
+      Team Spirit
+      <img src="spirit.png" style="width:28px;height:28px;object-fit:contain;filter:invert(1);mix-blend-mode:screen;"/>
+    </div>
+  </div>
+
+  <!-- Column headers -->
+  <div class="mp-col-headers">
+    <div class="mp-col-hdr">Pickrate</div>
+    <div class="mp-col-hdr">Banrate</div>
+    <div class="mp-col-hdr">Winrate</div>
+    <div class="mp-col-hdr">T-side</div>
+    <div class="mp-col-hdr">CT-side</div>
+    <div class="mp-col-hdr map-col">Map</div>
+    <div class="mp-col-hdr">Pickrate</div>
+    <div class="mp-col-hdr">Banrate</div>
+    <div class="mp-col-hdr">Winrate</div>
+    <div class="mp-col-hdr">T-side</div>
+    <div class="mp-col-hdr">CT-side</div>
+  </div>
+
+  <!-- Inferno -->
+  <div class="mp-row">
+    <div class="mp-stat high">43%</div><div class="mp-stat">3%</div><div class="mp-stat high">67%</div><div class="mp-stat">47%</div><div class="mp-stat high">62%</div>
+    <div class="mp-map-badge" style="background:linear-gradient(135deg,#7c1a1a,#c0392b);color:#fca5a5;">
+      <span>Inferno</span>
+    </div>
+    <div class="mp-stat">22%</div><div class="mp-stat">8%</div><div class="mp-stat high">67%</div><div class="mp-stat high">60%</div><div class="mp-stat">34%</div>
+  </div>
+
+  <!-- Overpass -->
+  <div class="mp-row">
+    <div class="mp-stat">14%</div><div class="mp-stat">18%</div><div class="mp-stat high">71%</div><div class="mp-stat">43%</div><div class="mp-stat">61%</div>
+    <div class="mp-map-badge" style="background:linear-gradient(135deg,#3b0764,#6d28d9);color:#ddd6fe;">
+      <span>Overpass</span>
+    </div>
+    <div class="mp-stat">11%</div><div class="mp-stat">16%</div><div class="mp-stat low">0%</div><div class="mp-stat">35%</div><div class="mp-stat">52%</div>
+  </div>
+
+  <!-- Mirage -->
+  <div class="mp-row">
+    <div class="mp-stat">14%</div><div class="mp-stat">11%</div><div class="mp-stat high">67%</div><div class="mp-stat">49%</div><div class="mp-stat">61%</div>
+    <div class="mp-map-badge" style="background:linear-gradient(135deg,#713f12,#a16207);color:#fde68a;">
+      <span>Mirage</span>
+    </div>
+    <div class="mp-stat">22%</div><div class="mp-stat">8%</div><div class="mp-stat">33%</div><div class="mp-stat">34%</div><div class="mp-stat">52%</div>
+  </div>
+
+  <!-- Nuke -->
+  <div class="mp-row">
+    <div class="mp-stat">21%</div><div class="mp-stat">11%</div><div class="mp-stat high">80%</div><div class="mp-stat">42%</div><div class="mp-stat high">67%</div>
+    <div class="mp-map-badge" style="background:linear-gradient(135deg,#134e4a,#0f766e);color:#99f6e4;">
+      <span>Nuke</span>
+    </div>
+    <div class="mp-stat low">0%</div><div class="mp-stat">48%</div><div class="mp-stat dash">—</div><div class="mp-stat dash">—</div><div class="mp-stat dash">—</div>
+  </div>
+
+  <!-- Dust2 -->
+  <div class="mp-row">
+    <div class="mp-stat low">0%</div><div class="mp-stat">5%</div><div class="mp-stat">40%</div><div class="mp-stat">57%</div><div class="mp-stat">41%</div>
+    <div class="mp-map-badge" style="background:linear-gradient(135deg,#7c2d12,#c2410c);color:#fed7aa;">
+      <span>Dust2</span>
+    </div>
+    <div class="mp-stat">22%</div><div class="mp-stat">8%</div><div class="mp-stat">40%</div><div class="mp-stat">49%</div><div class="mp-stat">42%</div>
+  </div>
+
+  <!-- Vertigo -->
+  <div class="mp-row">
+    <div class="mp-stat low">0%</div><div class="mp-stat">39%</div><div class="mp-stat dash">—</div><div class="mp-stat dash">—</div><div class="mp-stat dash">—</div>
+    <div class="mp-map-badge" style="background:linear-gradient(135deg,#1e3a5f,#1d4ed8);color:#bfdbfe;">
+      <span>Vertigo</span>
+    </div>
+    <div class="mp-stat low">0%</div><div class="mp-stat">12%</div><div class="mp-stat high">75%</div><div class="mp-stat">51%</div><div class="mp-stat high">60%</div>
+  </div>
+
+  <!-- Ancient -->
+  <div class="mp-row">
+    <div class="mp-stat">14%</div><div class="mp-stat">8%</div><div class="mp-stat">56%</div><div class="mp-stat">38%</div><div class="mp-stat high">65%</div>
+    <div class="mp-map-badge" style="background:linear-gradient(135deg,#14532d,#15803d);color:#bbf7d0;">
+      <span>Ancient</span>
+    </div>
+    <div class="mp-stat">22%</div><div class="mp-stat">8%</div><div class="mp-stat high">100%</div><div class="mp-stat">50%</div><div class="mp-stat high">74%</div>
+  </div>
+
+</div>
+</body>
+</html>

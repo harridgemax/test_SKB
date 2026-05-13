@@ -1,0 +1,236 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@700&family=Exo+2:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Exo 2', sans-serif; color: #fff;
+      background: transparent; display: flex; justify-content: center; align-items: flex-start;
+      min-height: 100vh; padding: 0;
+    }
+
+    .card {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 0 0 8px;
+      position: relative;
+      overflow: visible;
+    }
+    .card::before { display: none; }
+
+    .card-title {
+      font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700;
+      text-align: center; color: rgba(255,255,255,0.85); letter-spacing: 1px;
+      text-transform: uppercase; margin-bottom: 20px;
+    }
+
+    .pc-body {
+      display: grid; grid-template-columns: 1fr 280px 1fr; gap: 20px; align-items: start;
+    }
+
+    /* ── PLAYER HEADER ── */
+    .pc-player-hdr {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 10px 13px; border-radius: 10px; margin-bottom: 14px;
+    }
+    .pc-left-hdr  { background: rgba(124,58,237,0.2);  border: 1px solid rgba(124,58,237,0.45); }
+    .pc-right-hdr { background: rgba(236,72,153,0.15); border: 1px solid rgba(236,72,153,0.4); flex-direction: row-reverse; }
+    .pc-player-name { font-family:'Rajdhani',sans-serif; font-size:17px; font-weight:800; color:#fff; }
+    .pc-player-real { font-size:11px; color:rgba(255,255,255,0.38); margin-top:2px; }
+    .pc-team-badge  { font-size:13px; font-weight:700; display:flex; align-items:center; gap:5px; }
+    .pc-left-hdr  .pc-team-badge { color:#c084fc; }
+    .pc-right-hdr .pc-team-badge { color:#f472b6; }
+    .pc-right-hdr .pc-player-info { text-align: right; }
+
+    /* ── MAIN STATS ── */
+    .pc-main-stats { display:flex; gap:5px; margin-bottom:12px; }
+    .pc-mstat {
+      flex:1; text-align:center;
+      background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.07);
+      border-radius:9px; padding:8px 3px;
+    }
+    .pc-mstat-v { font-family:'Rajdhani',sans-serif; font-size:16px; font-weight:800; color:#fff; }
+    .pc-mstat-l { font-size:9px; color:rgba(255,255,255,0.38); text-transform:uppercase; letter-spacing:0.4px; margin-top:2px; }
+
+    /* ── SECONDARY STATS ── */
+    .pc-sec-stats { display:flex; flex-direction:column; gap:0; margin-bottom:16px; }
+    .pc-sstat {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.05); font-size:12px;
+    }
+    .pc-sstat:last-child { border-bottom: none; }
+    .pc-sstat-l { color:rgba(255,255,255,0.42); }
+    .pc-sstat-v { font-family:'Rajdhani',sans-serif; font-weight:700; color:#fff; font-size:13px; }
+
+    /* ── WEAPONS ── */
+    .pc-weapons-title {
+      font-size:10px; color:rgba(255,255,255,0.32); text-transform:uppercase;
+      letter-spacing:0.9px; margin-bottom:8px;
+    }
+    .pc-weapon-row {
+      display:flex; align-items:center; gap:8px;
+      padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.05);
+    }
+    .pc-weapon-row:last-child { border-bottom: none; }
+    .pc-weapon-icon {
+      width: 44px; height: 24px; background: rgba(255,255,255,0.07);
+      border-radius: 5px; display:flex; align-items:center; justify-content:center;
+      font-size:10px; color:rgba(255,255,255,0.35); letter-spacing:-0.5px;
+    }
+    .pc-weapon-name { font-size:13px; font-weight:700; color:rgba(255,255,255,0.82); flex:1; }
+    .pc-wkills-label { font-size:10px; color:rgba(255,255,255,0.32); }
+    .pc-wkills-v { font-family:'Rajdhani',sans-serif; font-size:14px; font-weight:800; }
+    .pc-left  .pc-wkills-v { color:#a78bfa; }
+    .pc-right .pc-wkills-v { color:#f472b6; }
+
+    /* ── RADAR ── */
+    .pc-radar-wrap { display:flex; flex-direction:column; align-items:center; gap:10px; }
+    .radar-label { font-size:11px; color:rgba(255,255,255,0.4); text-align:center; }
+    .radar-legend { display:flex; gap:14px; justify-content:center; }
+    .radar-legend-item { display:flex; align-items:center; gap:5px; font-size:11px; color:rgba(255,255,255,0.5); }
+    .radar-legend-dot { width:8px; height:8px; border-radius:50%; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="card-title">Player Comparison</div>
+
+  <div class="pc-body">
+
+    <!-- ── LEFT: b1t (NaVi) ── -->
+    <div class="pc-left">
+      <div class="pc-player-hdr pc-left-hdr">
+        <div class="pc-player-info">
+          <div class="pc-player-name">b1t ▾</div>
+          <div class="pc-player-real">Ilya Blagorodny</div>
+        </div>
+        <div class="pc-team-badge">
+          <img src="../img_M/NAVI_Logo_2020.png" style="width:18px;height:18px;object-fit:contain;mix-blend-mode:multiply;"/>
+          NaVi
+        </div>
+      </div>
+
+      <div class="pc-main-stats">
+        <div class="pc-mstat"><div class="pc-mstat-v">1.12</div><div class="pc-mstat-l">K/D</div></div>
+        <div class="pc-mstat"><div class="pc-mstat-v">78.5</div><div class="pc-mstat-l">ADR</div></div>
+        <div class="pc-mstat"><div class="pc-mstat-v">58%</div><div class="pc-mstat-l">Headshot</div></div>
+        <div class="pc-mstat"><div class="pc-mstat-v">0.14</div><div class="pc-mstat-l">Op. Kills</div></div>
+        <div class="pc-mstat"><div class="pc-mstat-v">0.22</div><div class="pc-mstat-l">Multi K.</div></div>
+      </div>
+
+      <div class="pc-sec-stats">
+        <div class="pc-sstat"><span class="pc-sstat-l">Kills p.r.</span><span class="pc-sstat-v">0.71</span></div>
+        <div class="pc-sstat"><span class="pc-sstat-l">Deaths p.r.</span><span class="pc-sstat-v">0.63</span></div>
+        <div class="pc-sstat"><span class="pc-sstat-l">Assists p.r.</span><span class="pc-sstat-v">0.19</span></div>
+        <div class="pc-sstat"><span class="pc-sstat-l">Flash assist p.r.</span><span class="pc-sstat-v">0.05</span></div>
+        <div class="pc-sstat"><span class="pc-sstat-l">AWP kills p.r.</span><span class="pc-sstat-v">0.08</span></div>
+        <div class="pc-sstat"><span class="pc-sstat-l">Utility DMG p.r.</span><span class="pc-sstat-v">4.2</span></div>
+        <div class="pc-sstat"><span class="pc-sstat-l">Enemies flashed p.r.</span><span class="pc-sstat-v">0.44</span></div>
+        <div class="pc-sstat"><span class="pc-sstat-l">Rounds with clutches</span><span class="pc-sstat-v">2%</span></div>
+      </div>
+
+      <div class="pc-weapons-title">Favourite weapons</div>
+      <div class="pc-weapon-row"><div class="pc-weapon-icon">AK47</div><span class="pc-weapon-name">AK-47</span><span class="pc-wkills-label">Kills</span><span class="pc-wkills-v">0.38</span></div>
+      <div class="pc-weapon-row"><div class="pc-weapon-icon">M4A1</div><span class="pc-weapon-name">M4A1-S</span><span class="pc-wkills-label">Kills</span><span class="pc-wkills-v">0.44</span></div>
+      <div class="pc-weapon-row"><div class="pc-weapon-icon">AWP</div><span class="pc-weapon-name">AWP</span><span class="pc-wkills-label">Kills</span><span class="pc-wkills-v">0.29</span></div>
+    </div>
+
+    <!-- ── CENTER: Radar ── -->
+    <div class="pc-radar-wrap">
+      <svg width="280" height="230" viewBox="0 0 280 230">
+        <!-- Grid hexagons -->
+        <!-- 100% -->
+        <polygon points="140,20 228,65 228,155 140,200 52,155 52,65"
+          fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <!-- 75% -->
+        <polygon points="140,42 211,79 211,141 140,178 69,141 69,79"
+          fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+        <!-- 50% -->
+        <polygon points="140,65 194,92 194,128 140,155 86,128 86,92"
+          fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+        <!-- 25% -->
+        <polygon points="140,87 177,105 177,115 140,133 103,115 103,105"
+          fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+        <!-- Axis lines -->
+        <line x1="140" y1="110" x2="140" y2="20"  stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <line x1="140" y1="110" x2="228" y2="65"  stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <line x1="140" y1="110" x2="228" y2="155" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <line x1="140" y1="110" x2="140" y2="200" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <line x1="140" y1="110" x2="52"  y2="155" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <line x1="140" y1="110" x2="52"  y2="65"  stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+
+        <!-- b1t data (NaVi - purple): K/D=0.78, ADR=0.68, CLTH=0.55, HS=0.65, MK=0.60, OK=0.55 -->
+        <polygon
+          points="140,42  207,82  207,137  140,161  81,136  82,81"
+          fill="rgba(124,58,237,0.2)" stroke="#a78bfa" stroke-width="2"
+          stroke-linejoin="round"/>
+
+        <!-- donk data (Spirit - pink): K/D=0.92, ADR=0.85, CLTH=0.72, HS=0.55, MK=0.78, OK=0.70 -->
+        <polygon
+          points="140,29  219,72  215,148  140,168  69,142  72,70"
+          fill="rgba(236,72,153,0.15)" stroke="#f472b6" stroke-width="2"
+          stroke-linejoin="round"/>
+
+        <!-- Axis labels -->
+        <text x="140" y="13"  text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="10" font-family="Exo 2,sans-serif">K/D</text>
+        <text x="238" y="62"  text-anchor="start"  fill="rgba(255,255,255,0.5)" font-size="10" font-family="Exo 2,sans-serif">ADR</text>
+        <text x="238" y="162" text-anchor="start"  fill="rgba(255,255,255,0.5)" font-size="10" font-family="Exo 2,sans-serif">CLTH</text>
+        <text x="140" y="215" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="10" font-family="Exo 2,sans-serif">HS</text>
+        <text x="42"  y="162" text-anchor="end"    fill="rgba(255,255,255,0.5)" font-size="10" font-family="Exo 2,sans-serif">Multi K.</text>
+        <text x="42"  y="62"  text-anchor="end"    fill="rgba(255,255,255,0.5)" font-size="10" font-family="Exo 2,sans-serif">Op. Kills</text>
+      </svg>
+
+      <div class="radar-legend">
+        <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#a78bfa"></div>b1t</div>
+        <div class="radar-legend-item"><div class="radar-legend-dot" style="background:#f472b6"></div>donk</div>
+      </div>
+    </div>
+
+    <!-- ── RIGHT: donk (Spirit) ── -->
+    <div class="pc-right">
+      <div class="pc-player-hdr pc-right-hdr">
+        <div class="pc-player-info">
+          <div class="pc-player-name">donk ▾</div>
+          <div class="pc-player-real">Danil Kryshkovets</div>
+        </div>
+        <div class="pc-team-badge">
+          <img src="../img_M/spirit.png" style="width:18px;height:18px;object-fit:contain;filter:invert(1);mix-blend-mode:screen;"/>
+          Spirit
+        </div>
+      </div>
+
+      <div class="pc-main-stats">
+        <div class="pc-mstat"><div class="pc-mstat-v">1.38</div><div class="pc-mstat-l">K/D</div></div>
+        <div class="pc-mstat"><div class="pc-mstat-v">89.2</div><div class="pc-mstat-l">ADR</div></div>
+        <div class="pc-mstat"><div class="pc-mstat-v">62%</div><div class="pc-mstat-l">Headshot</div></div>
+        <div class="pc-mstat"><div class="pc-mstat-v">0.19</div><div class="pc-mstat-l">Op. Kills</div></div>
+        <div class="pc-mstat"><div class="pc-mstat-v">0.31</div><div class="pc-mstat-l">Multi K.</div></div>
+      </div>
+
+      <div class="pc-sec-stats">
+        <div class="pc-sstat"><span class="pc-sstat-l">Kills p.r.</span><span class="pc-sstat-v">0.88</span></div>
+        <div class="pc-sstat"><span class="pc-sstat-l">Deaths p.r.</span><span class="pc-sstat-v">0.64</span></div>
+        <div class="pc-sstat"><span class="pc-sstat-l">Assists p.r.</span><span class="pc-sstat-v">0.17</span></div>
+        <div class="pc-sstat"><span class="pc-sstat-l">Flash assist p.r.</span><span class="pc-sstat-v">0.03</span></div>
+        <div class="pc-sstat"><span class="pc-sstat-l">AWP kills p.r.</span><span class="pc-sstat-v">0.21</span></div>
+        <div class="pc-sstat"><span class="pc-sstat-l">Utility DMG p.r.</span><span class="pc-sstat-v">5.8</span></div>
+        <div class="pc-sstat"><span class="pc-sstat-l">Enemies flashed p.r.</span><span class="pc-sstat-v">0.51</span></div>
+        <div class="pc-sstat"><span class="pc-sstat-l">Rounds with clutches</span><span class="pc-sstat-v">4%</span></div>
+      </div>
+
+      <div class="pc-weapons-title">Favourite weapons</div>
+      <div class="pc-weapon-row"><div class="pc-weapon-icon">AK47</div><span class="pc-weapon-name">AK-47</span><span class="pc-wkills-label">Kills</span><span class="pc-wkills-v">0.43</span></div>
+      <div class="pc-weapon-row"><div class="pc-weapon-icon">M4A1</div><span class="pc-weapon-name">M4A1-S</span><span class="pc-wkills-label">Kills</span><span class="pc-wkills-v">0.45</span></div>
+      <div class="pc-weapon-row"><div class="pc-weapon-icon">AWP</div><span class="pc-weapon-name">AWP</span><span class="pc-wkills-label">Kills</span><span class="pc-wkills-v">0.38</span></div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
+
