@@ -672,10 +672,9 @@
       gap: 8px;
       margin-bottom: 12px;
     }
-    .hm-fire { font-size: 18px; }
     .hm-title {
       font-family: 'Rajdhani', sans-serif;
-      font-size: 18px;
+      font-size: 24px;
       font-weight: 700;
       color: #fff;
       flex: 1;
@@ -703,7 +702,7 @@
     .hm-list {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 7px;
       flex: 1;
       overflow-y: auto;
       scrollbar-width: thin;
@@ -715,52 +714,90 @@
     .hm-row {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 7px 10px;
+      gap: 16px;
+      padding: 11px 12px;
       border-radius: 9px;
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.06);
       cursor: pointer;
       transition: background 0.15s;
     }
-    .hm-row:hover { background: rgba(168,85,247,0.12); border-color: rgba(168,85,247,0.3); }
-    .hm-row--hot { border-color: rgba(251,146,60,0.35); background: rgba(251,146,60,0.07); }
-    .hm-row--hot:hover { background: rgba(251,146,60,0.14); }
+    .hm-row:hover { background: rgba(255,255,255,0.10); border-color: rgba(255,255,255,0.22); }
+    .hm-row--hot { border-color: rgba(255,255,255,0.06); background: rgba(255,255,255,0.04); }
     .hm-game {
-      font-size: 10px;
-      font-weight: 700;
-      color: rgba(255,255,255,0.5);
-      min-width: 52px;
-      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+    }
+    .hm-game img {
+      width: 30px;
+      height: 30px;
+      object-fit: contain;
+      display: block;
     }
     .hm-teams {
       flex: 1;
-      font-size: 11px;
-      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      overflow: hidden;
+      min-width: 0;
+    }
+    .hm-team-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hm-team {
+      font-size: 14px;
+      font-weight: 700;
       color: rgba(255,255,255,0.85);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      line-height: 1.2;
     }
-    .hm-score {
-      color: #f59e0b;
+    .hm-team-logo {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+    .hm-score-part {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 14px;
       font-weight: 800;
-      margin: 0 3px;
+      color: #f59e0b;
+      min-width: 16px;
+      line-height: 1.2;
+    }
+    .hm-odds-col {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .hm-odd-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     .hm-odd {
       font-family: 'Rajdhani', sans-serif;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 800;
-      padding: 3px 7px;
-      border-radius: 6px;
-      min-width: 36px;
+      padding: 3px 10px;
+      border-radius: 7px;
+      min-width: 46px;
       text-align: center;
       cursor: pointer;
-      transition: filter 0.15s;
+      background: #070b1f;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: border-color 0.15s, background 0.15s;
     }
-    .hm-odd:hover { filter: brightness(1.25); }
-    .hm-odd-a { background: rgba(124,58,237,0.25); color: #c084fc; border: 1px solid rgba(124,58,237,0.4); }
-    .hm-odd-b { background: rgba(236,72,153,0.2); color: #f472b6; border: 1px solid rgba(236,72,153,0.35); }
+    .hm-odd:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.25); }
 
     .tp-header {
       display: flex;
@@ -804,11 +841,10 @@
       letter-spacing: 0;
     }
 
-    /* Bar chart */
     /* ── Top Players — player cards scroll ── */
     .tp-scroll {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       overflow-x: auto;
       padding-bottom: 6px;
       scrollbar-width: thin;
@@ -817,101 +853,51 @@
     .tp-scroll::-webkit-scrollbar { height: 4px; }
     .tp-scroll::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.4); border-radius: 4px; }
 
-    .pc {
-      min-width: 130px;
-      max-width: 130px;
-      border-radius: 14px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      flex-shrink: 0;
-      border: 1px solid rgba(255,255,255,0.08);
+    .tp-pc {
+      min-width: 140px; max-width: 140px;
+      border-radius: 16px; overflow: hidden; display: flex; flex-direction: column;
+      position: relative; border: 1px solid rgba(255,255,255,0.12);
+      cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; flex-shrink: 0;
     }
-    .pc-bg {
-      position: absolute; inset: 0;
-      z-index: 0;
+    .tp-pc:hover { transform: translateY(-6px); box-shadow: 0 14px 32px rgba(0,0,0,0.55); }
+    .tp-pc-bg { position: absolute; inset: 0; z-index: 0; }
+    .tp-pc-team-badge {
+      position: absolute; top: 9px; right: 9px; z-index: 2;
+      font-size: 9px; font-weight: 900; font-family: 'Rajdhani', sans-serif;
+      padding: 2px 8px; border-radius: 20px; letter-spacing: 0.5px;
     }
-    .pc-rank {
-      position: absolute;
-      top: 8px; left: 8px;
-      background: #e53e3e;
-      color: #fff;
-      font-size: 11px;
-      font-weight: 900;
-      font-family: 'Rajdhani', sans-serif;
-      padding: 1px 7px;
-      border-radius: 6px;
-      z-index: 2;
-      letter-spacing: 0.5px;
+    .tp-pc-body {
+      position: relative; z-index: 1; display: flex; flex-direction: column;
+      align-items: center; padding: 22px 10px 12px; flex: 1;
     }
-    .pc-body {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 28px 8px 6px;
-      flex: 1;
+    .tp-pc-name {
+      font-family: 'Rajdhani', sans-serif; font-weight: 800; font-size: 18px;
+      color: #fff; text-align: center; text-transform: uppercase;
+      line-height: 1.1; letter-spacing: 0.5px; margin-bottom: 12px;
     }
-    .pc-name {
-      font-family: 'Rajdhani', sans-serif;
-      font-weight: 700;
-      font-size: 13px;
-      color: #fff;
-      text-align: center;
-      text-transform: uppercase;
-      line-height: 1.15;
-      letter-spacing: 0.3px;
-      margin-bottom: 6px;
+    .tp-pc-avatar { width: 86px; height: 96px; margin-bottom: 12px; }
+    .tp-pc-role {
+      font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.45);
+      text-transform: uppercase; letter-spacing: 0.7px;
     }
-    .pc-kit {
-      width: 72px;
-      height: 72px;
-      margin-bottom: 8px;
+    .tp-pc-footer {
+      text-align: center; padding: 10px 10px 12px;
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
     }
-    .pc-match {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 10px;
-      color: rgba(255,255,255,0.75);
-      font-weight: 600;
-      margin-bottom: 2px;
+    .tp-pc-footer-label {
+      font-size: 9px; font-weight: 700; letter-spacing: 0.4px;
+      opacity: 0.75; text-transform: uppercase;
     }
-    .pc-team-icon {
-      width: 18px; height: 18px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.15);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 7px; font-weight: 900; color: #fff;
-      flex-shrink: 0;
+    .tp-pc-odd {
+      font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 900;
+      padding: 5px 20px; border-radius: 8px;
+      background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.35);
+      transition: background 0.15s, border-color 0.15s, transform 0.15s;
     }
-    .pc-time {
-      font-size: 10px;
-      font-weight: 700;
-      color: rgba(255,255,255,0.8);
-    }
-    .pc-footer {
-      background: #f6c90e;
-      color: #111;
-      text-align: center;
-      padding: 6px 4px 7px;
-      position: relative;
-      z-index: 1;
-    }
-    .pc-footer-label {
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-      opacity: 0.75;
-      text-transform: uppercase;
-    }
-    .pc-odds {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 20px;
-      font-weight: 900;
-      line-height: 1.1;
+    .tp-pc:hover .tp-pc-odd {
+      background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.6);
+      transform: scale(1.06);
     }
 
 
@@ -982,9 +968,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 15px;
       flex-shrink: 0;
+      overflow: hidden;
     }
+    .game-icon img { width: 28px; height: 28px; object-fit: contain; display: block; }
     .game-name {
       flex: 1;
       font-size: 12px;
@@ -1262,21 +1249,13 @@
     }
 
     .bb-submit {
-      width: 100%;
-      padding: 13px;
-      border: none;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #7c3aed, #be185d);
-      color: #fff;
-      font-family: 'Exo 2', sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: opacity 0.2s;
+      width: 100%; padding: 12px; border: 1px solid rgba(255,255,255,0.35); border-radius: 12px; cursor: pointer;
+      font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 1px;
+      background: rgba(255,255,255,0.18);
+      color: #fff; transition: background 0.2s, border-color 0.2s;
+      position: relative; overflow: visible;
     }
-    .bb-submit:hover { opacity: 0.88; }
+    .bb-submit:hover { background: rgba(255,255,255,0.24); border-color: rgba(255,255,255,0.55); }
 
     .bb-terms {
       font-size: 9px;
@@ -1504,7 +1483,7 @@
       <!-- CS2 -->
       <div class="game-item open">
         <div class="game-header" onclick="toggleGame(this)">
-          <div class="game-icon" style="background:rgba(249,115,22,0.15);">🔫</div>
+          <div class="game-icon"><img src="img_M/logocs2.png" alt="CS2"/></div>
           <span class="game-name">CS2</span>
           <span class="game-chevron">▶</span>
         </div>
@@ -1518,7 +1497,7 @@
       <!-- League of Legends -->
       <div class="game-item">
         <div class="game-header" onclick="toggleGame(this)">
-          <div class="game-icon" style="background:rgba(30,111,168,0.15);">⚔️</div>
+          <div class="game-icon"><img src="img_M/logo lol.png" alt="LoL"/></div>
           <span class="game-name">League of Legends</span>
           <span class="game-chevron">▶</span>
         </div>
@@ -1532,7 +1511,7 @@
       <!-- Valorant -->
       <div class="game-item">
         <div class="game-header" onclick="toggleGame(this)">
-          <div class="game-icon" style="background:rgba(244,63,94,0.15);">⚡</div>
+          <div class="game-icon"><img src="img_M/logo valo.png" alt="Valorant"/></div>
           <span class="game-name">Valorant</span>
           <span class="game-chevron">▶</span>
         </div>
@@ -1546,7 +1525,7 @@
       <!-- Dota 2 -->
       <div class="game-item">
         <div class="game-header" onclick="toggleGame(this)">
-          <div class="game-icon" style="background:rgba(168,85,247,0.15);">🛡️</div>
+          <div class="game-icon"><img src="img_M/logo dota2.png" alt="Dota 2"/></div>
           <span class="game-name">Dota 2</span>
           <span class="game-chevron">▶</span>
         </div>
@@ -1560,7 +1539,7 @@
       <!-- Rocket League -->
       <div class="game-item">
         <div class="game-header" onclick="toggleGame(this)">
-          <div class="game-icon" style="background:rgba(56,189,248,0.15);">🚀</div>
+          <div class="game-icon"><img src="img_M/logo rocket league.png" alt="Rocket League"/></div>
           <span class="game-name">Rocket League</span>
           <span class="game-chevron">▶</span>
         </div>
@@ -1574,7 +1553,7 @@
       <!-- Overwatch -->
       <div class="game-item">
         <div class="game-header" onclick="toggleGame(this)">
-          <div class="game-icon" style="background:rgba(250,204,21,0.12);">🎯</div>
+          <div class="game-icon"><img src="img_M/logo overwatch2.png" alt="Overwatch 2"/></div>
           <span class="game-name">Overwatch 2</span>
           <span class="game-chevron">▶</span>
         </div>
@@ -1661,8 +1640,134 @@
                 </div>
               </div>
             </div>
-            <div class="match-slide"><div class="match-bg"><img src="img_M/image (1).jpg" alt=""/></div></div>
-            <div class="match-slide"><div class="match-bg contain-bg"><img src="img_M/Counter_Strike_2_Logo.png" alt="CS2"/></div></div>
+            <div class="match-slide">
+              <div class="match-bg"><img src="img_M/image (1).jpg" alt="" style="filter:brightness(0.5);"/></div>
+              <div class="slide-teams-overlay">
+                <div class="slide-event-label">Dota 2 — The International 2025 · Finale</div>
+                <div class="slide-event-sub">Dans 2 jours</div>
+                <div class="slide-teams-top">
+                  <div class="slide-team-col">
+                    <img src="img_M/OG_Logo.png" alt="OG"/>
+                    <div class="slide-team-odd">2.60</div>
+                  </div>
+                  <div class="slide-team-col">
+                    <img src="img_M/spirit.png" alt="Spirit" style="filter:invert(1);"/>
+                    <div class="slide-team-odd">1.45</div>
+                  </div>
+                </div>
+                <div class="slide-graph-bar">
+                  <svg class="slide-graph-svg" viewBox="0 0 500 180" preserveAspectRatio="xMidYMid meet">
+                    <defs>
+                      <linearGradient id="gog" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#4d82f5" stop-opacity="0.25"/>
+                        <stop offset="100%" stop-color="#4d82f5" stop-opacity="0"/>
+                      </linearGradient>
+                      <linearGradient id="gsp" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+                        <stop offset="100%" stop-color="#ffffff" stop-opacity="0.12"/>
+                      </linearGradient>
+                    </defs>
+                    <!-- Grille -->
+                    <line x1="38" y1="12"  x2="430" y2="12"  stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+                    <line x1="38" y1="48"  x2="430" y2="48"  stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+                    <line x1="38" y1="84"  x2="430" y2="84"  stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="4,3"/>
+                    <line x1="38" y1="119" x2="430" y2="119" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+                    <line x1="38" y1="155" x2="430" y2="155" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+                    <!-- Labels Y -->
+                    <text x="30" y="16"  text-anchor="end" fill="rgba(255,255,255,0.35)" font-size="9" font-family="'Exo 2',sans-serif">100%</text>
+                    <text x="30" y="52"  text-anchor="end" fill="rgba(255,255,255,0.35)" font-size="9" font-family="'Exo 2',sans-serif">75%</text>
+                    <text x="30" y="88"  text-anchor="end" fill="rgba(255,255,255,0.35)" font-size="9" font-family="'Exo 2',sans-serif">50%</text>
+                    <text x="30" y="123" text-anchor="end" fill="rgba(255,255,255,0.35)" font-size="9" font-family="'Exo 2',sans-serif">25%</text>
+                    <text x="30" y="159" text-anchor="end" fill="rgba(255,255,255,0.35)" font-size="9" font-family="'Exo 2',sans-serif">0%</text>
+                    <!-- Labels X -->
+                    <text x="38"  y="170" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="9" font-family="'Exo 2',sans-serif">Dép.</text>
+                    <text x="125" y="170" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="9" font-family="'Exo 2',sans-serif">10min</text>
+                    <text x="212" y="170" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="9" font-family="'Exo 2',sans-serif">20min</text>
+                    <text x="300" y="170" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="9" font-family="'Exo 2',sans-serif">30min</text>
+                    <text x="387" y="170" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="9" font-family="'Exo 2',sans-serif">40min</text>
+                    <text x="430" y="170" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="9" font-family="'Exo 2',sans-serif">En cours</text>
+                    <!-- Zones -->
+                    <path d="M38,84 82,92 125,80 169,88 212,76 256,95 300,102 343,108 387,104 430,105 L430,155 L38,155 Z" fill="url(#gog)"/>
+                    <path d="M38,84 82,76 125,88 169,80 212,72 256,66 300,70 343,76 387,72 430,62 L430,12 L38,12 Z" fill="url(#gsp)"/>
+                    <!-- Lignes -->
+                    <polyline points="38,84 82,92 125,80 169,88 212,76 256,95 300,102 343,108 387,104 430,105"
+                      fill="none" stroke="#4d82f5" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+                    <polyline points="38,84 82,76 125,88 169,80 212,72 256,66 300,70 343,76 387,72 430,62"
+                      fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+                    <!-- Points finaux -->
+                    <circle cx="430" cy="105" r="4" fill="#4d82f5"/>
+                    <circle cx="430" cy="62"  r="4" fill="#ffffff"/>
+                    <!-- Labels -->
+                    <text x="436" y="109" fill="#4d82f5" font-size="13" font-weight="700" font-family="'Exo 2',sans-serif">OG 38%</text>
+                    <text x="436" y="66"  fill="#ffffff" font-size="13" font-weight="700" font-family="'Exo 2',sans-serif">Spirit 62%</text>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="match-slide">
+              <div class="match-bg contain-bg"><img src="img_M/Counter_Strike_2_Logo.png" alt="CS2" style="filter:brightness(0.5);opacity:0.4;"/></div>
+              <div class="slide-teams-overlay">
+                <div class="slide-event-label">Counter-Strike 2 — ESL Pro League S21 · Finale</div>
+                <div class="slide-event-sub">Dans 2 jours</div>
+                <div class="slide-teams-top">
+                  <div class="slide-team-col">
+                    <img src="img_M/logovita.png" alt="Vitality"/>
+                    <div class="slide-team-odd">1.75</div>
+                  </div>
+                  <div class="slide-team-col">
+                    <img src="img_M/NAVI_Logo_2020.png" alt="NaVi" style="mix-blend-mode:multiply;"/>
+                    <div class="slide-team-odd">2.05</div>
+                  </div>
+                </div>
+                <div class="slide-graph-bar">
+                  <svg class="slide-graph-svg" viewBox="0 0 500 180" preserveAspectRatio="xMidYMid meet">
+                    <defs>
+                      <linearGradient id="gvita" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#facc15" stop-opacity="0.28"/>
+                        <stop offset="100%" stop-color="#facc15" stop-opacity="0"/>
+                      </linearGradient>
+                      <linearGradient id="gnavi2" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#60a5fa" stop-opacity="0"/>
+                        <stop offset="100%" stop-color="#60a5fa" stop-opacity="0.18"/>
+                      </linearGradient>
+                    </defs>
+                    <!-- Grille -->
+                    <line x1="38" y1="12"  x2="430" y2="12"  stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+                    <line x1="38" y1="48"  x2="430" y2="48"  stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+                    <line x1="38" y1="84"  x2="430" y2="84"  stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="4,3"/>
+                    <line x1="38" y1="119" x2="430" y2="119" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+                    <line x1="38" y1="155" x2="430" y2="155" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+                    <!-- Labels Y -->
+                    <text x="30" y="16"  text-anchor="end" fill="rgba(255,255,255,0.35)" font-size="9" font-family="'Exo 2',sans-serif">100%</text>
+                    <text x="30" y="52"  text-anchor="end" fill="rgba(255,255,255,0.35)" font-size="9" font-family="'Exo 2',sans-serif">75%</text>
+                    <text x="30" y="88"  text-anchor="end" fill="rgba(255,255,255,0.35)" font-size="9" font-family="'Exo 2',sans-serif">50%</text>
+                    <text x="30" y="123" text-anchor="end" fill="rgba(255,255,255,0.35)" font-size="9" font-family="'Exo 2',sans-serif">25%</text>
+                    <text x="30" y="159" text-anchor="end" fill="rgba(255,255,255,0.35)" font-size="9" font-family="'Exo 2',sans-serif">0%</text>
+                    <!-- Labels X -->
+                    <text x="38"  y="170" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="9" font-family="'Exo 2',sans-serif">Dép.</text>
+                    <text x="125" y="170" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="9" font-family="'Exo 2',sans-serif">R5</text>
+                    <text x="212" y="170" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="9" font-family="'Exo 2',sans-serif">R10</text>
+                    <text x="300" y="170" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="9" font-family="'Exo 2',sans-serif">R15</text>
+                    <text x="387" y="170" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="9" font-family="'Exo 2',sans-serif">R20</text>
+                    <text x="430" y="170" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="9" font-family="'Exo 2',sans-serif">En cours</text>
+                    <!-- Zones -->
+                    <path d="M38,84 82,78 125,86 169,72 212,90 256,68 300,62 343,70 387,65 430,68 L430,12 L38,12 Z" fill="url(#gvita)"/>
+                    <path d="M38,84 82,90 125,82 169,96 212,78 256,100 300,106 343,98 387,103 430,100 L430,155 L38,155 Z" fill="url(#gnavi2)"/>
+                    <!-- Lignes -->
+                    <polyline points="38,84 82,78 125,86 169,72 212,90 256,68 300,62 343,70 387,65 430,68"
+                      fill="none" stroke="#facc15" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+                    <polyline points="38,84 82,90 125,82 169,96 212,78 256,100 300,106 343,98 387,103 430,100"
+                      fill="none" stroke="#60a5fa" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+                    <!-- Points finaux -->
+                    <circle cx="430" cy="68"  r="4" fill="#facc15"/>
+                    <circle cx="430" cy="100" r="4" fill="#60a5fa"/>
+                    <!-- Labels -->
+                    <text x="436" y="72"  fill="#facc15" font-size="13" font-weight="700" font-family="'Exo 2',sans-serif">Vitality 59%</text>
+                    <text x="436" y="104" fill="#60a5fa" font-size="13" font-weight="700" font-family="'Exo 2',sans-serif">NaVi 41%</text>
+                  </svg>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="carousel-arrow arrow-right"><img src="../Designs/arrow.png" alt="→"/></div>
@@ -1676,7 +1781,6 @@
       <div class="panel" id="hotMatchesPanel">
 
         <div class="hm-header">
-          <span class="hm-fire">🔥</span>
           <span class="hm-title">Hot Matches</span>
           <span class="hm-live-pill"><span class="hm-dot"></span>30 LIVE</span>
         </div>
@@ -1685,36 +1789,36 @@
           <div style="display:none" id="slideTrack"></div>
 
           <!-- 30 hot match rows -->
-          <div class="hm-row"><span class="hm-game">🎮 LoL</span><span class="hm-teams">T1 <span class="hm-score">1–0</span> Gen.G</span><span class="hm-odd hm-odd-a">1.65</span><span class="hm-odd hm-odd-b">2.30</span></div>
-          <div class="hm-row"><span class="hm-game">🔫 CS2</span><span class="hm-teams">NaVi <span class="hm-score">13–8</span> FaZe</span><span class="hm-odd hm-odd-a">1.85</span><span class="hm-odd hm-odd-b">1.95</span></div>
-          <div class="hm-row"><span class="hm-game">⚡ Val</span><span class="hm-teams">C9 <span class="hm-score">7–5</span> 100T</span><span class="hm-odd hm-odd-a">2.10</span><span class="hm-odd hm-odd-b">1.75</span></div>
-          <div class="hm-row"><span class="hm-game">🐉 Dota 2</span><span class="hm-teams">Spirit <span class="hm-score">1–1</span> OG</span><span class="hm-odd hm-odd-a">2.50</span><span class="hm-odd hm-odd-b">1.55</span></div>
-          <div class="hm-row"><span class="hm-game">🚀 RL</span><span class="hm-teams">KC <span class="hm-score">2–1</span> G2</span><span class="hm-odd hm-odd-a">1.70</span><span class="hm-odd hm-odd-b">2.20</span></div>
-          <div class="hm-row hm-row--hot"><span class="hm-game">🎮 LoL</span><span class="hm-teams">BLG <span class="hm-score">0–1</span> JDG</span><span class="hm-odd hm-odd-a">3.10</span><span class="hm-odd hm-odd-b">1.35</span></div>
-          <div class="hm-row"><span class="hm-game">🔫 CS2</span><span class="hm-teams">Vitality <span class="hm-score">9–6</span> NAVI</span><span class="hm-odd hm-odd-a">1.45</span><span class="hm-odd hm-odd-b">2.70</span></div>
-          <div class="hm-row"><span class="hm-game">⚡ Val</span><span class="hm-teams">Fnatic <span class="hm-score">6–8</span> Loud</span><span class="hm-odd hm-odd-a">2.80</span><span class="hm-odd hm-odd-b">1.48</span></div>
-          <div class="hm-row hm-row--hot"><span class="hm-game">🐉 Dota 2</span><span class="hm-teams">EG <span class="hm-score">0–0</span> Secret</span><span class="hm-odd hm-odd-a">1.90</span><span class="hm-odd hm-odd-b">1.90</span></div>
-          <div class="hm-row"><span class="hm-game">🚀 RL</span><span class="hm-teams">NRG <span class="hm-score">3–2</span> BDS</span><span class="hm-odd hm-odd-a">1.55</span><span class="hm-odd hm-odd-b">2.45</span></div>
-          <div class="hm-row"><span class="hm-game">🎮 LoL</span><span class="hm-teams">Cloud9 <span class="hm-score">1–1</span> TSM</span><span class="hm-odd hm-odd-a">2.00</span><span class="hm-odd hm-odd-b">1.85</span></div>
-          <div class="hm-row hm-row--hot"><span class="hm-game">🔫 CS2</span><span class="hm-teams">G2 <span class="hm-score">14–12</span> Astralis</span><span class="hm-odd hm-odd-a">1.60</span><span class="hm-odd hm-odd-b">2.35</span></div>
-          <div class="hm-row"><span class="hm-game">⚡ Val</span><span class="hm-teams">Sentinels <span class="hm-score">5–7</span> Evil G.</span><span class="hm-odd hm-odd-a">2.60</span><span class="hm-odd hm-odd-b">1.52</span></div>
-          <div class="hm-row"><span class="hm-game">🐉 Dota 2</span><span class="hm-teams">Liquid <span class="hm-score">1–0</span> VP</span><span class="hm-odd hm-odd-a">1.40</span><span class="hm-odd hm-odd-b">2.90</span></div>
-          <div class="hm-row"><span class="hm-game">🚀 RL</span><span class="hm-teams">Faze <span class="hm-score">1–3</span> Vitality</span><span class="hm-odd hm-odd-a">3.20</span><span class="hm-odd hm-odd-b">1.32</span></div>
-          <div class="hm-row hm-row--hot"><span class="hm-game">🎮 LoL</span><span class="hm-teams">DRX <span class="hm-score">2–1</span> KT Rolst.</span><span class="hm-odd hm-odd-a">1.78</span><span class="hm-odd hm-odd-b">2.05</span></div>
-          <div class="hm-row"><span class="hm-game">🔫 CS2</span><span class="hm-teams">Heroic <span class="hm-score">7–9</span> MOUZ</span><span class="hm-odd hm-odd-a">2.15</span><span class="hm-odd hm-odd-b">1.72</span></div>
-          <div class="hm-row"><span class="hm-game">⚡ Val</span><span class="hm-teams">Paper Rex <span class="hm-score">8–6</span> DRX</span><span class="hm-odd hm-odd-a">1.65</span><span class="hm-odd hm-odd-b">2.25</span></div>
-          <div class="hm-row"><span class="hm-game">🐉 Dota 2</span><span class="hm-teams">PSG.LGD <span class="hm-score">0–1</span> Aster</span><span class="hm-odd hm-odd-a">2.40</span><span class="hm-odd hm-odd-b">1.60</span></div>
-          <div class="hm-row hm-row--hot"><span class="hm-game">🚀 RL</span><span class="hm-teams">Moist <span class="hm-score">4–3</span> SSG</span><span class="hm-odd hm-odd-a">1.95</span><span class="hm-odd hm-odd-b">1.90</span></div>
-          <div class="hm-row"><span class="hm-game">🎮 LoL</span><span class="hm-teams">Fnatic <span class="hm-score">1–2</span> MAD</span><span class="hm-odd hm-odd-a">2.70</span><span class="hm-odd hm-odd-b">1.50</span></div>
-          <div class="hm-row"><span class="hm-game">🔫 CS2</span><span class="hm-teams">Spirit <span class="hm-score">11–10</span> 9z</span><span class="hm-odd hm-odd-a">1.55</span><span class="hm-odd hm-odd-b">2.50</span></div>
-          <div class="hm-row hm-row--hot"><span class="hm-game">⚡ Val</span><span class="hm-teams">KRÜ <span class="hm-score">10–8</span> Nip</span><span class="hm-odd hm-odd-a">1.80</span><span class="hm-odd hm-odd-b">2.00</span></div>
-          <div class="hm-row"><span class="hm-game">🐉 Dota 2</span><span class="hm-teams">Nigma <span class="hm-score">1–1</span> Alliance</span><span class="hm-odd hm-odd-a">2.20</span><span class="hm-odd hm-odd-b">1.70</span></div>
-          <div class="hm-row"><span class="hm-game">🚀 RL</span><span class="hm-teams">Oxygen <span class="hm-score">2–2</span> Endpoint</span><span class="hm-odd hm-odd-a">2.00</span><span class="hm-odd hm-odd-b">1.85</span></div>
-          <div class="hm-row hm-row--hot"><span class="hm-game">🎮 LoL</span><span class="hm-teams">G2 <span class="hm-score">0–0</span> Excel</span><span class="hm-odd hm-odd-a">1.30</span><span class="hm-odd hm-odd-b">3.50</span></div>
-          <div class="hm-row"><span class="hm-game">🔫 CS2</span><span class="hm-teams">Complexity <span class="hm-score">5–7</span> Cloud9</span><span class="hm-odd hm-odd-a">2.30</span><span class="hm-odd hm-odd-b">1.65</span></div>
-          <div class="hm-row"><span class="hm-game">⚡ Val</span><span class="hm-teams">100T <span class="hm-score">6–6</span> NRG</span><span class="hm-odd hm-odd-a">1.92</span><span class="hm-odd hm-odd-b">1.92</span></div>
-          <div class="hm-row hm-row--hot"><span class="hm-game">🐉 Dota 2</span><span class="hm-teams">Gaimin <span class="hm-score">2–0</span> Tundra</span><span class="hm-odd hm-odd-a">1.45</span><span class="hm-odd hm-odd-b">2.80</span></div>
-          <div class="hm-row"><span class="hm-game">🚀 RL</span><span class="hm-teams">GenG <span class="hm-score">1–2</span> Furia</span><span class="hm-odd hm-odd-a">2.55</span><span class="hm-odd hm-odd-b">1.55</span></div>
+          <div class="hm-row"><span class="hm-game"><img src="img_M/logo lol.png" alt="LoL"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">T1</span><img class="hm-team-logo" src="img_M/logoT1.png" alt="T1"/></span><span class="hm-team-row"><span class="hm-team">Gen.G</span><img class="hm-team-logo" src="img_M/gen g logo.png" alt="Gen.G"/></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">1</span><span class="hm-odd hm-odd-a">1.65</span></span><span class="hm-odd-row"><span class="hm-score-part">0</span><span class="hm-odd hm-odd-b">2.30</span></span></span></div>
+          <div class="hm-row"><span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">NaVi</span><img class="hm-team-logo" src="img_M/NAVI_Logo_2020.png" alt="NaVi"/></span><span class="hm-team-row"><span class="hm-team">FaZe</span></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">13</span><span class="hm-odd hm-odd-a">1.85</span></span><span class="hm-odd-row"><span class="hm-score-part">8</span><span class="hm-odd hm-odd-b">1.95</span></span></span></div>
+          <div class="hm-row"><span class="hm-game"><img src="img_M/logo dota2.png" alt="Dota 2"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">Liquid</span></span><span class="hm-team-row"><span class="hm-team">Tundra</span></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">1</span><span class="hm-odd hm-odd-a">2.10</span></span><span class="hm-odd-row"><span class="hm-score-part">1</span><span class="hm-odd hm-odd-b">1.75</span></span></span></div>
+          <div class="hm-row"><span class="hm-game"><img src="img_M/logo dota2.png" alt="Dota 2"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">Spirit</span><img class="hm-team-logo" src="img_M/spirit.png" alt="Spirit"/></span><span class="hm-team-row"><span class="hm-team">OG</span><img class="hm-team-logo" src="img_M/OG_Logo.png" alt="OG"/></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">1</span><span class="hm-odd hm-odd-a">2.50</span></span><span class="hm-odd-row"><span class="hm-score-part">1</span><span class="hm-odd hm-odd-b">1.55</span></span></span></div>
+          <div class="hm-row"><span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">Heroic</span></span><span class="hm-team-row"><span class="hm-team">Cloud9</span></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">8</span><span class="hm-odd hm-odd-a">2.80</span></span><span class="hm-odd-row"><span class="hm-score-part">11</span><span class="hm-odd hm-odd-b">1.48</span></span></span></div>
+          <div class="hm-row hm-row--hot"><span class="hm-game"><img src="img_M/logo lol.png" alt="LoL"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">BLG</span></span><span class="hm-team-row"><span class="hm-team">JDG</span></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">0</span><span class="hm-odd hm-odd-a">3.10</span></span><span class="hm-odd-row"><span class="hm-score-part">1</span><span class="hm-odd hm-odd-b">1.35</span></span></span></div>
+          <div class="hm-row"><span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">Vitality</span><img class="hm-team-logo" src="img_M/logovita.png" alt="Vitality"/></span><span class="hm-team-row"><span class="hm-team">NaVi</span><img class="hm-team-logo" src="img_M/NAVI_Logo_2020.png" alt="NaVi"/></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">9</span><span class="hm-odd hm-odd-a">1.45</span></span><span class="hm-odd-row"><span class="hm-score-part">6</span><span class="hm-odd hm-odd-b">2.70</span></span></span></div>
+          <div class="hm-row"><span class="hm-game"><img src="img_M/logo lol.png" alt="LoL"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">Fnatic</span></span><span class="hm-team-row"><span class="hm-team">G2</span></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">3</span><span class="hm-odd hm-odd-a">2.80</span></span><span class="hm-odd-row"><span class="hm-score-part">5</span><span class="hm-odd hm-odd-b">1.48</span></span></span></div>
+          <div class="hm-row hm-row--hot"><span class="hm-game"><img src="img_M/logo dota2.png" alt="Dota 2"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">EG</span></span><span class="hm-team-row"><span class="hm-team">Secret</span></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">0</span><span class="hm-odd hm-odd-a">1.90</span></span><span class="hm-odd-row"><span class="hm-score-part">0</span><span class="hm-odd hm-odd-b">1.90</span></span></span></div>
+          <div class="hm-row"><span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">Astralis</span></span><span class="hm-team-row"><span class="hm-team">MOUZ</span></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">6</span><span class="hm-odd hm-odd-a">2.55</span></span><span class="hm-odd-row"><span class="hm-score-part">9</span><span class="hm-odd hm-odd-b">1.55</span></span></span></div>
+          <div class="hm-row"><span class="hm-game"><img src="img_M/logo lol.png" alt="LoL"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">Cloud9</span></span><span class="hm-team-row"><span class="hm-team">TSM</span></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">1</span><span class="hm-odd hm-odd-a">2.00</span></span><span class="hm-odd-row"><span class="hm-score-part">1</span><span class="hm-odd hm-odd-b">1.85</span></span></span></div>
+          <div class="hm-row hm-row--hot"><span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">G2</span></span><span class="hm-team-row"><span class="hm-team">Astralis</span></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">14</span><span class="hm-odd hm-odd-a">1.60</span></span><span class="hm-odd-row"><span class="hm-score-part">12</span><span class="hm-odd hm-odd-b">2.35</span></span></span></div>
+          <div class="hm-row"><span class="hm-game"><img src="img_M/logo lol.png" alt="LoL"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">T1</span><img class="hm-team-logo" src="img_M/logoT1.png" alt="T1"/></span><span class="hm-team-row"><span class="hm-team">DRX</span></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">2</span><span class="hm-odd hm-odd-a">1.42</span></span><span class="hm-odd-row"><span class="hm-score-part">0</span><span class="hm-odd hm-odd-b">2.90</span></span></span></div>
+          <div class="hm-row"><span class="hm-game"><img src="img_M/logo dota2.png" alt="Dota 2"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">Liquid</span></span><span class="hm-team-row"><span class="hm-team">VP</span></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">1</span><span class="hm-odd hm-odd-a">1.40</span></span><span class="hm-odd-row"><span class="hm-score-part">0</span><span class="hm-odd hm-odd-b">2.90</span></span></span></div>
+          <div class="hm-row"><span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">FaZe</span></span><span class="hm-team-row"><span class="hm-team">Spirit</span><img class="hm-team-logo" src="img_M/spirit.png" alt="Spirit"/></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">10</span><span class="hm-odd hm-odd-a">1.72</span></span><span class="hm-odd-row"><span class="hm-score-part">7</span><span class="hm-odd hm-odd-b">2.10</span></span></span></div>
+          <div class="hm-row hm-row--hot"><span class="hm-game"><img src="img_M/logo lol.png" alt="LoL"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">DRX</span></span><span class="hm-team-row"><span class="hm-team">KT Rolst.</span></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">2</span><span class="hm-odd hm-odd-a">1.78</span></span><span class="hm-odd-row"><span class="hm-score-part">1</span><span class="hm-odd hm-odd-b">2.05</span></span></span></div>
+          <div class="hm-row"><span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">Heroic</span></span><span class="hm-team-row"><span class="hm-team">MOUZ</span></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">7</span><span class="hm-odd hm-odd-a">2.15</span></span><span class="hm-odd-row"><span class="hm-score-part">9</span><span class="hm-odd hm-odd-b">1.72</span></span></span></div>
+          <div class="hm-row"><span class="hm-game"><img src="img_M/logo dota2.png" alt="Dota 2"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">Gaimin</span></span><span class="hm-team-row"><span class="hm-team">Alliance</span></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">1</span><span class="hm-odd hm-odd-a">1.65</span></span><span class="hm-odd-row"><span class="hm-score-part">0</span><span class="hm-odd hm-odd-b">2.25</span></span></span></div>
+          <div class="hm-row"><span class="hm-game"><img src="img_M/logo dota2.png" alt="Dota 2"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">PSG.LGD</span></span><span class="hm-team-row"><span class="hm-team">Aster</span></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">0</span><span class="hm-odd hm-odd-a">2.40</span></span><span class="hm-odd-row"><span class="hm-score-part">1</span><span class="hm-odd hm-odd-b">1.60</span></span></span></div>
+          <div class="hm-row hm-row--hot"><span class="hm-game"><img src="img_M/logo lol.png" alt="LoL"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">JDG</span></span><span class="hm-team-row"><span class="hm-team">BLG</span></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">1</span><span class="hm-odd hm-odd-a">1.95</span></span><span class="hm-odd-row"><span class="hm-score-part">1</span><span class="hm-odd hm-odd-b">1.90</span></span></span></div>
+          <div class="hm-row"><span class="hm-game"><img src="img_M/logo lol.png" alt="LoL"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">Fnatic</span></span><span class="hm-team-row"><span class="hm-team">MAD</span></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">1</span><span class="hm-odd hm-odd-a">2.70</span></span><span class="hm-odd-row"><span class="hm-score-part">2</span><span class="hm-odd hm-odd-b">1.50</span></span></span></div>
+          <div class="hm-row"><span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">Spirit</span><img class="hm-team-logo" src="img_M/spirit.png" alt="Spirit"/></span><span class="hm-team-row"><span class="hm-team">9z</span></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">11</span><span class="hm-odd hm-odd-a">1.55</span></span><span class="hm-odd-row"><span class="hm-score-part">10</span><span class="hm-odd hm-odd-b">2.50</span></span></span></div>
+          <div class="hm-row hm-row--hot"><span class="hm-game"><img src="img_M/logo dota2.png" alt="Dota 2"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">Secret</span></span><span class="hm-team-row"><span class="hm-team">PSG.LGD</span></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">0</span><span class="hm-odd hm-odd-a">1.80</span></span><span class="hm-odd-row"><span class="hm-score-part">1</span><span class="hm-odd hm-odd-b">2.00</span></span></span></div>
+          <div class="hm-row"><span class="hm-game"><img src="img_M/logo dota2.png" alt="Dota 2"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">Nigma</span></span><span class="hm-team-row"><span class="hm-team">Alliance</span></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">1</span><span class="hm-odd hm-odd-a">2.20</span></span><span class="hm-odd-row"><span class="hm-score-part">1</span><span class="hm-odd hm-odd-b">1.70</span></span></span></div>
+          <div class="hm-row"><span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">9z</span></span><span class="hm-team-row"><span class="hm-team">Cloud9</span></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">12</span><span class="hm-odd hm-odd-a">2.00</span></span><span class="hm-odd-row"><span class="hm-score-part">10</span><span class="hm-odd hm-odd-b">1.85</span></span></span></div>
+          <div class="hm-row hm-row--hot"><span class="hm-game"><img src="img_M/logo lol.png" alt="LoL"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">G2</span></span><span class="hm-team-row"><span class="hm-team">Excel</span></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">0</span><span class="hm-odd hm-odd-a">1.30</span></span><span class="hm-odd-row"><span class="hm-score-part">0</span><span class="hm-odd hm-odd-b">3.50</span></span></span></div>
+          <div class="hm-row"><span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">Complexity</span></span><span class="hm-team-row"><span class="hm-team">Cloud9</span></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">5</span><span class="hm-odd hm-odd-a">2.30</span></span><span class="hm-odd-row"><span class="hm-score-part">7</span><span class="hm-odd hm-odd-b">1.65</span></span></span></div>
+          <div class="hm-row"><span class="hm-game"><img src="img_M/logo lol.png" alt="LoL"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">KT Rolst.</span></span><span class="hm-team-row"><span class="hm-team">Gen.G</span><img class="hm-team-logo" src="img_M/gen g logo.png" alt="Gen.G"/></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">1</span><span class="hm-odd hm-odd-a">2.45</span></span><span class="hm-odd-row"><span class="hm-score-part">2</span><span class="hm-odd hm-odd-b">1.62</span></span></span></div>
+          <div class="hm-row hm-row--hot"><span class="hm-game"><img src="img_M/logo dota2.png" alt="Dota 2"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">Gaimin</span></span><span class="hm-team-row"><span class="hm-team">Tundra</span></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">2</span><span class="hm-odd hm-odd-a">1.45</span></span><span class="hm-odd-row"><span class="hm-score-part">0</span><span class="hm-odd hm-odd-b">2.80</span></span></span></div>
+          <div class="hm-row"><span class="hm-game"><img src="img_M/logo dota2.png" alt="Dota 2"/></span><span class="hm-teams"><span class="hm-team-row"><span class="hm-team">VP</span></span><span class="hm-team-row"><span class="hm-team">OG</span><img class="hm-team-logo" src="img_M/OG_Logo.png" alt="OG"/></span></span><span class="hm-odds-col"><span class="hm-odd-row"><span class="hm-score-part">2</span><span class="hm-odd hm-odd-a">2.55</span></span><span class="hm-odd-row"><span class="hm-score-part">2</span><span class="hm-odd hm-odd-b">1.55</span></span></span></div>
 
         </div><!-- /hm-list -->
       </div><!-- /panel hot matches -->
@@ -1727,251 +1831,137 @@
 
         <div class="tp-scroll">
 
-          <!-- #1 Cristiano Ronaldo -->
-          <div class="pc">
-            <div class="pc-bg" style="background:linear-gradient(160deg,#0d2a5e 0%,#1a4a8a 100%);"></div>
-            <div class="pc-rank">#1</div>
-            <div class="pc-body">
-              <div class="pc-name">Cristiano<br>Ronaldo</div>
-              <svg class="pc-kit" viewBox="0 0 72 72" fill="none">
-                <path d="M18 18 C18 14 22 12 28 11 L36 9 L44 11 C50 12 54 14 54 18 L58 36 L50 38 L50 62 L22 62 L22 38 L14 36 Z" fill="#f5c518" stroke="#e8a800" stroke-width="1"/>
-                <path d="M28 11 L28 30 M44 11 L44 30" stroke="#e8a800" stroke-width="1" opacity="0.5"/>
-                <circle cx="36" cy="22" r="5" fill="#0a5c2e" opacity="0.6"/>
-                <text x="36" y="26" text-anchor="middle" fill="#fff" font-size="5" font-weight="bold" font-family="Arial">ANA</text>
-                <text x="36" y="50" text-anchor="middle" fill="#c8a000" font-size="7" font-weight="900" font-family="Arial">AL NASSR</text>
+          <!-- ZywOo — Vitality (CS2) -->
+          <div class="tp-pc">
+            <div class="tp-pc-bg" style="background:linear-gradient(175deg,#1a1400 0%,#2a2000 60%,#3a2e00 100%);"></div>
+            <div class="tp-pc-team-badge" style="background:rgba(250,204,21,0.2);border:1px solid rgba(250,204,21,0.5);color:#facc15;">Vitality</div>
+            <div class="tp-pc-body">
+              <div class="tp-pc-name">ZywOo</div>
+              <svg class="tp-pc-avatar" viewBox="0 0 80 88" fill="none">
+                <path d="M22 22 C22 17 27 14 32 13 L40 11 L48 13 C53 14 58 17 58 22 L63 42 L54 44 L54 76 L26 76 L26 44 L17 42 Z" fill="#facc15" stroke="#d4a000" stroke-width="1.5"/>
+                <path d="M26 13 L26 76 M54 13 L54 76" stroke="#111" stroke-width="4" opacity="0.4"/>
+                <path d="M34 11 Q40 14 46 11" stroke="#d4a000" stroke-width="2" fill="none"/>
+                <text x="40" y="60" text-anchor="middle" fill="#111" font-size="9" font-weight="900" font-family="Arial">VITALITY</text>
+                <path d="M22 22 L17 42 L26 44 L26 30 Z" fill="#facc15" stroke="#d4a000" stroke-width="1"/>
+                <path d="M58 22 L63 42 L54 44 L54 30 Z" fill="#facc15" stroke="#d4a000" stroke-width="1"/>
               </svg>
-              <div class="pc-match">
-                <div class="pc-team-icon" style="background:#1a3a6e;">SHB</div>
-                <div class="pc-time">20:00</div>
-                <div class="pc-team-icon" style="background:#f5c518;color:#111;">ANA</div>
-              </div>
+              <div class="tp-pc-role">Star Rifler</div>
             </div>
-            <div class="pc-footer">
-              <div class="pc-footer-label">Buteur (tps rég.)</div>
-              <div class="pc-odds">1,50</div>
+            <div class="tp-pc-footer" style="background:linear-gradient(90deg,#d4a000,#facc15);color:#111;">
+              <div class="tp-pc-footer-label">Highest Rating</div>
+              <div class="tp-pc-odd">1.70</div>
             </div>
           </div>
 
-          <!-- #2 Ollie Watkins -->
-          <div class="pc">
-            <div class="pc-bg" style="background:linear-gradient(160deg,#3d0a0a 0%,#6b1a1a 100%);"></div>
-            <div class="pc-rank">#2</div>
-            <div class="pc-body">
-              <div class="pc-name">Ollie<br>Watkins</div>
-              <svg class="pc-kit" viewBox="0 0 72 72" fill="none">
-                <path d="M18 18 C18 14 22 12 28 11 L36 9 L44 11 C50 12 54 14 54 18 L58 36 L50 38 L50 62 L22 62 L22 38 L14 36 Z" fill="#670e0e" stroke="#4a0a0a" stroke-width="1"/>
-                <path d="M26 11 L26 62 M46 11 L46 62" stroke="#c8b0a0" stroke-width="6" opacity="0.35"/>
-                <circle cx="36" cy="22" r="6" fill="#1a1a3e" opacity="0.8"/>
-                <text x="36" y="26" text-anchor="middle" fill="#fff" font-size="5" font-weight="bold" font-family="Arial">ASTON</text>
-                <text x="36" y="50" text-anchor="middle" fill="#c8a080" font-size="7" font-weight="900" font-family="Arial">ASTON</text>
+          <!-- s1mple — NaVi (CS2) -->
+          <div class="tp-pc">
+            <div class="tp-pc-bg" style="background:linear-gradient(175deg,#09090f 0%,#0f0c1e 60%,#1a1040 100%);"></div>
+            <div class="tp-pc-team-badge" style="background:rgba(245,197,24,0.2);border:1px solid rgba(245,197,24,0.5);color:#f5c518;">NaVi</div>
+            <div class="tp-pc-body">
+              <div class="tp-pc-name">s1mple</div>
+              <svg class="tp-pc-avatar" viewBox="0 0 80 88" fill="none">
+                <path d="M22 22 C22 17 27 14 32 13 L40 11 L48 13 C53 14 58 17 58 22 L63 42 L54 44 L54 76 L26 76 L26 44 L17 42 Z" fill="#0a0a0a" stroke="#f5c518" stroke-width="1.5"/>
+                <path d="M36 13 L36 76 M44 13 L44 76" stroke="#f5c518" stroke-width="3" opacity="0.7"/>
+                <path d="M34 11 Q40 14 46 11" stroke="#f5c518" stroke-width="2" fill="none"/>
+                <text x="40" y="60" text-anchor="middle" fill="#f5c518" font-size="11" font-weight="900" font-family="Arial">NaVi</text>
+                <path d="M22 22 L17 42 L26 44 L26 30 Z" fill="#111" stroke="#f5c518" stroke-width="1"/>
+                <path d="M58 22 L63 42 L54 44 L54 30 Z" fill="#111" stroke="#f5c518" stroke-width="1"/>
               </svg>
-              <div class="pc-match">
-                <div class="pc-team-icon" style="background:#670e0e;">AVL</div>
-                <div class="pc-time">21:00</div>
-                <div class="pc-team-icon" style="background:#d4373a;">NOT</div>
-              </div>
+              <div class="tp-pc-role">AWPer</div>
             </div>
-            <div class="pc-footer">
-              <div class="pc-footer-label">Buteur (tps rég.)</div>
-              <div class="pc-odds">2,47</div>
+            <div class="tp-pc-footer" style="background:linear-gradient(90deg,#b8960a,#f5c518);color:#111;">
+              <div class="tp-pc-footer-label">Highest Rating</div>
+              <div class="tp-pc-odd">2.20</div>
             </div>
           </div>
 
-          <!-- #3 Jean-Philippe Mateta -->
-          <div class="pc">
-            <div class="pc-bg" style="background:linear-gradient(160deg,#0d3a1e 0%,#1a5c32 100%);"></div>
-            <div class="pc-rank">#3</div>
-            <div class="pc-body">
-              <div class="pc-name">J-P<br>Mateta</div>
-              <svg class="pc-kit" viewBox="0 0 72 72" fill="none">
-                <path d="M18 18 C18 14 22 12 28 11 L36 9 L44 11 C50 12 54 14 54 18 L58 36 L50 38 L50 62 L22 62 L22 38 L14 36 Z" fill="#1565c0" stroke="#0d47a1" stroke-width="1"/>
-                <path d="M26 9 L26 62 M32 9 L32 62 M38 9 L38 62 M44 9 L44 62" stroke="#e53935" stroke-width="5" opacity="0.7"/>
-                <circle cx="36" cy="22" r="6" fill="#0d47a1" opacity="0.8"/>
-                <text x="36" y="26" text-anchor="middle" fill="#fff" font-size="5" font-weight="bold" font-family="Arial">CRY</text>
-                <text x="36" y="50" text-anchor="middle" fill="#90caf9" font-size="7" font-weight="900" font-family="Arial">CRYSTAL</text>
+          <!-- Faker — T1 (LoL) -->
+          <div class="tp-pc">
+            <div class="tp-pc-bg" style="background:linear-gradient(175deg,#1a0000 0%,#2e0a0a 60%,#3d1010 100%);"></div>
+            <div class="tp-pc-team-badge" style="background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.5);color:#f87171;">T1</div>
+            <div class="tp-pc-body">
+              <div class="tp-pc-name">Faker</div>
+              <svg class="tp-pc-avatar" viewBox="0 0 80 88" fill="none">
+                <path d="M22 22 C22 17 27 14 32 13 L40 11 L48 13 C53 14 58 17 58 22 L63 42 L54 44 L54 76 L26 76 L26 44 L17 42 Z" fill="#cc0000" stroke="#990000" stroke-width="1.5"/>
+                <path d="M20 30 L60 30 L60 50 L20 50 Z" fill="#fff" opacity="0.08"/>
+                <path d="M34 11 Q40 9 46 11" stroke="#fff" stroke-width="2" fill="none"/>
+                <text x="40" y="60" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-family="Arial">T1</text>
+                <path d="M22 22 L17 42 L26 44 L26 30 Z" fill="#cc0000" stroke="#990000" stroke-width="1"/>
+                <path d="M58 22 L63 42 L54 44 L54 30 Z" fill="#cc0000" stroke="#990000" stroke-width="1"/>
               </svg>
-              <div class="pc-match">
-                <div class="pc-team-icon" style="background:#1565c0;">CRY</div>
-                <div class="pc-time">21:00</div>
-                <div class="pc-team-icon" style="background:#e65100;">SHA</div>
-              </div>
+              <div class="tp-pc-role">Mid Lane</div>
             </div>
-            <div class="pc-footer">
-              <div class="pc-footer-label">Buteur (tps rég.)</div>
-              <div class="pc-odds">2,08</div>
+            <div class="tp-pc-footer" style="background:linear-gradient(90deg,#990000,#ef4444);color:#fff;">
+              <div class="tp-pc-footer-label">Highest Rating</div>
+              <div class="tp-pc-odd">1.55</div>
             </div>
           </div>
 
-          <!-- #4 Ismaila Sarr -->
-          <div class="pc">
-            <div class="pc-bg" style="background:linear-gradient(160deg,#1a1a4a 0%,#2d2d7a 100%);"></div>
-            <div class="pc-rank">#4</div>
-            <div class="pc-body">
-              <div class="pc-name">Ismaila<br>Sarr</div>
-              <svg class="pc-kit" viewBox="0 0 72 72" fill="none">
-                <path d="M18 18 C18 14 22 12 28 11 L36 9 L44 11 C50 12 54 14 54 18 L58 36 L50 38 L50 62 L22 62 L22 38 L14 36 Z" fill="#1565c0" stroke="#0d47a1" stroke-width="1"/>
-                <path d="M26 9 L26 62 M32 9 L32 62 M38 9 L38 62 M44 9 L44 62" stroke="#e53935" stroke-width="5" opacity="0.7"/>
-                <circle cx="36" cy="22" r="6" fill="#0d47a1" opacity="0.8"/>
-                <text x="36" y="26" text-anchor="middle" fill="#fff" font-size="5" font-weight="bold" font-family="Arial">CRY</text>
-                <text x="36" y="50" text-anchor="middle" fill="#90caf9" font-size="7" font-weight="900" font-family="Arial">CRYSTAL</text>
+          <!-- Caps — G2 (LoL) -->
+          <div class="tp-pc">
+            <div class="tp-pc-bg" style="background:linear-gradient(175deg,#0e0e0e 0%,#1a1a1a 60%,#252525 100%);"></div>
+            <div class="tp-pc-team-badge" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.35);color:#fff;">G2</div>
+            <div class="tp-pc-body">
+              <div class="tp-pc-name">Caps</div>
+              <svg class="tp-pc-avatar" viewBox="0 0 80 88" fill="none">
+                <path d="M22 22 C22 17 27 14 32 13 L40 11 L48 13 C53 14 58 17 58 22 L63 42 L54 44 L54 76 L26 76 L26 44 L17 42 Z" fill="#1a1a1a" stroke="#e53935" stroke-width="1.5"/>
+                <path d="M22 22 L58 55" stroke="#e53935" stroke-width="7" opacity="0.5" stroke-linecap="round"/>
+                <path d="M34 11 Q40 9 46 11" stroke="#e53935" stroke-width="2" fill="none"/>
+                <text x="40" y="60" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-family="Arial">G2</text>
+                <path d="M22 22 L17 42 L26 44 L26 30 Z" fill="#1a1a1a" stroke="#e53935" stroke-width="1"/>
+                <path d="M58 22 L63 42 L54 44 L54 30 Z" fill="#1a1a1a" stroke="#e53935" stroke-width="1"/>
               </svg>
-              <div class="pc-match">
-                <div class="pc-team-icon" style="background:#1565c0;">CRY</div>
-                <div class="pc-time">21:00</div>
-                <div class="pc-team-icon" style="background:#e65100;">SHA</div>
-              </div>
+              <div class="tp-pc-role">Mid Lane</div>
             </div>
-            <div class="pc-footer">
-              <div class="pc-footer-label">Buteur (tps rég.)</div>
-              <div class="pc-odds">2,28</div>
+            <div class="tp-pc-footer" style="background:linear-gradient(90deg,#111,#333);color:#fff;">
+              <div class="tp-pc-footer-label">Highest Rating</div>
+              <div class="tp-pc-odd">2.80</div>
             </div>
           </div>
 
-          <!-- #5 Erling Haaland -->
-          <div class="pc">
-            <div class="pc-bg" style="background:linear-gradient(160deg,#0a2a4a 0%,#1a4a7a 100%);"></div>
-            <div class="pc-rank">#5</div>
-            <div class="pc-body">
-              <div class="pc-name">Erling<br>Haaland</div>
-              <svg class="pc-kit" viewBox="0 0 72 72" fill="none">
-                <path d="M18 18 C18 14 22 12 28 11 L36 9 L44 11 C50 12 54 14 54 18 L58 36 L50 38 L50 62 L22 62 L22 38 L14 36 Z" fill="#6dd5ed" stroke="#4ab8d4" stroke-width="1"/>
-                <circle cx="36" cy="22" r="6" fill="#1a3a6e" opacity="0.9"/>
-                <text x="36" y="24" text-anchor="middle" fill="#fff" font-size="4" font-weight="bold" font-family="Arial">MAN</text>
-                <text x="36" y="29" text-anchor="middle" fill="#fff" font-size="4" font-weight="bold" font-family="Arial">CITY</text>
-                <text x="36" y="50" text-anchor="middle" fill="#1a3a6e" font-size="7" font-weight="900" font-family="Arial">MAN CITY</text>
+          <!-- Miracle- — OG (Dota 2) -->
+          <div class="tp-pc">
+            <div class="tp-pc-bg" style="background:linear-gradient(175deg,#0a0a0a 0%,#141414 60%,#1e1e1e 100%);"></div>
+            <div class="tp-pc-team-badge" style="background:rgba(249,115,22,0.2);border:1px solid rgba(249,115,22,0.5);color:#fb923c;">OG</div>
+            <div class="tp-pc-body">
+              <div class="tp-pc-name">Miracle-</div>
+              <svg class="tp-pc-avatar" viewBox="0 0 80 88" fill="none">
+                <path d="M22 22 C22 17 27 14 32 13 L40 11 L48 13 C53 14 58 17 58 22 L63 42 L54 44 L54 76 L26 76 L26 44 L17 42 Z" fill="#111" stroke="#f97316" stroke-width="1.5"/>
+                <path d="M26 13 L26 76" stroke="#fff" stroke-width="5" opacity="0.15"/>
+                <path d="M54 13 L54 76" stroke="#fff" stroke-width="5" opacity="0.15"/>
+                <path d="M34 11 Q40 9 46 11" stroke="#f97316" stroke-width="2" fill="none"/>
+                <text x="40" y="60" text-anchor="middle" fill="#f97316" font-size="11" font-weight="900" font-family="Arial">OG</text>
+                <path d="M22 22 L17 42 L26 44 L26 30 Z" fill="#111" stroke="#f97316" stroke-width="1"/>
+                <path d="M58 22 L63 42 L54 44 L54 30 Z" fill="#111" stroke="#f97316" stroke-width="1"/>
               </svg>
-              <div class="pc-match">
-                <div class="pc-team-icon" style="background:#6dd5ed;color:#111;">MCI</div>
-                <div class="pc-time">18:30</div>
-                <div class="pc-team-icon" style="background:#e53935;">BRE</div>
-              </div>
+              <div class="tp-pc-role">Carry</div>
             </div>
-            <div class="pc-footer">
-              <div class="pc-footer-label">Buteur (tps rég.)</div>
-              <div class="pc-odds">1,48</div>
+            <div class="tp-pc-footer" style="background:linear-gradient(90deg,#c2410c,#f97316);color:#fff;">
+              <div class="tp-pc-footer-label">Highest Rating</div>
+              <div class="tp-pc-odd">2.10</div>
             </div>
           </div>
 
-          <!-- #6 Kylian Mbappé -->
-          <div class="pc">
-            <div class="pc-bg" style="background:linear-gradient(160deg,#0a0a3a 0%,#1a1a6e 100%);"></div>
-            <div class="pc-rank">#6</div>
-            <div class="pc-body">
-              <div class="pc-name">Kylian<br>Mbappé</div>
-              <svg class="pc-kit" viewBox="0 0 72 72" fill="none">
-                <path d="M18 18 C18 14 22 12 28 11 L36 9 L44 11 C50 12 54 14 54 18 L58 36 L50 38 L50 62 L22 62 L22 38 L14 36 Z" fill="#fff" stroke="#ddd" stroke-width="1"/>
-                <path d="M26 9 L26 62 M32 9 L32 62 M38 9 L38 62 M44 9 L44 62" stroke="#1a1a6e" stroke-width="5" opacity="0.6"/>
-                <circle cx="36" cy="22" r="6" fill="#1a1a6e" opacity="0.9"/>
-                <text x="36" y="26" text-anchor="middle" fill="#fff" font-size="5" font-weight="bold" font-family="Arial">RM</text>
-                <text x="36" y="50" text-anchor="middle" fill="#1a1a6e" font-size="7" font-weight="900" font-family="Arial">REAL M.</text>
+          <!-- TORONTOTOKYO — Spirit (Dota 2) -->
+          <div class="tp-pc">
+            <div class="tp-pc-bg" style="background:linear-gradient(175deg,#060a18 0%,#0a1030 60%,#0e1540 100%);"></div>
+            <div class="tp-pc-team-badge" style="background:rgba(56,130,246,0.2);border:1px solid rgba(56,130,246,0.5);color:#60a5fa;">Spirit</div>
+            <div class="tp-pc-body">
+              <div class="tp-pc-name">TORONTO<br>TOKYO</div>
+              <svg class="tp-pc-avatar" viewBox="0 0 80 88" fill="none">
+                <path d="M22 22 C22 17 27 14 32 13 L40 11 L48 13 C53 14 58 17 58 22 L63 42 L54 44 L54 76 L26 76 L26 44 L17 42 Z" fill="#0d1a3a" stroke="#3882f6" stroke-width="1.5"/>
+                <path d="M22 22 L58 55" stroke="#3882f6" stroke-width="8" opacity="0.5" stroke-linecap="round"/>
+                <path d="M22 22 L58 55" stroke="#60a5fa" stroke-width="3" opacity="0.7" stroke-linecap="round"/>
+                <path d="M34 11 Q40 9 46 11" stroke="#3882f6" stroke-width="2" fill="none"/>
+                <text x="40" y="62" text-anchor="middle" fill="#93c5fd" font-size="9" font-weight="900" font-family="Arial">SPIRIT</text>
+                <path d="M22 22 L17 42 L26 44 L26 30 Z" fill="#0d1a3a" stroke="#3882f6" stroke-width="1"/>
+                <path d="M58 22 L63 42 L54 44 L54 30 Z" fill="#0d1a3a" stroke="#3882f6" stroke-width="1"/>
               </svg>
-              <div class="pc-match">
-                <div class="pc-team-icon" style="background:#fff;color:#1a1a6e;">RM</div>
-                <div class="pc-time">21:00</div>
-                <div class="pc-team-icon" style="background:#e53935;">ATM</div>
-              </div>
+              <div class="tp-pc-role">Carry</div>
             </div>
-            <div class="pc-footer">
-              <div class="pc-footer-label">Buteur (tps rég.)</div>
-              <div class="pc-odds">1,72</div>
-            </div>
-          </div>
-
-          <!-- #7 Harry Kane -->
-          <div class="pc">
-            <div class="pc-bg" style="background:linear-gradient(160deg,#2a0a3a 0%,#4a1a6e 100%);"></div>
-            <div class="pc-rank">#7</div>
-            <div class="pc-body">
-              <div class="pc-name">Harry<br>Kane</div>
-              <svg class="pc-kit" viewBox="0 0 72 72" fill="none">
-                <path d="M18 18 C18 14 22 12 28 11 L36 9 L44 11 C50 12 54 14 54 18 L58 36 L50 38 L50 62 L22 62 L22 38 L14 36 Z" fill="#e53935" stroke="#b71c1c" stroke-width="1"/>
-                <circle cx="36" cy="22" r="6" fill="#fff" opacity="0.9"/>
-                <text x="36" y="26" text-anchor="middle" fill="#e53935" font-size="4" font-weight="bold" font-family="Arial">FCB</text>
-                <text x="36" y="50" text-anchor="middle" fill="#fff" font-size="7" font-weight="900" font-family="Arial">BAYERN</text>
-              </svg>
-              <div class="pc-match">
-                <div class="pc-team-icon" style="background:#e53935;">FCB</div>
-                <div class="pc-time">18:30</div>
-                <div class="pc-team-icon" style="background:#1a1a3e;">BVB</div>
-              </div>
-            </div>
-            <div class="pc-footer">
-              <div class="pc-footer-label">Buteur (tps rég.)</div>
-              <div class="pc-odds">1,95</div>
-            </div>
-          </div>
-
-          <!-- #8 Vinicius Jr -->
-          <div class="pc">
-            <div class="pc-bg" style="background:linear-gradient(160deg,#0a2a0a 0%,#1a5c1a 100%);"></div>
-            <div class="pc-rank">#8</div>
-            <div class="pc-body">
-              <div class="pc-name">Vinicius<br>Jr</div>
-              <svg class="pc-kit" viewBox="0 0 72 72" fill="none">
-                <path d="M18 18 C18 14 22 12 28 11 L36 9 L44 11 C50 12 54 14 54 18 L58 36 L50 38 L50 62 L22 62 L22 38 L14 36 Z" fill="#fff" stroke="#ddd" stroke-width="1"/>
-                <circle cx="36" cy="22" r="6" fill="#1a1a6e" opacity="0.9"/>
-                <text x="36" y="26" text-anchor="middle" fill="#fff" font-size="5" font-weight="bold" font-family="Arial">RM</text>
-                <text x="36" y="50" text-anchor="middle" fill="#1a1a6e" font-size="7" font-weight="900" font-family="Arial">REAL M.</text>
-              </svg>
-              <div class="pc-match">
-                <div class="pc-team-icon" style="background:#fff;color:#1a1a6e;">RM</div>
-                <div class="pc-time">21:00</div>
-                <div class="pc-team-icon" style="background:#e53935;">ATM</div>
-              </div>
-            </div>
-            <div class="pc-footer">
-              <div class="pc-footer-label">Buteur (tps rég.)</div>
-              <div class="pc-odds">2,10</div>
-            </div>
-          </div>
-
-          <!-- #9 Lautaro Martínez -->
-          <div class="pc">
-            <div class="pc-bg" style="background:linear-gradient(160deg,#1a0a2e 0%,#3a1a5e 100%);"></div>
-            <div class="pc-rank">#9</div>
-            <div class="pc-body">
-              <div class="pc-name">Lautaro<br>Martínez</div>
-              <svg class="pc-kit" viewBox="0 0 72 72" fill="none">
-                <path d="M18 18 C18 14 22 12 28 11 L36 9 L44 11 C50 12 54 14 54 18 L58 36 L50 38 L50 62 L22 62 L22 38 L14 36 Z" fill="#1a1a6e" stroke="#0d0d4e" stroke-width="1"/>
-                <path d="M26 9 L26 62 M32 9 L32 62 M38 9 L38 62 M44 9 L44 62" stroke="#e8c040" stroke-width="5" opacity="0.6"/>
-                <circle cx="36" cy="22" r="6" fill="#e8c040" opacity="0.9"/>
-                <text x="36" y="26" text-anchor="middle" fill="#1a1a6e" font-size="5" font-weight="bold" font-family="Arial">INT</text>
-                <text x="36" y="50" text-anchor="middle" fill="#e8c040" font-size="7" font-weight="900" font-family="Arial">INTER</text>
-              </svg>
-              <div class="pc-match">
-                <div class="pc-team-icon" style="background:#1a1a6e;">INT</div>
-                <div class="pc-time">20:45</div>
-                <div class="pc-team-icon" style="background:#e53935;">AC</div>
-              </div>
-            </div>
-            <div class="pc-footer">
-              <div class="pc-footer-label">Buteur (tps rég.)</div>
-              <div class="pc-odds">2,35</div>
-            </div>
-          </div>
-
-          <!-- #10 Bukayo Saka -->
-          <div class="pc">
-            <div class="pc-bg" style="background:linear-gradient(160deg,#0a1e0a 0%,#1a3a1a 100%);"></div>
-            <div class="pc-rank">#10</div>
-            <div class="pc-body">
-              <div class="pc-name">Bukayo<br>Saka</div>
-              <svg class="pc-kit" viewBox="0 0 72 72" fill="none">
-                <path d="M18 18 C18 14 22 12 28 11 L36 9 L44 11 C50 12 54 14 54 18 L58 36 L50 38 L50 62 L22 62 L22 38 L14 36 Z" fill="#e53935" stroke="#b71c1c" stroke-width="1"/>
-                <path d="M20 30 L52 30 L52 48 L20 48 Z" fill="#fff" opacity="0.15"/>
-                <circle cx="36" cy="22" r="6" fill="#fff" opacity="0.9"/>
-                <text x="36" y="26" text-anchor="middle" fill="#e53935" font-size="5" font-weight="bold" font-family="Arial">ARS</text>
-                <text x="36" y="50" text-anchor="middle" fill="#fff" font-size="7" font-weight="900" font-family="Arial">ARSENAL</text>
-              </svg>
-              <div class="pc-match">
-                <div class="pc-team-icon" style="background:#e53935;">ARS</div>
-                <div class="pc-time">17:30</div>
-                <div class="pc-team-icon" style="background:#1a3a6e;">CHE</div>
-              </div>
-            </div>
-            <div class="pc-footer">
-              <div class="pc-footer-label">Buteur (tps rég.)</div>
-              <div class="pc-odds">2,60</div>
+            <div class="tp-pc-footer" style="background:linear-gradient(90deg,#1d4ed8,#3882f6);color:#fff;">
+              <div class="tp-pc-footer-label">Highest Rating</div>
+              <div class="tp-pc-odd">3.20</div>
             </div>
           </div>
 
@@ -2354,7 +2344,41 @@
         window.location.href = 'match.html';
       });
     });
+
+    // Particules blanches sur le bouton Placer le pari
+    (function() {
+      var btn = document.querySelector('.bb-submit');
+      if (!btn) return;
+      function spawnWhiteParticle() {
+        var p = document.createElement('span');
+        var size = Math.random() * 5 + 2;
+        var x = Math.random() * btn.offsetWidth;
+        var y = Math.random() * btn.offsetHeight;
+        var angle = Math.random() * 360;
+        var dist = Math.random() * 50 + 15;
+        var dx = Math.cos(angle * Math.PI / 180) * dist;
+        var dy = Math.sin(angle * Math.PI / 180) * dist;
+        var dur = Math.random() * 500 + 300;
+        p.style.cssText = 'position:absolute;left:'+x+'px;top:'+y+'px;width:'+size+'px;height:'+size+'px;border-radius:50%;background:rgba(255,255,255,'+(Math.random()*0.5+0.4)+');pointer-events:none;z-index:100;box-shadow:0 0 '+(size*2.5)+'px rgba(255,255,255,0.8);';
+        btn.appendChild(p);
+        p.animate(
+          [{transform:'translate(0,0) scale(1)',opacity:1},{transform:'translate('+dx+'px,'+dy+'px) scale(0)',opacity:0}],
+          {duration:dur, easing:'ease-out', fill:'forwards'}
+        ).onfinish = function(){ p.remove(); };
+      }
+      var iv;
+      btn.addEventListener('mouseenter', function() { iv = setInterval(spawnWhiteParticle, 65); });
+      btn.addEventListener('mouseleave', function() { clearInterval(iv); });
+    })();
   </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
 
