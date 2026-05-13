@@ -1,0 +1,2309 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SkillBet — ESL Pro League S21 · Bracket</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@400;500;600;700;800&display=swap');
+
+    :root {
+      --purple: #7c3aed;
+      --pink: #ec4899;
+      --purple-light: #a855f7;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Exo 2', sans-serif;
+      color: #fff;
+      background:
+              radial-gradient(1200px 800px at 20% 10%, rgba(124,58,237,.26), transparent 60%),
+              radial-gradient(900px 600px at 40% 80%, rgba(236,72,153,.22), transparent 55%),
+              #070b1f;
+    }
+
+    /* ── Blobs ── */
+    .bg-blobs {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 0;
+      filter: blur(70px); opacity: .85;
+    }
+    .blob {
+      position: absolute; width: 460px; height: 460px; border-radius: 999px;
+      background:
+              radial-gradient(circle at 35% 35%, rgba(124,58,237,.95), transparent 60%),
+              radial-gradient(circle at 65% 65%, rgba(236,72,153,.90), transparent 62%);
+      animation: floaty 5s ease-in-out infinite;
+    }
+    .b1 { top: -140px; left: -140px; }
+    .b2 { top: 12%; right: -180px; animation-delay: -1s; }
+    .b3 { bottom: -200px; left: 30%; animation-delay: -2s; }
+    @keyframes floaty {
+      0%,100% { transform: translate3d(0,0,0) scale(1); }
+      50%      { transform: translate3d(40px,-30px,0) scale(1.08); }
+    }
+
+    /* ── Page ── */
+    .page {
+      position: relative; z-index: 1;
+      height: 100vh;
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+
+    /* ── Navbar ── */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 36px; height: 64px;
+      background: rgba(5,8,22,0.80);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      flex-shrink: 0;
+    }
+    .nav-logo { flex: 1; }
+    .nav-logo img { height: 30px; mix-blend-mode: screen; display: block; }
+    .nav-center { display: flex; align-items: center; gap: 36px; flex: 1; justify-content: center; }
+    .nav-live img { height: 40px; display: block; }
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+      color: rgba(255,255,255,0.85); text-transform: uppercase;
+    }
+    .nav-item img { height: 28px; filter: brightness(0) invert(1); }
+    .nav-right { display: flex; align-items: center; flex: 1; justify-content: flex-end; }
+    .btn-nav {
+      position: relative; height: 40px;
+      display: flex; align-items: center; justify-content: center; cursor: default;
+    }
+    .btn-nav img { height: 40px; display: block; }
+    .btn-nav span {
+      position: absolute;
+      font-family: 'Exo 2', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase; color: #fff; white-space: nowrap;
+    }
+    .btn-register span { padding-right: 10px; }
+    .btn-login    span { padding-left:  10px; }
+
+    /* ── Three-column layout ── */
+    .content-layout { display: flex; flex: 1; align-items: flex-start; overflow: hidden; min-height: 0; }
+    .main-content {
+      flex: 1; min-width: 0; height: 100%;
+      overflow-y: auto;
+      scrollbar-width: thin; scrollbar-color: rgba(168,85,247,0.2) transparent;
+    }
+    .main-content::-webkit-scrollbar { width: 4px; }
+    .main-content::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.3); border-radius: 4px; }
+
+    /* ── Sidebar gauche ── */
+    .sidebar-left {
+      width: 230px; flex-shrink: 0;
+      height: calc(100vh - 64px);
+      overflow-y: auto;
+      background: rgba(5,8,22,0.65);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      padding: 20px 0 40px;
+      scrollbar-width: thin; scrollbar-color: rgba(168,85,247,0.3) transparent;
+      position: sticky; top: 0;
+    }
+    .sidebar-left::-webkit-scrollbar { width: 4px; }
+    .sidebar-left::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.3); border-radius: 4px; }
+    .sidebar-title {
+      font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: rgba(255,255,255,0.35); padding: 0 18px 12px;
+    }
+    .game-item { border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .game-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 18px; cursor: pointer; transition: background 0.2s; user-select: none;
+    }
+    .game-header:hover { background: rgba(255,255,255,0.04); }
+    .game-icon { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+    .game-name { flex: 1; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.8); }
+    .game-chevron { font-size: 10px; color: rgba(255,255,255,0.3); transition: transform 0.25s; }
+    .game-item.open .game-chevron { transform: rotate(90deg); }
+    .tournament-list { display: none; padding: 2px 0 8px; }
+    .game-item.open .tournament-list { display: block; }
+    .tournament-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 7px 18px 7px 44px; cursor: pointer; transition: background 0.2s;
+      text-decoration: none;
+    }
+    .tournament-item:hover { background: rgba(255,255,255,0.05); }
+    .tournament-item.active-t { background: rgba(168,85,247,0.1); }
+    .tournament-name { font-size: 11px; color: rgba(255,255,255,0.55); letter-spacing: 0.5px; }
+    .tournament-item.active-t .tournament-name { color: rgba(255,255,255,0.9); }
+    .t-live-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #ef4444; box-shadow: 0 0 5px #ef4444;
+      animation: pulse-dot 1.2s ease-in-out infinite;
+    }
+    .t-count { font-size: 10px; color: rgba(255,255,255,0.3); }
+    @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    /* ── Sidebar droite — Bet Builder ── */
+    .sidebar-right {
+      width: 290px; flex-shrink: 0;
+      height: calc(100vh - 64px);
+      overflow-y: auto;
+      background: rgba(5,8,22,0.65);
+      border-left: 1px solid rgba(255,255,255,0.06);
+      padding: 20px 16px 40px;
+      scrollbar-width: thin; scrollbar-color: rgba(168,85,247,0.3) transparent;
+      position: sticky; top: 0;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .sidebar-right::-webkit-scrollbar { width: 4px; }
+    .sidebar-right::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.3); border-radius: 4px; }
+    .sidebar-right.collapsed { width: 38px; min-width: 38px; padding: 14px 6px; overflow: hidden; }
+    .sidebar-right.collapsed > *:not(.bb-header) { display: none; }
+    .sidebar-right.collapsed .bb-title,
+    .sidebar-right.collapsed .bb-count { display: none; }
+    .bb-toggle {
+      margin-left: auto; background: none; border: none; cursor: pointer;
+      color: rgba(168,85,247,0.8); font-size: 18px; line-height: 1; padding: 2px 4px;
+      transition: transform 0.3s, color 0.2s; flex-shrink: 0;
+    }
+    .bb-toggle:hover { color: #a855f7; }
+    .sidebar-right.collapsed .bb-toggle { transform: scaleX(-1); }
+    .bb-header { display: flex; align-items: center; gap: 10px; }
+    .bb-title { font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; flex: 1; }
+    .bb-count { background: var(--purple); color: #fff; font-size: 10px; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .bb-empty {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 10px; padding: 32px 16px;
+      background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.1);
+      border-radius: 14px; text-align: center;
+    }
+    .bb-empty-icon { font-size: 28px; opacity: 0.4; }
+    .bb-empty-text { font-size: 11px; color: rgba(255,255,255,0.35); letter-spacing: 0.5px; line-height: 1.5; }
+    .bb-bet { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 12px 14px; position: relative; }
+    .bb-bet-game { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--purple-light); margin-bottom: 4px; }
+    .bb-bet-match { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 6px; }
+    .bb-bet-pick { font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #fff; }
+    .bb-bet-odds { position: absolute; top: 12px; right: 14px; font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; color: var(--pink); }
+    .bb-bet-remove { position: absolute; bottom: 10px; right: 14px; font-size: 10px; color: rgba(255,255,255,0.25); cursor: pointer; letter-spacing: 1px; }
+    .bb-bet-remove:hover { color: #f87171; }
+    .bb-divider { height: 1px; background: rgba(255,255,255,0.06); }
+    .bb-combined { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; }
+    .bb-combined-label { font-size: 11px; color: rgba(255,255,255,0.4); letter-spacing: 1px; text-transform: uppercase; }
+    .bb-combined-val { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; color: var(--pink); }
+    .bb-stake-row { display: flex; flex-direction: column; gap: 6px; }
+    .bb-stake-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.4); }
+    .bb-stake-input {
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; padding: 10px 14px; color: #fff;
+      font-family: 'Exo 2', sans-serif; font-size: 14px; font-weight: 600;
+      outline: none; width: 100%; transition: border-color 0.2s;
+    }
+    .bb-stake-input:focus { border-color: var(--purple-light); }
+    .bb-quick-amounts { display: flex; gap: 6px; }
+    .bb-qa {
+      flex: 1; padding: 6px 0; text-align: center;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px; font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.6);
+      cursor: pointer; transition: background 0.2s, color 0.2s;
+    }
+    .bb-qa:hover { background: rgba(168,85,247,0.2); color: #fff; border-color: var(--purple-light); }
+    .bb-gains {
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(168,85,247,0.08); border: 1px solid rgba(168,85,247,0.2);
+      border-radius: 10px; padding: 10px 14px;
+    }
+    .bb-gains-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.45); }
+    .bb-gains-val { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: #a855f7; }
+    .bb-submit {
+      width: 100%; padding: 13px; border: none; border-radius: 12px;
+      background: linear-gradient(135deg, #7c3aed, #be185d); color: #fff;
+      font-family: 'Exo 2', sans-serif; font-size: 12px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s;
+    }
+    .bb-submit:hover { opacity: 0.88; }
+    .bb-terms { font-size: 9px; color: rgba(255,255,255,0.2); text-align: center; letter-spacing: 0.5px; line-height: 1.5; }
+
+    /* ── Tournament header ── */
+    .tourn-header {
+      margin: 24px 28px 0;
+      border-radius: 20px; overflow: hidden;
+      border: 1px solid rgba(249,115,22,0.2);
+      position: relative;
+    }
+    .tourn-header-bg { position: absolute; inset: 0; }
+    .tourn-header-fade {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 55%;
+      background: linear-gradient(to bottom, transparent, rgba(7,11,31,0.97));
+    }
+    .tourn-header-content {
+      position: relative; z-index: 1;
+      padding: 26px 32px 24px;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .tourn-game-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(249,115,22,0.18); border: 1px solid rgba(249,115,22,0.45);
+      border-radius: 20px; padding: 4px 14px;
+      font-size: 11px; font-weight: 700; color: #fb923c;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      width: fit-content;
+    }
+    .tourn-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 34px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      line-height: 1; color: #fff;
+    }
+    .tourn-meta { display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
+    .tourn-meta-item {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.5);
+      padding-right: 18px;
+    }
+    .tourn-meta-item .val { color: rgba(255,255,255,0.85); }
+    .tourn-meta-item .val.prize { color: #fbbf24; font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; }
+    .tourn-meta-sep { width: 1px; height: 14px; background: rgba(255,255,255,0.12); margin-right: 18px; }
+
+    /* ── Format switcher ── */
+    .format-bar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 18px 28px 20px;
+    }
+    .fmt-btn {
+      padding: 8px 18px; border-radius: 999px;
+      font-family: 'Exo 2', sans-serif; font-size: 12px; font-weight: 700;
+      letter-spacing: 0.3px; cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.5);
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+    .fmt-btn:hover { background: rgba(168,85,247,0.14); border-color: rgba(168,85,247,0.4); color: #fff; }
+    .fmt-btn.active { background: rgba(124,58,237,0.35); border-color: var(--purple-light); color: #fff; }
+
+    /* ── Detailed view toggle ── */
+    .fmt-sep { width: 1px; height: 20px; background: rgba(255,255,255,0.1); flex-shrink: 0; }
+    .fmt-detail-wrap { position: relative; }
+    .detail-hint {
+      position: absolute; top: calc(100% + 7px); left: 50%; transform: translateX(-50%);
+      background: rgba(5,8,22,0.97); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 7px; padding: 5px 10px;
+      font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.4);
+      white-space: nowrap; pointer-events: none; z-index: 60;
+      opacity: 0; transition: opacity 0.15s;
+    }
+    .fmt-detail-wrap.hint-on:hover .detail-hint { opacity: 1; }
+
+    /* ── Detailed group-play table ── */
+    #viewDetail { padding: 0 28px 48px; }
+    .dt-table { width: 100%; border-collapse: collapse; }
+    .dt-thead-tr { border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .dt-th {
+      font-size: 9.5px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+      color: rgba(255,255,255,0.28); padding: 8px 12px; text-align: left; white-space: nowrap;
+    }
+    .dt-th-c { text-align: center; }
+    .dt-row {
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      cursor: pointer; transition: background 0.12s;
+    }
+    .dt-row:hover { background: rgba(255,255,255,0.04); }
+    .dt-row-q { background: rgba(34,197,94,0.025); }
+    .dt-row-e { background: rgba(239,68,68,0.02); }
+    .dt-row td { padding: 9px 12px; vertical-align: middle; }
+    .dt-seed-badge {
+      display: inline-block;
+      background: rgba(251,191,36,0.12); border: 1px solid rgba(251,191,36,0.28);
+      color: #fbbf24; border-radius: 5px; padding: 1px 6px;
+      font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700; white-space: nowrap;
+    }
+    .dt-team-cell { display: flex; align-items: center; gap: 9px; }
+    .dt-logo-t {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Rajdhani', sans-serif; font-size: 7.5px; font-weight: 700; border: 1px solid;
+    }
+    .dt-name { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.9); }
+    .dt-stat { text-align: center; font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.55); }
+    .dt-rd-pos { color: #4ade80; } .dt-rd-neg { color: #f87171; }
+    .dt-rec-cell { text-align: center; }
+    .dt-rec-badge {
+      display: inline-block; padding: 2px 9px; border-radius: 6px;
+      font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; white-space: nowrap;
+    }
+    .dr-30  { background: rgba(34,197,94,0.18); border: 1px solid rgba(34,197,94,0.4);  color: #4ade80; }
+    .dr-03  { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.35); color: #f87171; }
+    .dr-win { background: rgba(34,197,94,0.08); color: rgba(74,222,128,0.82); }
+    .dr-los { background: rgba(239,68,68,0.07); color: rgba(248,113,113,0.72); }
+    .dr-neu { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.58); }
+    .dt-expand-cell { text-align: center; }
+    .dt-arrow { display: inline-block; font-size: 9px; color: rgba(255,255,255,0.28); transition: transform 0.18s; user-select: none; }
+    .dt-row.expanded .dt-arrow { transform: rotate(90deg); color: rgba(255,255,255,0.55); }
+    .dt-hist-tr td { padding: 0; }
+    .dt-hist-wrap { background: rgba(255,255,255,0.018); border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .dt-hist-match {
+      display: flex; align-items: center; gap: 10px;
+      padding: 7px 20px; border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+    .dt-hist-match:last-child { border-bottom: none; }
+    .dt-hist-date { font-size: 10px; color: rgba(255,255,255,0.28); min-width: 42px; flex-shrink: 0; }
+    .dt-hist-team { display: flex; align-items: center; gap: 6px; min-width: 90px; }
+    .dt-hist-team.right { flex-direction: row-reverse; }
+    .dt-logo-sm {
+      width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Rajdhani', sans-serif; font-size: 6px; font-weight: 700; border: 1px solid;
+    }
+    .dt-hist-tname { font-size: 11.5px; font-weight: 700; color: rgba(255,255,255,0.65); }
+    .dt-hist-score {
+      display: flex; align-items: center; gap: 4px; flex-shrink: 0;
+      font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700;
+      min-width: 52px; justify-content: center;
+    }
+    .dt-hs-w  { color: #fff; }
+    .dt-hs-l  { color: rgba(255,255,255,0.28); }
+    .dt-hs-s  { color: rgba(255,255,255,0.18); font-size: 12px; }
+    .dt-hist-bo { font-size: 10px; color: rgba(255,255,255,0.22); margin-left: auto; flex-shrink: 0; }
+    .dt-hist-live { font-size: 10px; font-weight: 800; color: #f87171; letter-spacing: 1px; display: flex; align-items: center; gap: 4px; }
+
+    /* ── Single Elimination bracket ── */
+    .bracket-area { padding: 0 28px 48px; }
+    .bracket-se {
+      position: relative;
+      display: flex;
+      height: 580px;
+    }
+    .br-col {
+      flex: 1; min-width: 0;
+      display: flex; flex-direction: column;
+    }
+    .br-col-label {
+      height: 34px; flex-shrink: 0;
+      font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: rgba(255,255,255,0.35); text-align: center;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .br-col-matches { flex: 1; display: flex; flex-direction: column; }
+    .br-slot {
+      flex: 1;
+      display: flex; align-items: center; justify-content: center;
+      padding: 5px 14px;
+    }
+    .bracket-svg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none; overflow: visible;
+    }
+
+    /* Match card */
+    .mc {
+      width: 100%; max-width: 195px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 12px; overflow: hidden;
+    }
+    .mc.mc-live     { border-color: rgba(239,68,68,0.4); }
+    .mc.mc-upcoming { border-color: rgba(168,85,247,0.4); box-shadow: 0 0 18px rgba(124,58,237,0.15); }
+    .mc.mc-gf       { max-width: 215px; }
+
+    .mc-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 5px 9px;
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .mc-status {
+      font-size: 8px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
+      padding: 2px 6px; border-radius: 4px;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .badge-final    { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.35); }
+    .badge-live     { background: rgba(239,68,68,0.18); border: 1px solid rgba(239,68,68,0.4); color: #f87171; }
+    .badge-upcoming { background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.35); color: #c084fc; }
+    .live-dot {
+      width: 5px; height: 5px; border-radius: 50%; background: #ef4444; flex-shrink: 0;
+      animation: blink 1.2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.25} }
+    .mc-bo { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.3); letter-spacing: 0.5px; }
+
+    .mc-teams { display: flex; flex-direction: column; }
+    .mc-team {
+      display: flex; align-items: center; gap: 7px;
+      padding: 5px 9px; height: 36px; transition: background 0.15s;
+    }
+    .mc-team + .mc-team { border-top: 1px solid rgba(255,255,255,0.05); }
+    .mc-winner { background: rgba(168,85,247,0.07); }
+    .mc-loser .mc-name,
+    .mc-loser .mc-logo { opacity: 0.45; }
+
+    .mc-logo {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Rajdhani', sans-serif; font-size: 7.5px; font-weight: 700;
+      border: 1px solid; flex-shrink: 0; line-height: 1;
+    }
+    .mc-logo-tbd {
+      background: rgba(255,255,255,0.04) !important;
+      border-color: rgba(255,255,255,0.12) !important;
+      color: rgba(255,255,255,0.25) !important;
+      font-size: 13px !important;
+    }
+    .mc-name {
+      flex: 1; font-size: 11.5px; font-weight: 700;
+      color: rgba(255,255,255,0.85); letter-spacing: 0.3px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .mc-name-tbd { color: rgba(255,255,255,0.3) !important; font-style: italic; font-weight: 600; }
+    .mc-score {
+      font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700;
+      color: rgba(255,255,255,0.3); min-width: 12px; text-align: center; flex-shrink: 0;
+    }
+    .mc-score-win { color: #fff; }
+
+    .mc-foot {
+      display: flex; padding: 7px 8px; gap: 5px;
+      background: rgba(255,255,255,0.015);
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .mc-bet-live {
+      display: block; width: 100%; text-align: center;
+      font-size: 11px; font-weight: 700; color: var(--purple-light);
+      text-decoration: none; padding: 3px 0; transition: color 0.15s;
+    }
+    .mc-bet-live:hover { color: #fff; }
+    .mc-odd {
+      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 1px;
+      background: rgba(124,58,237,0.25); border: 1px solid rgba(168,85,247,0.4);
+      border-radius: 7px; padding: 5px 6px; cursor: pointer;
+      transition: filter 0.15s, background 0.15s;
+    }
+    .mc-odd:hover         { filter: brightness(1.25); background: rgba(124,58,237,0.45); }
+    .mc-odd.selected      { background: var(--purple); border-color: var(--purple-light); }
+    .mc-odd.mc-odd-tbd    { opacity: 0.4; cursor: not-allowed; }
+    .mc-odd.mc-odd-tbd:hover { filter: none; background: rgba(124,58,237,0.25); }
+    .mc-odd-label { font-size: 8px; font-weight: 700; color: rgba(255,255,255,0.45); letter-spacing: 0.3px; text-transform: uppercase; }
+    .mc-odd-val   { font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 800; color: #c084fc; line-height: 1; }
+    .mc-odd.selected .mc-odd-val { color: #fff; }
+
+    /* ── Single Elimination card overrides (scoped — do not affect DE or Swiss) ── */
+    #viewSE .br-slot { padding: 5px 10px; }
+
+    /* Card sizing */
+    #viewSE .mc {
+      min-width: 220px; max-width: 240px;
+      background: #13151f;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+    }
+    #viewSE .mc.mc-live {
+      background: rgba(255,61,87,0.06);
+      border: none;
+      border-left: 2px solid #ff3d57;
+    }
+    #viewSE .mc.mc-upcoming {
+      background: #0d0e16;
+      border: 1px solid #252a3a;
+      box-shadow: none;
+    }
+    #viewSE .mc.mc-gf { min-width: 220px; max-width: 260px; }
+
+    /* Head: badges muted, never dominant */
+    #viewSE .mc-head { padding: 6px 16px; background: rgba(255,255,255,0.015); }
+    #viewSE .mc-status { font-size: 10px; font-weight: 700; padding: 2px 6px; letter-spacing: 0.5px; }
+    #viewSE .badge-final    { background: transparent; color: rgba(255,255,255,0.22); }
+    #viewSE .badge-live     { background: rgba(255,61,87,0.1); border-color: rgba(255,61,87,0.28); color: rgba(255,110,110,0.8); }
+    #viewSE .badge-upcoming { background: rgba(168,85,247,0.08); border-color: rgba(168,85,247,0.2); color: rgba(192,132,252,0.65); }
+    #viewSE .mc-bo { font-size: 10px; color: rgba(255,255,255,0.2); letter-spacing: 0; }
+    #viewSE .badge-live .live-dot { display: none; }
+    #viewSE .mc-odd-lg { padding: 9px 12px; flex: 1; }
+    #viewSE .mc-odd-lg .mc-odd-label { font-size: 10px; }
+    #viewSE .mc-odd-lg .mc-odd-val { font-size: 19px; }
+    #viewSE .mc-live-sep { height: 1px; background: rgba(255,255,255,0.08); margin: 0 -8px; }
+
+    /* Team rows */
+    #viewSE .mc-team { height: 40px; padding: 0 16px; }
+    #viewSE .mc-logo { width: 32px; height: 32px; font-size: 8px; }
+    #viewSE .mc-name { font-size: 14px; font-weight: 600; }
+    #viewSE .mc-score { font-size: 18px; font-weight: 700; min-width: 18px; }
+
+    /* Playoffs header */
+    #viewSE .se-playoffs-hdr { display: flex; align-items: center; gap: 10px; padding: 0 28px 14px; }
+    .se-playoffs-tag {
+      font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase;
+      background: rgba(168,85,247,0.14); border: 1px solid rgba(168,85,247,0.3);
+      color: var(--purple-light); padding: 3px 10px; border-radius: 6px;
+    }
+    .se-playoffs-sub { font-size: 11px; color: rgba(255,255,255,0.28); font-weight: 600; }
+
+    /* Match schedule */
+    #viewSE .mc-time {
+      font-size: 9.5px; color: rgba(255,255,255,0.22);
+      text-align: center; padding: 5px 16px 6px;
+      border-top: 1px solid rgba(255,255,255,0.05); letter-spacing: 0.3px;
+    }
+
+    /* Grand Final column — card sits at exact vertical center of the full bracket height */
+    #viewSE .br-col:last-child .br-col-matches { position: relative; }
+    #viewSE .br-col:last-child .br-slot {
+      position: absolute;
+      /* br-col-label = 34px; bracket = 580px; center of bracket relative to br-col-matches = (580/2 - 34) = 256px */
+      top: 256px;
+      transform: translateY(-50%);
+      left: 0; right: 0;
+      flex: unset; height: auto;
+    }
+
+    /* ── Double Elimination bracket ── */
+    .de-bracket { position: relative; }
+    .de-section { margin-bottom: 28px; }
+    .de-section-label {
+      font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: 2.5px; text-transform: uppercase;
+      padding: 10px 0; border-bottom: 1px solid;
+    }
+    .de-label-ub { color: rgba(168,85,247,0.9); border-color: rgba(168,85,247,0.25); }
+    .de-label-lb { color: rgba(239,68,68,0.75); border-color: rgba(239,68,68,0.2); }
+    .de-label-gf { color: #fbbf24; border-color: rgba(251,191,36,0.25); text-align: center; }
+    .de-section-body { display: flex; }
+    /* UB: 4-col grid — R1 | R2 | R3 | empty (GF absolutely positioned beyond right edge) */
+    .de-ub-body { display: grid; grid-template-columns: repeat(4, 1fr); height: 380px; }
+    /* LB: 5-col grid — spacer | LBR1 | gap | LBR2 | LBFinal — LBR2 shifted right toward LBFinal */
+    .de-lb-body { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; width: 70%; height: 260px; }
+
+    /* GF card: source slot labels inside the card */
+    .de-gf-slot-label {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 3px 14px 1px; border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .de-gf-slot-label:first-child { border-top: none; }
+    .de-gf-slot-tag {
+      font-size: 8px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: rgba(255,255,255,0.3);
+    }
+    .de-gf-adv-badge {
+      font-size: 8px; font-weight: 700; letter-spacing: 0.3px;
+      color: rgba(251,191,36,0.88);
+      background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3);
+      border-radius: 4px; padding: 1px 6px;
+    }
+
+    /* UB cards: slightly warmer purple tint */
+    .de-ub-body .mc { border-color: rgba(168,85,247,0.2); }
+    /* LB cards: colder, darker — survival bracket feel */
+    .de-lb-body .mc { background: rgba(4,6,20,0.72); border-color: rgba(96,130,210,0.16); }
+
+    /* Grand Finals area */
+    .de-gf-wrap { display: flex; justify-content: center; padding: 20px 0 12px; }
+    .de-gf-trophy { text-align: center; font-size: 28px; padding: 10px 0 0; }
+    .mc-gf-de {
+      max-width: 182px; min-width: 140px;
+      border: 1px solid rgba(251,191,36,0.5) !important;
+      box-shadow: 0 0 24px rgba(251,191,36,0.12) !important;
+    }
+    .mc-gf-de .mc-head { background: linear-gradient(135deg, rgba(251,191,36,0.07), rgba(255,255,255,0.01)); }
+    .mc-gf-de .mc-team { padding: 5px 9px; height: 42px; }
+    .de-gf-adv {
+      text-align: center; padding: 9px 16px;
+      font-size: 11px; font-weight: 700; color: rgba(251,191,36,0.82);
+      background: rgba(251,191,36,0.07); border-top: 1px solid rgba(251,191,36,0.18);
+      letter-spacing: 0.3px; line-height: 1.4;
+    }
+
+    .mc-logo-wrap { position: relative; flex-shrink: 0; width: 28px; height: 28px; }
+    .mc-logo-wrap .mc-logo { width: 100%; height: 100%; flex-shrink: 0; }
+    .mc-drop-badge {
+      position: absolute; bottom: -2px; right: -2px;
+      width: 12px; height: 12px; border-radius: 50%;
+      background: rgba(239,68,68,0.95); border: 1.5px solid #070b1f;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 7px; color: #fff; line-height: 1; pointer-events: none;
+    }
+
+    /* ── DE-specific overrides (do not affect SE or Swiss) ── */
+
+    /* Fix 1: uniform card size across UB and LB */
+    #viewDE .de-ub-body .br-slot,
+    #viewDE .de-lb-body .br-slot { padding: 4px 10px; }
+    #viewDE .mc:not(.mc-gf-de) { max-width: 182px; min-width: 140px; }
+
+    /* Fix 2: LB column label padding to prevent truncation */
+    #viewDE .de-lb-body .br-col-label { padding: 0 16px; }
+
+    /* Fix 3: hide drop badges — red connector lines already communicate the drop */
+    #viewDE .mc-drop-badge { display: none; }
+
+    /* Fix 5: provenance annotation below team name in LB */
+    .mc-drop-src {
+      display: block; font-size: 8px; font-style: italic;
+      color: rgba(255,255,255,0.28); font-weight: 400;
+      letter-spacing: 0; line-height: 1.2; white-space: nowrap;
+    }
+    #viewDE .de-lb-body .mc-name { white-space: normal; line-height: 1.3; overflow: visible; }
+    #viewDE .de-lb-body .mc-team { height: 42px; }
+
+
+    /* ── Swiss System bracket ── */
+    .sw-wrap {
+      display: flex; gap: 14px; align-items: flex-start;
+      overflow-x: auto; max-width: 100%;
+      padding: 4px 28px 48px;
+      scrollbar-width: thin; scrollbar-color: rgba(168,85,247,0.3) transparent;
+    }
+    .sw-wrap::-webkit-scrollbar { height: 4px; }
+    .sw-wrap::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.3); border-radius: 4px; }
+    .sw-rounds { display: flex; gap: 38px; align-items: flex-start; flex-shrink: 0; position: relative; }
+    .sw-round  { width: 188px; flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; }
+    .sw-round-header {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 0 0 8px; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 2px;
+    }
+    .sw-round-label {
+      font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.35);
+    }
+    .sw-round-sub { font-size: 9px; color: rgba(255,255,255,0.18); margin-top: 1px; }
+    .sw-group { display: flex; flex-direction: column; gap: 3px; }
+    .sw-group-label {
+      font-size: 8px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      color: rgba(255,255,255,0.25); padding: 6px 2px 3px;
+    }
+    .sw-placeholder {
+      background: rgba(255,255,255,0.025); border: 1px dashed rgba(255,255,255,0.08);
+      border-radius: 8px; padding: 18px 10px;
+      font-size: 10px; color: rgba(255,255,255,0.22);
+      text-align: center; line-height: 1.7; font-style: italic;
+    }
+
+    /* Swiss compact match cell */
+    .swc {
+      height: 44px; display: flex; align-items: center; gap: 5px;
+      padding: 0 7px 0 6px;
+      background: rgba(255,255,255,0.028);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-left: 2px solid rgba(255,255,255,0.1);
+      border-radius: 7px; cursor: default; position: relative;
+      transition: background 0.15s;
+    }
+    .swc:hover { background: rgba(255,255,255,0.055); }
+    .swc-live     { border-left-color: rgba(239,68,68,0.7);  background: rgba(239,68,68,0.03); }
+    .swc-upcoming { border-left-color: rgba(168,85,247,0.45); }
+    .swc-status {
+      font-size: 6.5px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;
+      padding: 1.5px 4px; border-radius: 3px; flex-shrink: 0; white-space: nowrap;
+    }
+    .swc-mid { flex: 1; display: flex; align-items: center; gap: 2px; min-width: 0; }
+    .swc-t   { display: flex; align-items: center; gap: 3px; flex: 1; min-width: 0; overflow: hidden; }
+    .swc-t1  { justify-content: flex-end; }
+    .swc-t2  { justify-content: flex-start; }
+    .swc-logo-s {
+      width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Rajdhani', sans-serif; font-size: 6.5px; font-weight: 700;
+      border: 1px solid; line-height: 1;
+    }
+    .swc-name {
+      font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.72);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 38px;
+    }
+    .swc-loser .swc-name,
+    .swc-loser .swc-logo-s { opacity: 0.35; }
+    .swc-sep { font-size: 8px; color: rgba(255,255,255,0.2); flex-shrink: 0; }
+    .swc-score {
+      font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 700;
+      color: rgba(255,255,255,0.5); flex-shrink: 0; min-width: 22px; text-align: right;
+    }
+    .swc-live-link {
+      font-size: 10px; color: var(--purple-light); text-decoration: none; flex-shrink: 0; padding: 0 1px;
+    }
+    .swc-live-link:hover { color: #fff; }
+    .swc-tooltip {
+      position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+      background: rgba(5,8,22,0.97); border: 1px solid rgba(168,85,247,0.4);
+      border-radius: 8px; padding: 8px 12px;
+      display: none; align-items: center; gap: 10px;
+      white-space: nowrap; z-index: 100; pointer-events: none;
+    }
+    .swc-upcoming:hover .swc-tooltip { display: flex; }
+    .swc-tip-odd { display: flex; flex-direction: column; align-items: center; gap: 1px; }
+    .swc-tip-team { font-size: 8px; font-weight: 700; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.5px; }
+    .swc-tip-val  { font-family: 'Rajdhani', sans-serif; font-size: 17px; font-weight: 800; color: #c084fc; }
+    .swc-tip-sep  { font-size: 11px; color: rgba(255,255,255,0.18); }
+    .sw-svg { position: absolute; top: 0; left: 0; pointer-events: none; overflow: visible; z-index: 2; }
+
+    /* Swiss zones */
+    .sw-zones { flex-shrink: 0; width: 155px; display: flex; flex-direction: column; gap: 12px; padding-top: 30px; }
+    .sw-zone  { display: flex; flex-direction: column; gap: 5px; }
+    .sw-zone-title {
+      font-size: 9px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
+      padding: 4px 10px; border-radius: 5px; text-align: center; margin-bottom: 2px;
+    }
+    .sw-zone-title.z-q { background: rgba(34,197,94,0.15);  border: 1px solid rgba(34,197,94,0.35);  color: #4ade80; }
+    .sw-zone-title.z-e { background: rgba(239,68,68,0.12);  border: 1px solid rgba(239,68,68,0.3);   color: #f87171; }
+    .sw-zone-team { display: flex; align-items: center; gap: 8px; padding: 6px 9px; border-radius: 9px; }
+    .sw-zone-team.z-q { background: rgba(34,197,94,0.07);  border: 1px solid rgba(34,197,94,0.18); }
+    .sw-zone-team.z-e { background: rgba(239,68,68,0.05);  border: 1px solid rgba(239,68,68,0.13); }
+    .sw-zone-logo {
+      width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Rajdhani', sans-serif; font-size: 7px; font-weight: 700; border: 1px solid;
+    }
+    .sw-zone-name { font-size: 12px; font-weight: 700; flex: 1; }
+    .sw-zone-team.z-q .sw-zone-name { color: #4ade80; }
+    .sw-zone-team.z-e .sw-zone-name { color: rgba(255,255,255,0.45); }
+    .sw-zone-record { font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+    .sw-zone-team.z-q .sw-zone-record { color: #4ade80; }
+    .sw-zone-team.z-e .sw-zone-record { color: #f87171; }
+  </style>
+</head>
+<body>
+<div class="bg-blobs">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+</div>
+
+<div class="page">
+
+  <!-- ══════════ NAVBAR ══════════ -->
+  <nav>
+    <a class="nav-logo" href="index.html">
+      <img src="../Designs/SKB LOGO.png" alt="SkillBet" />
+    </a>
+
+    <div class="nav-center">
+      <div class="nav-live">
+        <img src="../Designs/live 3.png" alt="Live" />
+      </div>
+      <div class="nav-item">
+        <img src="../Designs/bets.png" alt="My Bets" />
+        MY BETS
+      </div>
+      <div class="nav-item">
+        <img src="../Designs/teams.png" alt="Teams" />
+        TEAMS
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <div class="btn-nav btn-register">
+        <img src="../Designs/button.png" alt="" />
+        <span>REGISTER</span>
+      </div>
+      <div class="btn-nav btn-login">
+        <img src="../Designs/button2.png" alt="" />
+        <span>LOGIN</span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="content-layout">
+
+    <!-- ══════════ SIDEBAR GAUCHE ══════════ -->
+    <aside class="sidebar-left">
+      <div class="sidebar-title">Tournois</div>
+
+      <div class="game-item open">
+        <div class="game-header" onclick="toggleGame(this)">
+          <div class="game-icon" style="background:rgba(249,115,22,0.15);">🔫</div>
+          <span class="game-name">CS2</span>
+          <span class="game-chevron">▶</span>
+        </div>
+        <div class="tournament-list">
+          <a class="tournament-item active-t" href="bracket.html"><span class="tournament-name">ESL Pro League S21</span><span class="t-live-dot"></span></a>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">BLAST Premier Spring</span><span class="t-live-dot"></span></a>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">IEM Cologne 2025</span><span class="t-count">3</span></a>
+        </div>
+      </div>
+
+      <div class="game-item">
+        <div class="game-header" onclick="toggleGame(this)">
+          <div class="game-icon" style="background:rgba(30,111,168,0.15);">⚔️</div>
+          <span class="game-name">League of Legends</span>
+          <span class="game-chevron">▶</span>
+        </div>
+        <div class="tournament-list">
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">LEC Spring Split</span><span class="t-live-dot"></span></a>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">Worlds 2025</span><span class="t-count">8</span></a>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">LCS Summer</span><span class="t-count">4</span></a>
+        </div>
+      </div>
+
+      <div class="game-item">
+        <div class="game-header" onclick="toggleGame(this)">
+          <div class="game-icon" style="background:rgba(244,63,94,0.15);">⚡</div>
+          <span class="game-name">Valorant</span>
+          <span class="game-chevron">▶</span>
+        </div>
+        <div class="tournament-list">
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">VCT Americas</span><span class="t-live-dot"></span></a>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">VCT EMEA</span><span class="t-count">5</span></a>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">Champions 2025</span><span class="t-count">2</span></a>
+        </div>
+      </div>
+
+      <div class="game-item">
+        <div class="game-header" onclick="toggleGame(this)">
+          <div class="game-icon" style="background:rgba(168,85,247,0.15);">🛡️</div>
+          <span class="game-name">Dota 2</span>
+          <span class="game-chevron">▶</span>
+        </div>
+        <div class="tournament-list">
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">The International 2025</span><span class="t-live-dot"></span></a>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">ESL One Berlin</span><span class="t-count">6</span></a>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">DreamLeague S25</span><span class="t-count">3</span></a>
+        </div>
+      </div>
+
+      <div class="game-item">
+        <div class="game-header" onclick="toggleGame(this)">
+          <div class="game-icon" style="background:rgba(56,189,248,0.15);">🚀</div>
+          <span class="game-name">Rocket League</span>
+          <span class="game-chevron">▶</span>
+        </div>
+        <div class="tournament-list">
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">RLCS 2025 Majors</span><span class="t-count">4</span></a>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">EU Regional</span><span class="t-live-dot"></span></a>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">World Championship</span><span class="t-count">1</span></a>
+        </div>
+      </div>
+
+      <div class="game-item">
+        <div class="game-header" onclick="toggleGame(this)">
+          <div class="game-icon" style="background:rgba(250,204,21,0.12);">🎯</div>
+          <span class="game-name">Overwatch 2</span>
+          <span class="game-chevron">▶</span>
+        </div>
+        <div class="tournament-list">
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">OWL Grand Finals</span><span class="t-count">2</span></a>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">Contenders EU</span><span class="t-count">5</span></a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ══════════ MAIN CONTENT ══════════ -->
+    <div class="main-content">
+
+      <!-- Tournament header -->
+      <div class="tourn-header">
+        <div class="tourn-header-bg">
+          <svg width="100%" height="100%" viewBox="0 0 900 160" preserveAspectRatio="xMidYMid slice">
+            <defs>
+              <linearGradient id="hbg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%"   stop-color="#1a0800"/>
+                <stop offset="45%"  stop-color="#2d1200"/>
+                <stop offset="100%" stop-color="#0f0800"/>
+              </linearGradient>
+            </defs>
+            <rect width="900" height="160" fill="url(#hbg)"/>
+            <circle cx="820" cy="80" r="55" fill="none" stroke="#f97316" stroke-width="0.7" opacity="0.12"/>
+            <circle cx="820" cy="80" r="35" fill="none" stroke="#f97316" stroke-width="0.5" opacity="0.1"/>
+            <line x1="820" y1="20" x2="820" y2="140" stroke="#f97316" stroke-width="0.5" opacity="0.1"/>
+            <line x1="760" y1="80" x2="880" y2="80" stroke="#f97316" stroke-width="0.5" opacity="0.1"/>
+            <line x1="200" y1="0" x2="200" y2="160" stroke="#f97316" stroke-width="0.4" opacity="0.06"/>
+            <line x1="450" y1="0" x2="450" y2="160" stroke="#f97316" stroke-width="0.4" opacity="0.06"/>
+            <line x1="650" y1="0" x2="650" y2="160" stroke="#f97316" stroke-width="0.4" opacity="0.06"/>
+            <circle cx="80"  cy="140" r="70" fill="rgba(249,115,22,0.06)"/>
+            <circle cx="700" cy="20"  r="60" fill="rgba(124,58,237,0.07)"/>
+          </svg>
+        </div>
+        <div class="tourn-header-fade"></div>
+        <div class="tourn-header-content">
+          <div class="tourn-game-badge">🔫 Counter-Strike 2</div>
+          <div class="tourn-name">ESL Pro League Season 21</div>
+          <div class="tourn-meta">
+            <div class="tourn-meta-item">📅 <span class="val">12 Mai — 1 Juin 2025</span></div>
+            <div class="tourn-meta-sep"></div>
+            <div class="tourn-meta-item">💰 <span class="val prize">$1 000 000</span></div>
+            <div class="tourn-meta-sep"></div>
+            <div class="tourn-meta-item">👥 <span class="val">16 équipes</span></div>
+            <div class="tourn-meta-sep"></div>
+            <div class="tourn-meta-item">📍 <span class="val">Cologne, Allemagne</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Format switcher -->
+      <div class="format-bar">
+        <button class="fmt-btn active" onclick="setFormat(this)">Single Elimination</button>
+        <button class="fmt-btn"        onclick="setFormat(this)">Double Elimination</button>
+        <button class="fmt-btn"        onclick="setFormat(this)">Swiss</button>
+        <div class="fmt-sep"></div>
+        <div class="fmt-detail-wrap hint-on" id="detailWrap">
+          <button class="fmt-btn" id="detailBtn" onclick="toggleDetail(this)">Detailed view</button>
+          <span class="detail-hint">Best used with Swiss</span>
+        </div>
+      </div>
+
+      <!-- ══ Single Elimination bracket ══ -->
+      <div class="bracket-area" id="viewSE">
+        <div class="se-playoffs-hdr">
+          <span class="se-playoffs-tag">Playoffs</span>
+          <span class="se-playoffs-sub">Élimination directe · ESL Pro League S21</span>
+        </div>
+        <div class="bracket-se" id="seBracket">
+          <svg class="bracket-svg" id="seConnectors"></svg>
+
+          <!-- Quarter-finals -->
+          <div class="br-col">
+            <div class="br-col-label">Quarts de finale</div>
+            <div class="br-col-matches">
+
+              <div class="br-slot" id="se-qf1">
+                <div class="mc">
+                  <div class="mc-head"><span class="mc-status badge-final">FINAL</span><span class="mc-bo">BO3</span></div>
+                  <div class="mc-teams">
+                    <div class="mc-team mc-winner">
+                      <div class="mc-logo" style="background:rgba(251,191,36,0.2);border-color:rgba(251,191,36,0.55);color:#fbbf24;">NaVi</div>
+                      <span class="mc-name">NAVI</span><span class="mc-score mc-score-win">2</span>
+                    </div>
+                    <div class="mc-team mc-loser">
+                      <div class="mc-logo" style="background:rgba(6,182,212,0.15);border-color:rgba(6,182,212,0.4);color:#22d3ee;">TL</div>
+                      <span class="mc-name">Liquid</span><span class="mc-score">0</span>
+                    </div>
+                  </div>
+                  <div class="mc-time">15 mai · 13h00</div>
+                </div>
+              </div>
+
+              <div class="br-slot" id="se-qf2">
+                <div class="mc">
+                  <div class="mc-head"><span class="mc-status badge-final">FINAL</span><span class="mc-bo">BO3</span></div>
+                  <div class="mc-teams">
+                    <div class="mc-team mc-winner">
+                      <div class="mc-logo" style="background:rgba(249,115,22,0.2);border-color:rgba(249,115,22,0.55);color:#fb923c;">G2</div>
+                      <span class="mc-name">G2</span><span class="mc-score mc-score-win">2</span>
+                    </div>
+                    <div class="mc-team mc-loser">
+                      <div class="mc-logo" style="background:rgba(245,158,11,0.15);border-color:rgba(245,158,11,0.4);color:#fcd34d;">FNC</div>
+                      <span class="mc-name">Fnatic</span><span class="mc-score">1</span>
+                    </div>
+                  </div>
+                  <div class="mc-time">15 mai · 15h30</div>
+                </div>
+              </div>
+
+              <div class="br-slot" id="se-qf3">
+                <div class="mc">
+                  <div class="mc-head"><span class="mc-status badge-final">FINAL</span><span class="mc-bo">BO3</span></div>
+                  <div class="mc-teams">
+                    <div class="mc-team mc-winner">
+                      <div class="mc-logo" style="background:rgba(129,140,248,0.2);border-color:rgba(129,140,248,0.55);color:#818cf8;">FZ</div>
+                      <span class="mc-name">FaZe</span><span class="mc-score mc-score-win">2</span>
+                    </div>
+                    <div class="mc-team mc-loser">
+                      <div class="mc-logo" style="background:rgba(56,189,248,0.15);border-color:rgba(56,189,248,0.4);color:#38bdf8;">C9</div>
+                      <span class="mc-name">Cloud9</span><span class="mc-score">0</span>
+                    </div>
+                  </div>
+                  <div class="mc-time">15 mai · 18h00</div>
+                </div>
+              </div>
+
+              <div class="br-slot" id="se-qf4">
+                <div class="mc">
+                  <div class="mc-head"><span class="mc-status badge-final">FINAL</span><span class="mc-bo">BO3</span></div>
+                  <div class="mc-teams">
+                    <div class="mc-team mc-winner">
+                      <div class="mc-logo" style="background:rgba(250,204,21,0.2);border-color:rgba(250,204,21,0.55);color:#fde047;">VIT</div>
+                      <span class="mc-name">Vitality</span><span class="mc-score mc-score-win">2</span>
+                    </div>
+                    <div class="mc-team mc-loser">
+                      <div class="mc-logo" style="background:rgba(59,130,246,0.15);border-color:rgba(59,130,246,0.4);color:#60a5fa;">NIP</div>
+                      <span class="mc-name">NIP</span><span class="mc-score">1</span>
+                    </div>
+                  </div>
+                  <div class="mc-time">15 mai · 20h30</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Semi-finals -->
+          <div class="br-col">
+            <div class="br-col-label">Demi-finales</div>
+            <div class="br-col-matches">
+
+              <div class="br-slot" id="se-sf1">
+                <div class="mc">
+                  <div class="mc-head"><span class="mc-status badge-final">FINAL</span><span class="mc-bo">BO3</span></div>
+                  <div class="mc-teams">
+                    <div class="mc-team mc-winner">
+                      <div class="mc-logo" style="background:rgba(251,191,36,0.2);border-color:rgba(251,191,36,0.55);color:#fbbf24;">NaVi</div>
+                      <span class="mc-name">NAVI</span><span class="mc-score mc-score-win">2</span>
+                    </div>
+                    <div class="mc-team mc-loser">
+                      <div class="mc-logo" style="background:rgba(249,115,22,0.2);border-color:rgba(249,115,22,0.55);color:#fb923c;">G2</div>
+                      <span class="mc-name">G2</span><span class="mc-score">1</span>
+                    </div>
+                  </div>
+                  <div class="mc-time">17 mai · 15h00</div>
+                </div>
+              </div>
+
+              <div class="br-slot" id="se-sf2" style="flex-direction:column;gap:8px;align-items:center">
+                <div class="mc mc-live">
+                  <div class="mc-head"><span class="mc-status badge-live"><span class="live-dot"></span>LIVE</span><span class="mc-bo">BO3</span></div>
+                  <div class="mc-teams">
+                    <div class="mc-team mc-winner">
+                      <div class="mc-logo" style="background:rgba(129,140,248,0.2);border-color:rgba(129,140,248,0.55);color:#818cf8;">FZ</div>
+                      <span class="mc-name">FaZe</span><span class="mc-score mc-score-win">1</span>
+                    </div>
+                    <div class="mc-team">
+                      <div class="mc-logo" style="background:rgba(250,204,21,0.2);border-color:rgba(250,204,21,0.55);color:#fde047;">VIT</div>
+                      <span class="mc-name">Vitality</span><span class="mc-score">0</span>
+                    </div>
+                  </div>
+                  <div class="mc-foot"><a href="match.html" class="mc-bet-live">Match en cours →</a></div>
+                </div>
+                <div style="display:flex;gap:7px;width:100%;min-width:220px;max-width:240px">
+                  <button class="mc-odd mc-odd-lg" data-mid="sf2" data-team="FaZe" data-odds="1.65">
+                    <span class="mc-odd-label">FaZe</span><span class="mc-odd-val">1.65</span>
+                  </button>
+                  <button class="mc-odd mc-odd-lg" data-mid="sf2" data-team="Vitality" data-odds="2.20">
+                    <span class="mc-odd-label">VIT</span><span class="mc-odd-val">2.20</span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Grand Final -->
+          <div class="br-col">
+            <div class="br-col-label">Grande Finale</div>
+            <div class="br-col-matches">
+
+              <div class="br-slot" id="se-gf">
+                <div class="mc mc-upcoming mc-gf">
+                  <div class="mc-head"><span class="mc-status badge-upcoming">UPCOMING</span><span class="mc-bo">BO5 🏆</span></div>
+                  <div class="mc-teams">
+                    <div class="mc-team">
+                      <div class="mc-logo" style="background:rgba(251,191,36,0.2);border-color:rgba(251,191,36,0.55);color:#fbbf24;">NaVi</div>
+                      <span class="mc-name">NAVI</span>
+                    </div>
+                    <div class="mc-team">
+                      <div class="mc-logo mc-logo-tbd">?</div>
+                      <span class="mc-name mc-name-tbd">TBD</span>
+                    </div>
+                  </div>
+                  <div class="mc-time">19 mai · 18h00</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ══ Double Elimination bracket ══ -->
+      <div class="bracket-area" id="viewDE" style="display:none">
+        <div class="de-bracket" id="deBracket">
+          <svg class="bracket-svg" id="deConnectors"></svg>
+
+          <!-- Upper Bracket -->
+          <div class="de-section">
+            <div class="de-section-label de-label-ub">▲ Upper Bracket</div>
+            <div class="de-section-body de-ub-body">
+
+              <div class="br-col">
+                <div class="br-col-label">Round 1</div>
+                <div class="br-col-matches">
+
+                  <div class="br-slot" id="de-ub-r1s1">
+                    <div class="mc">
+                      <div class="mc-head"><span class="mc-status badge-final">FINAL</span><span class="mc-bo">BO3</span></div>
+                      <div class="mc-teams">
+                        <div class="mc-team mc-winner">
+                          <div class="mc-logo" style="background:rgba(239,68,68,0.2);border-color:rgba(239,68,68,0.55);color:#f87171;">T1</div>
+                          <span class="mc-name">T1</span><span class="mc-score mc-score-win">2</span>
+                        </div>
+                        <div class="mc-team mc-loser">
+                          <div class="mc-logo" style="background:rgba(29,78,216,0.2);border-color:rgba(29,78,216,0.5);color:#60a5fa;">EG</div>
+                          <span class="mc-name">Evil Geniuses</span><span class="mc-score">0</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="br-slot" id="de-ub-r1s2">
+                    <div class="mc">
+                      <div class="mc-head"><span class="mc-status badge-final">FINAL</span><span class="mc-bo">BO3</span></div>
+                      <div class="mc-teams">
+                        <div class="mc-team mc-winner">
+                          <div class="mc-logo" style="background:rgba(249,115,22,0.2);border-color:rgba(249,115,22,0.55);color:#fb923c;">FNC</div>
+                          <span class="mc-name">Fnatic</span><span class="mc-score mc-score-win">2</span>
+                        </div>
+                        <div class="mc-team mc-loser">
+                          <div class="mc-logo" style="background:rgba(56,189,248,0.15);border-color:rgba(56,189,248,0.45);color:#38bdf8;">C9</div>
+                          <span class="mc-name">Cloud9</span><span class="mc-score">1</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="br-slot" id="de-ub-r1s3">
+                    <div class="mc">
+                      <div class="mc-head"><span class="mc-status badge-final">FINAL</span><span class="mc-bo">BO3</span></div>
+                      <div class="mc-teams">
+                        <div class="mc-team mc-winner">
+                          <div class="mc-logo" style="background:rgba(168,85,247,0.2);border-color:rgba(168,85,247,0.55);color:#c084fc;">SEN</div>
+                          <span class="mc-name">Sentinels</span><span class="mc-score mc-score-win">2</span>
+                        </div>
+                        <div class="mc-team mc-loser">
+                          <div class="mc-logo" style="background:rgba(101,163,13,0.2);border-color:rgba(101,163,13,0.45);color:#a3e635;">LOU</div>
+                          <span class="mc-name">LOUD</span><span class="mc-score">0</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="br-slot" id="de-ub-r1s4">
+                    <div class="mc">
+                      <div class="mc-head"><span class="mc-status badge-final">FINAL</span><span class="mc-bo">BO3</span></div>
+                      <div class="mc-teams">
+                        <div class="mc-team mc-winner">
+                          <div class="mc-logo" style="background:rgba(220,38,38,0.15);border-color:rgba(220,38,38,0.45);color:#fca5a5;">100T</div>
+                          <span class="mc-name">100 Thieves</span><span class="mc-score mc-score-win">2</span>
+                        </div>
+                        <div class="mc-team mc-loser">
+                          <div class="mc-logo" style="background:rgba(34,197,94,0.15);border-color:rgba(34,197,94,0.4);color:#4ade80;">NRG</div>
+                          <span class="mc-name">NRG</span><span class="mc-score">1</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="br-col">
+                <div class="br-col-label">Round 2</div>
+                <div class="br-col-matches">
+
+                  <div class="br-slot" id="de-ub-r2s1">
+                    <div class="mc">
+                      <div class="mc-head"><span class="mc-status badge-final">FINAL</span><span class="mc-bo">BO3</span></div>
+                      <div class="mc-teams">
+                        <div class="mc-team mc-winner">
+                          <div class="mc-logo" style="background:rgba(239,68,68,0.2);border-color:rgba(239,68,68,0.55);color:#f87171;">T1</div>
+                          <span class="mc-name">T1</span><span class="mc-score mc-score-win">2</span>
+                        </div>
+                        <div class="mc-team mc-loser">
+                          <div class="mc-logo" style="background:rgba(220,38,38,0.15);border-color:rgba(220,38,38,0.45);color:#fca5a5;">100T</div>
+                          <span class="mc-name">100 Thieves</span><span class="mc-score">1</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="br-slot" id="de-ub-r2s2">
+                    <div class="mc">
+                      <div class="mc-head"><span class="mc-status badge-final">FINAL</span><span class="mc-bo">BO3</span></div>
+                      <div class="mc-teams">
+                        <div class="mc-team mc-winner">
+                          <div class="mc-logo" style="background:rgba(249,115,22,0.2);border-color:rgba(249,115,22,0.55);color:#fb923c;">FNC</div>
+                          <span class="mc-name">Fnatic</span><span class="mc-score mc-score-win">2</span>
+                        </div>
+                        <div class="mc-team mc-loser">
+                          <div class="mc-logo" style="background:rgba(168,85,247,0.2);border-color:rgba(168,85,247,0.55);color:#c084fc;">SEN</div>
+                          <span class="mc-name">Sentinels</span><span class="mc-score">0</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="br-col">
+                <div class="br-col-label">Round 3</div>
+                <div class="br-col-matches">
+
+                  <div class="br-slot" id="de-ub-r3s1">
+                    <div class="mc mc-upcoming">
+                      <div class="mc-head"><span class="mc-status badge-upcoming">UPCOMING</span><span class="mc-bo">BO3</span></div>
+                      <div class="mc-teams">
+                        <div class="mc-team">
+                          <div class="mc-logo" style="background:rgba(239,68,68,0.2);border-color:rgba(239,68,68,0.55);color:#f87171;">T1</div>
+                          <span class="mc-name">T1</span>
+                        </div>
+                        <div class="mc-team">
+                          <div class="mc-logo" style="background:rgba(249,115,22,0.2);border-color:rgba(249,115,22,0.55);color:#fb923c;">FNC</div>
+                          <span class="mc-name">Fnatic</span>
+                        </div>
+                      </div>
+                      <div class="mc-foot">
+                        <button class="mc-odd" data-mid="ub-r3m1" data-team="T1" data-odds="1.65">
+                          <span class="mc-odd-label">T1</span><span class="mc-odd-val">1.65</span>
+                        </button>
+                        <button class="mc-odd" data-mid="ub-r3m1" data-team="Fnatic" data-odds="2.30">
+                          <span class="mc-odd-label">Fnatic</span><span class="mc-odd-val">2.30</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- Grand Finals — col 4, vertically in the UB section (above LB Final) -->
+              <div class="br-col" id="de-gf-col">
+                <div class="br-col-label" style="color:#fbbf24;letter-spacing:1.5px;">🏆 Grand Finals</div>
+                <div class="br-col-matches">
+                  <div class="br-slot" id="de-gf-slot">
+                    <div class="mc mc-upcoming mc-gf-de" id="de-gf-card">
+                      <div class="mc-head">
+                        <span class="mc-status badge-upcoming">UPCOMING</span>
+                        <span class="mc-bo">BO5</span>
+                      </div>
+                      <div class="mc-teams">
+                        <div class="de-gf-slot-label">
+                          <span class="de-gf-slot-tag">UB Winner</span>
+                          <span class="de-gf-adv-badge">1 match ahead</span>
+                        </div>
+                        <div class="mc-team" id="de-gf-ub-row">
+                          <div class="mc-logo mc-logo-tbd">?</div>
+                          <span class="mc-name mc-name-tbd">TBD</span>
+                        </div>
+                        <div class="de-gf-slot-label">
+                          <span class="de-gf-slot-tag">LB Winner</span>
+                        </div>
+                        <div class="mc-team" id="de-gf-lb-row">
+                          <div class="mc-logo mc-logo-tbd">?</div>
+                          <span class="mc-name mc-name-tbd">TBD</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Lower Bracket -->
+          <div class="de-section">
+            <div class="de-section-label de-label-lb">▼ Lower Bracket</div>
+            <div class="de-section-body de-lb-body">
+
+              <!-- half-column offset: LB R1 sits between UB R1 and UB R2 -->
+              <div class="de-lb-spacer"></div>
+
+              <div class="br-col">
+                <div class="br-col-label">LB Round 1</div>
+                <div class="br-col-matches">
+
+                  <div class="br-slot" id="de-lb-r1s1">
+                    <div class="mc">
+                      <div class="mc-head"><span class="mc-status badge-final">FINAL</span><span class="mc-bo">BO3</span></div>
+                      <div class="mc-teams">
+                        <div class="mc-team mc-winner">
+                          <div class="mc-logo-wrap">
+                            <div class="mc-logo" style="background:rgba(29,78,216,0.2);border-color:rgba(29,78,216,0.5);color:#60a5fa;">EG</div>
+                            <div class="mc-drop-badge">↓</div>
+                          </div>
+                          <span class="mc-name">Evil Geniuses<span class="mc-drop-src">Loser of UB R1</span></span><span class="mc-score mc-score-win">2</span>
+                        </div>
+                        <div class="mc-team mc-loser">
+                          <div class="mc-logo-wrap">
+                            <div class="mc-logo" style="background:rgba(101,163,13,0.2);border-color:rgba(101,163,13,0.45);color:#a3e635;">LOU</div>
+                            <div class="mc-drop-badge">↓</div>
+                          </div>
+                          <span class="mc-name">LOUD<span class="mc-drop-src">Loser of UB R1</span></span><span class="mc-score">1</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="br-slot" id="de-lb-r1s2">
+                    <div class="mc">
+                      <div class="mc-head"><span class="mc-status badge-final">FINAL</span><span class="mc-bo">BO3</span></div>
+                      <div class="mc-teams">
+                        <div class="mc-team mc-winner">
+                          <div class="mc-logo-wrap">
+                            <div class="mc-logo" style="background:rgba(56,189,248,0.15);border-color:rgba(56,189,248,0.45);color:#38bdf8;">C9</div>
+                            <div class="mc-drop-badge">↓</div>
+                          </div>
+                          <span class="mc-name">Cloud9<span class="mc-drop-src">Loser of UB R1</span></span><span class="mc-score mc-score-win">2</span>
+                        </div>
+                        <div class="mc-team mc-loser">
+                          <div class="mc-logo-wrap">
+                            <div class="mc-logo" style="background:rgba(34,197,94,0.15);border-color:rgba(34,197,94,0.4);color:#4ade80;">NRG</div>
+                            <div class="mc-drop-badge">↓</div>
+                          </div>
+                          <span class="mc-name">NRG<span class="mc-drop-src">Loser of UB R1</span></span><span class="mc-score">0</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="de-lb-spacer"></div>
+
+              <div class="br-col">
+                <div class="br-col-label">LB Round 2</div>
+                <div class="br-col-matches">
+
+                  <div class="br-slot" id="de-lb-r2s1">
+                    <div class="mc">
+                      <div class="mc-head"><span class="mc-status badge-final">FINAL</span><span class="mc-bo">BO3</span></div>
+                      <div class="mc-teams">
+                        <div class="mc-team mc-winner">
+                          <div class="mc-logo" style="background:rgba(29,78,216,0.2);border-color:rgba(29,78,216,0.5);color:#60a5fa;">EG</div>
+                          <span class="mc-name">Evil Geniuses</span><span class="mc-score mc-score-win">2</span>
+                        </div>
+                        <div class="mc-team mc-loser">
+                          <div class="mc-logo-wrap">
+                            <div class="mc-logo" style="background:rgba(220,38,38,0.15);border-color:rgba(220,38,38,0.45);color:#fca5a5;">100T</div>
+                            <div class="mc-drop-badge">↓</div>
+                          </div>
+                          <span class="mc-name">100 Thieves<span class="mc-drop-src">Loser of UB R2</span></span><span class="mc-score">1</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="br-slot" id="de-lb-r2s2">
+                    <div class="mc">
+                      <div class="mc-head"><span class="mc-status badge-final">FINAL</span><span class="mc-bo">BO3</span></div>
+                      <div class="mc-teams">
+                        <div class="mc-team mc-winner">
+                          <div class="mc-logo" style="background:rgba(56,189,248,0.15);border-color:rgba(56,189,248,0.45);color:#38bdf8;">C9</div>
+                          <span class="mc-name">Cloud9</span><span class="mc-score mc-score-win">2</span>
+                        </div>
+                        <div class="mc-team mc-loser">
+                          <div class="mc-logo-wrap">
+                            <div class="mc-logo" style="background:rgba(168,85,247,0.2);border-color:rgba(168,85,247,0.55);color:#c084fc;">SEN</div>
+                            <div class="mc-drop-badge">↓</div>
+                          </div>
+                          <span class="mc-name">Sentinels<span class="mc-drop-src">Loser of UB R2</span></span><span class="mc-score">0</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="br-col" id="de-lb-final-col">
+                <div class="br-col-label" style="color:rgba(239,68,68,0.75);">LB Final</div>
+                <div class="br-col-matches">
+                  <div class="br-slot">
+                    <div class="mc mc-upcoming" id="de-lb-r3s1">
+                      <div class="mc-head"><span class="mc-status badge-upcoming">UPCOMING</span><span class="mc-bo">BO3</span></div>
+                      <div class="mc-teams">
+                        <div class="mc-team">
+                          <div class="mc-logo" style="background:rgba(29,78,216,0.2);border-color:rgba(29,78,216,0.5);color:#60a5fa;">EG</div>
+                          <span class="mc-name">Evil Geniuses</span>
+                        </div>
+                        <div class="mc-team">
+                          <div class="mc-logo" style="background:rgba(56,189,248,0.15);border-color:rgba(56,189,248,0.45);color:#38bdf8;">C9</div>
+                          <span class="mc-name">Cloud9</span>
+                        </div>
+                      </div>
+                      <div class="mc-foot">
+                        <button class="mc-odd" data-mid="lb-r3m1" data-team="EG" data-odds="2.10">
+                          <span class="mc-odd-label">EG</span><span class="mc-odd-val">2.10</span>
+                        </button>
+                        <button class="mc-odd" data-mid="lb-r3m1" data-team="C9" data-odds="1.75">
+                          <span class="mc-odd-label">C9</span><span class="mc-odd-val">1.75</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ══ Swiss System bracket ══ -->
+      <div class="bracket-area" id="viewSwiss" style="padding:0;display:none">
+        <div class="sw-wrap">
+          <div class="sw-rounds" id="swRounds">
+            <svg id="swArrows" class="sw-svg" width="1" height="1"></svg>
+
+            <!-- ── Round 1 ── -->
+            <div class="sw-round">
+              <div class="sw-round-header">
+                <span class="sw-round-label">Round 1</span>
+                <span class="sw-round-sub">8 matches</span>
+              </div>
+              <div class="sw-group">
+                <div class="sw-group-label">0-0 vs 0-0</div>
+                <div class="swc swc-final" id="sw-r1-m1"><span class="swc-status badge-final">FIN</span><div class="swc-mid"><div class="swc-t swc-t1"><div class="swc-logo-s" style="background:rgba(251,191,36,.2);border-color:rgba(251,191,36,.55);color:#fbbf24;">NaVi</div><span class="swc-name">NAVI</span></div><span class="swc-sep">—</span><div class="swc-t swc-t2 swc-loser"><span class="swc-name">paiN</span><div class="swc-logo-s" style="background:rgba(167,139,250,.18);border-color:rgba(167,139,250,.45);color:#a78bfa;">pN</div></div></div><span class="swc-score">2:0</span></div>
+                <div class="swc swc-final" id="sw-r1-m2"><span class="swc-status badge-final">FIN</span><div class="swc-mid"><div class="swc-t swc-t1"><div class="swc-logo-s" style="background:rgba(129,140,248,.2);border-color:rgba(129,140,248,.55);color:#818cf8;">FZ</div><span class="swc-name">FaZe</span></div><span class="swc-sep">—</span><div class="swc-t swc-t2 swc-loser"><span class="swc-name">MNT</span><div class="swc-logo-s" style="background:rgba(148,163,184,.15);border-color:rgba(148,163,184,.4);color:#94a3b8;">MNT</div></div></div><span class="swc-score">2:1</span></div>
+                <div class="swc swc-final" id="sw-r1-m3"><span class="swc-status badge-final">FIN</span><div class="swc-mid"><div class="swc-t swc-t1"><div class="swc-logo-s" style="background:rgba(249,115,22,.2);border-color:rgba(249,115,22,.55);color:#fb923c;">G2</div><span class="swc-name">G2</span></div><span class="swc-sep">—</span><div class="swc-t swc-t2 swc-loser"><span class="swc-name">GL</span><div class="swc-logo-s" style="background:rgba(244,114,182,.15);border-color:rgba(244,114,182,.4);color:#f472b6;">GL</div></div></div><span class="swc-score">2:0</span></div>
+                <div class="swc swc-final" id="sw-r1-m4"><span class="swc-status badge-final">FIN</span><div class="swc-mid"><div class="swc-t swc-t1"><div class="swc-logo-s" style="background:rgba(59,130,246,.18);border-color:rgba(59,130,246,.45);color:#60a5fa;">NIP</div><span class="swc-name">NIP</span></div><span class="swc-sep">—</span><div class="swc-t swc-t2 swc-loser"><span class="swc-name">FAL</span><div class="swc-logo-s" style="background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.4);color:#f87171;">FAL</div></div></div><span class="swc-score">2:1</span></div>
+                <div class="swc swc-final" id="sw-r1-m5"><span class="swc-status badge-final">FIN</span><div class="swc-mid"><div class="swc-t swc-t1"><div class="swc-logo-s" style="background:rgba(250,204,21,.2);border-color:rgba(250,204,21,.55);color:#fde047;">VIT</div><span class="swc-name">VIT</span></div><span class="swc-sep">—</span><div class="swc-t swc-t2 swc-loser"><span class="swc-name">BIG</span><div class="swc-logo-s" style="background:rgba(163,230,53,.15);border-color:rgba(163,230,53,.4);color:#a3e635;">BIG</div></div></div><span class="swc-score">2:0</span></div>
+                <div class="swc swc-final" id="sw-r1-m6"><span class="swc-status badge-final">FIN</span><div class="swc-mid"><div class="swc-t swc-t1"><div class="swc-logo-s" style="background:rgba(245,158,11,.18);border-color:rgba(245,158,11,.45);color:#fcd34d;">FNC</div><span class="swc-name">FNC</span></div><span class="swc-sep">—</span><div class="swc-t swc-t2 swc-loser"><span class="swc-name">AST</span><div class="swc-logo-s" style="background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.4);color:#fdba74;">AST</div></div></div><span class="swc-score">2:1</span></div>
+                <div class="swc swc-final" id="sw-r1-m7"><span class="swc-status badge-final">FIN</span><div class="swc-mid"><div class="swc-t swc-t1"><div class="swc-logo-s" style="background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.4);color:#4ade80;">MZ</div><span class="swc-name">MOUZ</span></div><span class="swc-sep">—</span><div class="swc-t swc-t2 swc-loser"><span class="swc-name">C9</span><div class="swc-logo-s" style="background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.45);color:#38bdf8;">C9</div></div></div><span class="swc-score">2:0</span></div>
+                <div class="swc swc-final" id="sw-r1-m8"><span class="swc-status badge-final">FIN</span><div class="swc-mid"><div class="swc-t swc-t1"><div class="swc-logo-s" style="background:rgba(45,212,191,.15);border-color:rgba(45,212,191,.45);color:#2dd4bf;">HRC</div><span class="swc-name">HRC</span></div><span class="swc-sep">—</span><div class="swc-t swc-t2 swc-loser"><span class="swc-name">TL</span><div class="swc-logo-s" style="background:rgba(6,182,212,.15);border-color:rgba(6,182,212,.45);color:#22d3ee;">TL</div></div></div><span class="swc-score">2:1</span></div>
+              </div><!-- /sw-group r1 -->
+            </div><!-- /sw-round 1 -->
+
+            <!-- ── Round 2 ── -->
+            <div class="sw-round">
+              <div class="sw-round-header">
+                <span class="sw-round-label">Round 2</span>
+                <span class="sw-round-sub">8 matches</span>
+              </div>
+              <div class="sw-group">
+                <div class="sw-group-label">1-0 vs 1-0</div>
+                <div class="swc swc-final" id="sw-r2-a1"><span class="swc-status badge-final">FIN</span><div class="swc-mid"><div class="swc-t swc-t1"><div class="swc-logo-s" style="background:rgba(251,191,36,.2);border-color:rgba(251,191,36,.55);color:#fbbf24;">NaVi</div><span class="swc-name">NAVI</span></div><span class="swc-sep">—</span><div class="swc-t swc-t2 swc-loser"><span class="swc-name">FaZe</span><div class="swc-logo-s" style="background:rgba(129,140,248,.2);border-color:rgba(129,140,248,.55);color:#818cf8;">FZ</div></div></div><span class="swc-score">2:1</span></div>
+                <div class="swc swc-final" id="sw-r2-a2"><span class="swc-status badge-final">FIN</span><div class="swc-mid"><div class="swc-t swc-t1"><div class="swc-logo-s" style="background:rgba(249,115,22,.2);border-color:rgba(249,115,22,.55);color:#fb923c;">G2</div><span class="swc-name">G2</span></div><span class="swc-sep">—</span><div class="swc-t swc-t2 swc-loser"><span class="swc-name">NIP</span><div class="swc-logo-s" style="background:rgba(59,130,246,.18);border-color:rgba(59,130,246,.45);color:#60a5fa;">NIP</div></div></div><span class="swc-score">2:0</span></div>
+                <div class="swc swc-final" id="sw-r2-a3"><span class="swc-status badge-final">FIN</span><div class="swc-mid"><div class="swc-t swc-t1"><div class="swc-logo-s" style="background:rgba(250,204,21,.2);border-color:rgba(250,204,21,.55);color:#fde047;">VIT</div><span class="swc-name">VIT</span></div><span class="swc-sep">—</span><div class="swc-t swc-t2 swc-loser"><span class="swc-name">FNC</span><div class="swc-logo-s" style="background:rgba(245,158,11,.18);border-color:rgba(245,158,11,.45);color:#fcd34d;">FNC</div></div></div><span class="swc-score">2:1</span></div>
+                <div class="swc swc-final" id="sw-r2-a4"><span class="swc-status badge-final">FIN</span><div class="swc-mid"><div class="swc-t swc-t1"><div class="swc-logo-s" style="background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.4);color:#4ade80;">MZ</div><span class="swc-name">MOUZ</span></div><span class="swc-sep">—</span><div class="swc-t swc-t2 swc-loser"><span class="swc-name">HRC</span><div class="swc-logo-s" style="background:rgba(45,212,191,.15);border-color:rgba(45,212,191,.45);color:#2dd4bf;">HRC</div></div></div><span class="swc-score">2:1</span></div>
+              </div>
+              <div class="sw-group">
+                <div class="sw-group-label">0-1 vs 0-1</div>
+                <div class="swc swc-final" id="sw-r2-b1"><span class="swc-status badge-final">FIN</span><div class="swc-mid"><div class="swc-t swc-t1"><div class="swc-logo-s" style="background:rgba(167,139,250,.18);border-color:rgba(167,139,250,.45);color:#a78bfa;">pN</div><span class="swc-name">paiN</span></div><span class="swc-sep">—</span><div class="swc-t swc-t2 swc-loser"><span class="swc-name">MNT</span><div class="swc-logo-s" style="background:rgba(148,163,184,.15);border-color:rgba(148,163,184,.4);color:#94a3b8;">MNT</div></div></div><span class="swc-score">2:0</span></div>
+                <div class="swc swc-final" id="sw-r2-b2"><span class="swc-status badge-final">FIN</span><div class="swc-mid"><div class="swc-t swc-t1"><div class="swc-logo-s" style="background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.4);color:#f87171;">FAL</div><span class="swc-name">FAL</span></div><span class="swc-sep">—</span><div class="swc-t swc-t2 swc-loser"><span class="swc-name">GL</span><div class="swc-logo-s" style="background:rgba(244,114,182,.15);border-color:rgba(244,114,182,.4);color:#f472b6;">GL</div></div></div><span class="swc-score">2:1</span></div>
+                <div class="swc swc-final" id="sw-r2-b3"><span class="swc-status badge-final">FIN</span><div class="swc-mid"><div class="swc-t swc-t1"><div class="swc-logo-s" style="background:rgba(163,230,53,.15);border-color:rgba(163,230,53,.4);color:#a3e635;">BIG</div><span class="swc-name">BIG</span></div><span class="swc-sep">—</span><div class="swc-t swc-t2 swc-loser"><span class="swc-name">AST</span><div class="swc-logo-s" style="background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.4);color:#fdba74;">AST</div></div></div><span class="swc-score">2:1</span></div>
+                <div class="swc swc-final" id="sw-r2-b4"><span class="swc-status badge-final">FIN</span><div class="swc-mid"><div class="swc-t swc-t1"><div class="swc-logo-s" style="background:rgba(6,182,212,.15);border-color:rgba(6,182,212,.45);color:#22d3ee;">TL</div><span class="swc-name">TL</span></div><span class="swc-sep">—</span><div class="swc-t swc-t2 swc-loser"><span class="swc-name">C9</span><div class="swc-logo-s" style="background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.45);color:#38bdf8;">C9</div></div></div><span class="swc-score">2:0</span></div>
+              </div>
+            </div>
+
+            <!-- ── Round 3 ── -->
+            <div class="sw-round">
+              <div class="sw-round-header">
+                <span class="sw-round-label">Round 3</span>
+                <span class="sw-round-sub">8 matches</span>
+              </div>
+              <div class="sw-group">
+                <div class="sw-group-label">2-0 vs 2-0</div>
+                <div class="swc swc-live" id="sw-r3-a1"><span class="swc-status badge-live"><span class="live-dot"></span>LVE</span><div class="swc-mid"><div class="swc-t swc-t1"><div class="swc-logo-s" style="background:rgba(251,191,36,.2);border-color:rgba(251,191,36,.55);color:#fbbf24;">NaVi</div><span class="swc-name">NAVI</span></div><span class="swc-sep">—</span><div class="swc-t swc-t2"><span class="swc-name">G2</span><div class="swc-logo-s" style="background:rgba(249,115,22,.2);border-color:rgba(249,115,22,.55);color:#fb923c;">G2</div></div></div><span class="swc-score">1:0</span><a href="match.html" class="swc-live-link">→</a></div>
+                <div class="swc swc-final" id="sw-r3-a2"><span class="swc-status badge-final">FIN</span><div class="swc-mid"><div class="swc-t swc-t1"><div class="swc-logo-s" style="background:rgba(250,204,21,.2);border-color:rgba(250,204,21,.55);color:#fde047;">VIT</div><span class="swc-name">VIT</span></div><span class="swc-sep">—</span><div class="swc-t swc-t2 swc-loser"><span class="swc-name">MOUZ</span><div class="swc-logo-s" style="background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.4);color:#4ade80;">MZ</div></div></div><span class="swc-score">2:0</span></div>
+              </div>
+              <div class="sw-group">
+                <div class="sw-group-label">1-1 vs 1-1</div>
+                <div class="swc swc-final" id="sw-r3-b1"><span class="swc-status badge-final">FIN</span><div class="swc-mid"><div class="swc-t swc-t1"><div class="swc-logo-s" style="background:rgba(129,140,248,.2);border-color:rgba(129,140,248,.55);color:#818cf8;">FZ</div><span class="swc-name">FaZe</span></div><span class="swc-sep">—</span><div class="swc-t swc-t2 swc-loser"><span class="swc-name">NIP</span><div class="swc-logo-s" style="background:rgba(59,130,246,.18);border-color:rgba(59,130,246,.45);color:#60a5fa;">NIP</div></div></div><span class="swc-score">2:1</span></div>
+                <div class="swc swc-final" id="sw-r3-b2"><span class="swc-status badge-final">FIN</span><div class="swc-mid"><div class="swc-t swc-t1"><div class="swc-logo-s" style="background:rgba(45,212,191,.15);border-color:rgba(45,212,191,.45);color:#2dd4bf;">HRC</div><span class="swc-name">HRC</span></div><span class="swc-sep">—</span><div class="swc-t swc-t2 swc-loser"><span class="swc-name">FNC</span><div class="swc-logo-s" style="background:rgba(245,158,11,.18);border-color:rgba(245,158,11,.45);color:#fcd34d;">FNC</div></div></div><span class="swc-score">2:0</span></div>
+                <div class="swc swc-upcoming" id="sw-r3-b3"><span class="swc-status badge-upcoming">UPC</span><div class="swc-mid"><div class="swc-t swc-t1"><div class="swc-logo-s" style="background:rgba(167,139,250,.18);border-color:rgba(167,139,250,.45);color:#a78bfa;">pN</div><span class="swc-name">paiN</span></div><span class="swc-sep">vs</span><div class="swc-t swc-t2"><span class="swc-name">FAL</span><div class="swc-logo-s" style="background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.4);color:#f87171;">FAL</div></div></div><div class="swc-tooltip"><div class="swc-tip-odd"><span class="swc-tip-team">paiN</span><span class="swc-tip-val">1.90</span></div><div class="swc-tip-sep">/</div><div class="swc-tip-odd"><span class="swc-tip-team">FAL</span><span class="swc-tip-val">1.95</span></div></div></div>
+                <div class="swc swc-upcoming" id="sw-r3-b4"><span class="swc-status badge-upcoming">UPC</span><div class="swc-mid"><div class="swc-t swc-t1"><div class="swc-logo-s" style="background:rgba(163,230,53,.15);border-color:rgba(163,230,53,.4);color:#a3e635;">BIG</div><span class="swc-name">BIG</span></div><span class="swc-sep">vs</span><div class="swc-t swc-t2"><span class="swc-name">TL</span><div class="swc-logo-s" style="background:rgba(6,182,212,.15);border-color:rgba(6,182,212,.45);color:#22d3ee;">TL</div></div></div><div class="swc-tooltip"><div class="swc-tip-odd"><span class="swc-tip-team">BIG</span><span class="swc-tip-val">2.10</span></div><div class="swc-tip-sep">/</div><div class="swc-tip-odd"><span class="swc-tip-team">TL</span><span class="swc-tip-val">1.75</span></div></div></div>
+              </div>
+              <div class="sw-group">
+                <div class="sw-group-label">0-2 vs 0-2</div>
+                <div class="swc swc-final" id="sw-r3-c1"><span class="swc-status badge-final">FIN</span><div class="swc-mid"><div class="swc-t swc-t1"><div class="swc-logo-s" style="background:rgba(244,114,182,.15);border-color:rgba(244,114,182,.4);color:#f472b6;">GL</div><span class="swc-name">GL</span></div><span class="swc-sep">—</span><div class="swc-t swc-t2 swc-loser"><span class="swc-name">MNT</span><div class="swc-logo-s" style="background:rgba(148,163,184,.15);border-color:rgba(148,163,184,.4);color:#94a3b8;">MNT</div></div></div><span class="swc-score">2:1</span></div>
+                <div class="swc swc-final" id="sw-r3-c2"><span class="swc-status badge-final">FIN</span><div class="swc-mid"><div class="swc-t swc-t1"><div class="swc-logo-s" style="background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.45);color:#38bdf8;">C9</div><span class="swc-name">C9</span></div><span class="swc-sep">—</span><div class="swc-t swc-t2 swc-loser"><span class="swc-name">AST</span><div class="swc-logo-s" style="background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.4);color:#fdba74;">AST</div></div></div><span class="swc-score">2:0</span></div>
+              </div>
+            </div>
+
+            <!-- ── Round 4 ── -->
+            <div class="sw-round">
+              <div class="sw-round-header">
+                <span class="sw-round-label">Round 4</span>
+                <span class="sw-round-sub">6 matches</span>
+              </div>
+              <div class="sw-placeholder">En attente des résultats du Round 3<br><br>Groupes 3-0 · 2-1 · 1-2 · 0-3</div>
+            </div>
+
+            <!-- ── Round 5 ── -->
+            <div class="sw-round">
+              <div class="sw-round-header">
+                <span class="sw-round-label">Round 5</span>
+                <span class="sw-round-sub">5 matches</span>
+              </div>
+              <div class="sw-placeholder">En attente des résultats du Round 4<br><br>Groupes 3-1 · 2-2 · 1-3</div>
+            </div>
+
+          </div><!-- /sw-rounds -->
+
+
+          <!-- Qualified / Eliminated zones -->
+          <div class="sw-zones">
+            <div class="sw-zone">
+              <div class="sw-zone-title z-q">✓ Qualifiés</div>
+              <div class="sw-zone-team z-q">
+                <div class="sw-zone-logo" style="background:rgba(250,204,21,.2);border-color:rgba(250,204,21,.55);color:#fde047;">VIT</div>
+                <span class="sw-zone-name">Vitality</span>
+                <span class="sw-zone-record">3-0</span>
+              </div>
+            </div>
+            <div class="sw-zone">
+              <div class="sw-zone-title z-e">✕ Éliminés</div>
+              <div class="sw-zone-team z-e">
+                <div class="sw-zone-logo" style="background:rgba(148,163,184,.15);border-color:rgba(148,163,184,.4);color:#94a3b8;">MNT</div>
+                <span class="sw-zone-name">Monte</span>
+                <span class="sw-zone-record">0-3</span>
+              </div>
+              <div class="sw-zone-team z-e">
+                <div class="sw-zone-logo" style="background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.4);color:#fdba74;">AST</div>
+                <span class="sw-zone-name">Astralis</span>
+                <span class="sw-zone-record">0-3</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+      <!-- ══ Detailed group-play view ══ -->
+      <div id="viewDetail" style="display:none">
+        <table class="dt-table">
+          <thead>
+          <tr class="dt-thead-tr">
+            <th class="dt-th" style="width:52px">Seed</th>
+            <th class="dt-th">Team</th>
+            <th class="dt-th dt-th-c" style="width:44px">M</th>
+            <th class="dt-th dt-th-c" style="width:44px">RW</th>
+            <th class="dt-th dt-th-c" style="width:44px">RL</th>
+            <th class="dt-th dt-th-c" style="width:52px">RD</th>
+            <th class="dt-th dt-th-c" style="width:80px">Record</th>
+            <th class="dt-th" style="width:32px"></th>
+          </tr>
+          </thead>
+          <tbody>
+
+          <!-- ── Vitality ── -->
+          <tr class="dt-row dt-row-q" data-key="vit" onclick="toggleTeam(this)">
+            <td><span class="dt-seed-badge">#1</span></td>
+            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(250,204,21,.2);border-color:rgba(250,204,21,.55);color:#fde047;">VIT</div><span class="dt-name">Vitality</span></div></td>
+            <td class="dt-stat">3</td><td class="dt-stat">6</td><td class="dt-stat">1</td>
+            <td class="dt-stat dt-rd-pos">+5</td>
+            <td class="dt-rec-cell"><span class="dt-rec-badge dr-30">3-0</span></td>
+            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
+          </tr>
+          <tr class="dt-hist-tr" id="hist-vit" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
+            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(250,204,21,.2);border-color:rgba(250,204,21,.55);color:#fde047;">VIT</div><span class="dt-hist-tname">Vitality</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">0</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(163,230,53,.15);border-color:rgba(163,230,53,.4);color:#a3e635;">BIG</div><span class="dt-hist-tname">BIG</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(250,204,21,.2);border-color:rgba(250,204,21,.55);color:#fde047;">VIT</div><span class="dt-hist-tname">Vitality</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">1</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(245,158,11,.18);border-color:rgba(245,158,11,.45);color:#fcd34d;">FNC</div><span class="dt-hist-tname">Fnatic</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">19 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(250,204,21,.2);border-color:rgba(250,204,21,.55);color:#fde047;">VIT</div><span class="dt-hist-tname">Vitality</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">0</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.4);color:#4ade80;">MZ</div><span class="dt-hist-tname">MOUZ</span></div><span class="dt-hist-bo">BO3</span></div>
+          </div></td></tr>
+
+          <!-- ── NAVI ── -->
+          <tr class="dt-row" data-key="navi" onclick="toggleTeam(this)">
+            <td><span class="dt-seed-badge">#3</span></td>
+            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(251,191,36,.2);border-color:rgba(251,191,36,.55);color:#fbbf24;">NaVi</div><span class="dt-name">NAVI</span></div></td>
+            <td class="dt-stat">2</td><td class="dt-stat">4</td><td class="dt-stat">1</td>
+            <td class="dt-stat dt-rd-pos">+3</td>
+            <td class="dt-rec-cell"><span class="dt-rec-badge dr-win">2-0</span></td>
+            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
+          </tr>
+          <tr class="dt-hist-tr" id="hist-navi" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
+            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(251,191,36,.2);border-color:rgba(251,191,36,.55);color:#fbbf24;">NaVi</div><span class="dt-hist-tname">NAVI</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">0</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(167,139,250,.18);border-color:rgba(167,139,250,.45);color:#a78bfa;">pN</div><span class="dt-hist-tname">paiN</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(251,191,36,.2);border-color:rgba(251,191,36,.55);color:#fbbf24;">NaVi</div><span class="dt-hist-tname">NAVI</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">1</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(129,140,248,.2);border-color:rgba(129,140,248,.55);color:#818cf8;">FZ</div><span class="dt-hist-tname">FaZe</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">19 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(251,191,36,.2);border-color:rgba(251,191,36,.55);color:#fbbf24;">NaVi</div><span class="dt-hist-tname">NAVI</span></div><div class="dt-hist-score"><span class="dt-hs-w">1</span><span class="dt-hs-s">—</span><span class="dt-hs-l">0</span><span class="live-dot" style="margin-left:5px;width:6px;height:6px"></span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(249,115,22,.2);border-color:rgba(249,115,22,.55);color:#fb923c;">G2</div><span class="dt-hist-tname">G2</span></div><span class="dt-hist-bo">BO3</span></div>
+          </div></td></tr>
+
+          <!-- ── G2 ── -->
+          <tr class="dt-row" data-key="g2" onclick="toggleTeam(this)">
+            <td><span class="dt-seed-badge">#4</span></td>
+            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(249,115,22,.2);border-color:rgba(249,115,22,.55);color:#fb923c;">G2</div><span class="dt-name">G2</span></div></td>
+            <td class="dt-stat">2</td><td class="dt-stat">4</td><td class="dt-stat">0</td>
+            <td class="dt-stat dt-rd-pos">+4</td>
+            <td class="dt-rec-cell"><span class="dt-rec-badge dr-win">2-0</span></td>
+            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
+          </tr>
+          <tr class="dt-hist-tr" id="hist-g2" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
+            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(249,115,22,.2);border-color:rgba(249,115,22,.55);color:#fb923c;">G2</div><span class="dt-hist-tname">G2</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">0</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(244,114,182,.15);border-color:rgba(244,114,182,.4);color:#f472b6;">GL</div><span class="dt-hist-tname">GL</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(249,115,22,.2);border-color:rgba(249,115,22,.55);color:#fb923c;">G2</div><span class="dt-hist-tname">G2</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">0</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(59,130,246,.18);border-color:rgba(59,130,246,.45);color:#60a5fa;">NIP</div><span class="dt-hist-tname">NIP</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">19 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(249,115,22,.2);border-color:rgba(249,115,22,.55);color:#fb923c;">G2</div><span class="dt-hist-tname">G2</span></div><div class="dt-hist-score"><span class="dt-hs-l">0</span><span class="dt-hs-s">—</span><span class="dt-hs-w">1</span><span class="live-dot" style="margin-left:5px;width:6px;height:6px"></span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(251,191,36,.2);border-color:rgba(251,191,36,.55);color:#fbbf24;">NaVi</div><span class="dt-hist-tname">NAVI</span></div><span class="dt-hist-bo">BO3</span></div>
+          </div></td></tr>
+
+          <!-- ── MOUZ ── -->
+          <tr class="dt-row" data-key="mouz" onclick="toggleTeam(this)">
+            <td><span class="dt-seed-badge">#5</span></td>
+            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.4);color:#4ade80;">MZ</div><span class="dt-name">MOUZ</span></div></td>
+            <td class="dt-stat">3</td><td class="dt-stat">4</td><td class="dt-stat">3</td>
+            <td class="dt-stat dt-rd-pos">+1</td>
+            <td class="dt-rec-cell"><span class="dt-rec-badge dr-win">2-1</span></td>
+            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
+          </tr>
+          <tr class="dt-hist-tr" id="hist-mouz" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
+            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.4);color:#4ade80;">MZ</div><span class="dt-hist-tname">MOUZ</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">0</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.45);color:#38bdf8;">C9</div><span class="dt-hist-tname">Cloud9</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.4);color:#4ade80;">MZ</div><span class="dt-hist-tname">MOUZ</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">1</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(45,212,191,.15);border-color:rgba(45,212,191,.45);color:#2dd4bf;">HRC</div><span class="dt-hist-tname">Heroic</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">19 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.4);color:#4ade80;">MZ</div><span class="dt-hist-tname">MOUZ</span></div><div class="dt-hist-score"><span class="dt-hs-l">0</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(250,204,21,.2);border-color:rgba(250,204,21,.55);color:#fde047;">VIT</div><span class="dt-hist-tname">Vitality</span></div><span class="dt-hist-bo">BO3</span></div>
+          </div></td></tr>
+
+          <!-- ── FaZe ── -->
+          <tr class="dt-row" data-key="faze" onclick="toggleTeam(this)">
+            <td><span class="dt-seed-badge">#8</span></td>
+            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(129,140,248,.2);border-color:rgba(129,140,248,.55);color:#818cf8;">FZ</div><span class="dt-name">FaZe</span></div></td>
+            <td class="dt-stat">3</td><td class="dt-stat">5</td><td class="dt-stat">4</td>
+            <td class="dt-stat dt-rd-pos">+1</td>
+            <td class="dt-rec-cell"><span class="dt-rec-badge dr-win">2-1</span></td>
+            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
+          </tr>
+          <tr class="dt-hist-tr" id="hist-faze" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
+            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(129,140,248,.2);border-color:rgba(129,140,248,.55);color:#818cf8;">FZ</div><span class="dt-hist-tname">FaZe</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">1</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(148,163,184,.15);border-color:rgba(148,163,184,.4);color:#94a3b8;">MNT</div><span class="dt-hist-tname">Monte</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(129,140,248,.2);border-color:rgba(129,140,248,.55);color:#818cf8;">FZ</div><span class="dt-hist-tname">FaZe</span></div><div class="dt-hist-score"><span class="dt-hs-l">1</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(251,191,36,.2);border-color:rgba(251,191,36,.55);color:#fbbf24;">NaVi</div><span class="dt-hist-tname">NAVI</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">19 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(129,140,248,.2);border-color:rgba(129,140,248,.55);color:#818cf8;">FZ</div><span class="dt-hist-tname">FaZe</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">1</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(59,130,246,.18);border-color:rgba(59,130,246,.45);color:#60a5fa;">NIP</div><span class="dt-hist-tname">NIP</span></div><span class="dt-hist-bo">BO3</span></div>
+          </div></td></tr>
+
+          <!-- ── Heroic ── -->
+          <tr class="dt-row" data-key="heroic" onclick="toggleTeam(this)">
+            <td><span class="dt-seed-badge">#12</span></td>
+            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(45,212,191,.15);border-color:rgba(45,212,191,.45);color:#2dd4bf;">HRC</div><span class="dt-name">Heroic</span></div></td>
+            <td class="dt-stat">3</td><td class="dt-stat">5</td><td class="dt-stat">3</td>
+            <td class="dt-stat dt-rd-pos">+2</td>
+            <td class="dt-rec-cell"><span class="dt-rec-badge dr-win">2-1</span></td>
+            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
+          </tr>
+          <tr class="dt-hist-tr" id="hist-heroic" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
+            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(45,212,191,.15);border-color:rgba(45,212,191,.45);color:#2dd4bf;">HRC</div><span class="dt-hist-tname">Heroic</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">1</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(6,182,212,.15);border-color:rgba(6,182,212,.45);color:#22d3ee;">TL</div><span class="dt-hist-tname">Liquid</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(45,212,191,.15);border-color:rgba(45,212,191,.45);color:#2dd4bf;">HRC</div><span class="dt-hist-tname">Heroic</span></div><div class="dt-hist-score"><span class="dt-hs-l">1</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.4);color:#4ade80;">MZ</div><span class="dt-hist-tname">MOUZ</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">19 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(45,212,191,.15);border-color:rgba(45,212,191,.45);color:#2dd4bf;">HRC</div><span class="dt-hist-tname">Heroic</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">0</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(245,158,11,.18);border-color:rgba(245,158,11,.45);color:#fcd34d;">FNC</div><span class="dt-hist-tname">Fnatic</span></div><span class="dt-hist-bo">BO3</span></div>
+          </div></td></tr>
+
+          <!-- ── Falcons ── -->
+          <tr class="dt-row" data-key="fal" onclick="toggleTeam(this)">
+            <td><span class="dt-seed-badge">#17</span></td>
+            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.4);color:#f87171;">FAL</div><span class="dt-name">Falcons</span></div></td>
+            <td class="dt-stat">2</td><td class="dt-stat">3</td><td class="dt-stat">3</td>
+            <td class="dt-stat">0</td>
+            <td class="dt-rec-cell"><span class="dt-rec-badge dr-neu">1-1</span></td>
+            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
+          </tr>
+          <tr class="dt-hist-tr" id="hist-fal" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
+            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.4);color:#f87171;">FAL</div><span class="dt-hist-tname">Falcons</span></div><div class="dt-hist-score"><span class="dt-hs-l">1</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(59,130,246,.18);border-color:rgba(59,130,246,.45);color:#60a5fa;">NIP</div><span class="dt-hist-tname">NIP</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.4);color:#f87171;">FAL</div><span class="dt-hist-tname">Falcons</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">1</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(244,114,182,.15);border-color:rgba(244,114,182,.4);color:#f472b6;">GL</div><span class="dt-hist-tname">GL</span></div><span class="dt-hist-bo">BO3</span></div>
+          </div></td></tr>
+
+          <!-- ── NIP ── -->
+          <tr class="dt-row" data-key="nip" onclick="toggleTeam(this)">
+            <td><span class="dt-seed-badge">#19</span></td>
+            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(59,130,246,.18);border-color:rgba(59,130,246,.45);color:#60a5fa;">NIP</div><span class="dt-name">NIP</span></div></td>
+            <td class="dt-stat">3</td><td class="dt-stat">3</td><td class="dt-stat">5</td>
+            <td class="dt-stat dt-rd-neg">-2</td>
+            <td class="dt-rec-cell"><span class="dt-rec-badge dr-los">1-2</span></td>
+            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
+          </tr>
+          <tr class="dt-hist-tr" id="hist-nip" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
+            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(59,130,246,.18);border-color:rgba(59,130,246,.45);color:#60a5fa;">NIP</div><span class="dt-hist-tname">NIP</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">1</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.4);color:#f87171;">FAL</div><span class="dt-hist-tname">Falcons</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(59,130,246,.18);border-color:rgba(59,130,246,.45);color:#60a5fa;">NIP</div><span class="dt-hist-tname">NIP</span></div><div class="dt-hist-score"><span class="dt-hs-l">0</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(249,115,22,.2);border-color:rgba(249,115,22,.55);color:#fb923c;">G2</div><span class="dt-hist-tname">G2</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">19 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(59,130,246,.18);border-color:rgba(59,130,246,.45);color:#60a5fa;">NIP</div><span class="dt-hist-tname">NIP</span></div><div class="dt-hist-score"><span class="dt-hs-l">1</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(129,140,248,.2);border-color:rgba(129,140,248,.55);color:#818cf8;">FZ</div><span class="dt-hist-tname">FaZe</span></div><span class="dt-hist-bo">BO3</span></div>
+          </div></td></tr>
+
+          <!-- ── Fnatic ── -->
+          <tr class="dt-row" data-key="fnatic" onclick="toggleTeam(this)">
+            <td><span class="dt-seed-badge">#24</span></td>
+            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(245,158,11,.18);border-color:rgba(245,158,11,.45);color:#fcd34d;">FNC</div><span class="dt-name">Fnatic</span></div></td>
+            <td class="dt-stat">3</td><td class="dt-stat">3</td><td class="dt-stat">5</td>
+            <td class="dt-stat dt-rd-neg">-2</td>
+            <td class="dt-rec-cell"><span class="dt-rec-badge dr-los">1-2</span></td>
+            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
+          </tr>
+          <tr class="dt-hist-tr" id="hist-fnatic" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
+            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(245,158,11,.18);border-color:rgba(245,158,11,.45);color:#fcd34d;">FNC</div><span class="dt-hist-tname">Fnatic</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">1</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.4);color:#fdba74;">AST</div><span class="dt-hist-tname">Astralis</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(245,158,11,.18);border-color:rgba(245,158,11,.45);color:#fcd34d;">FNC</div><span class="dt-hist-tname">Fnatic</span></div><div class="dt-hist-score"><span class="dt-hs-l">1</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(250,204,21,.2);border-color:rgba(250,204,21,.55);color:#fde047;">VIT</div><span class="dt-hist-tname">Vitality</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">19 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(245,158,11,.18);border-color:rgba(245,158,11,.45);color:#fcd34d;">FNC</div><span class="dt-hist-tname">Fnatic</span></div><div class="dt-hist-score"><span class="dt-hs-l">0</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(45,212,191,.15);border-color:rgba(45,212,191,.45);color:#2dd4bf;">HRC</div><span class="dt-hist-tname">Heroic</span></div><span class="dt-hist-bo">BO3</span></div>
+          </div></td></tr>
+
+          <!-- ── Liquid ── -->
+          <tr class="dt-row" data-key="liquid" onclick="toggleTeam(this)">
+            <td><span class="dt-seed-badge">#28</span></td>
+            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(6,182,212,.15);border-color:rgba(6,182,212,.45);color:#22d3ee;">TL</div><span class="dt-name">Liquid</span></div></td>
+            <td class="dt-stat">2</td><td class="dt-stat">3</td><td class="dt-stat">2</td>
+            <td class="dt-stat dt-rd-pos">+1</td>
+            <td class="dt-rec-cell"><span class="dt-rec-badge dr-neu">1-1</span></td>
+            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
+          </tr>
+          <tr class="dt-hist-tr" id="hist-liquid" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
+            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(6,182,212,.15);border-color:rgba(6,182,212,.45);color:#22d3ee;">TL</div><span class="dt-hist-tname">Liquid</span></div><div class="dt-hist-score"><span class="dt-hs-l">1</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(45,212,191,.15);border-color:rgba(45,212,191,.45);color:#2dd4bf;">HRC</div><span class="dt-hist-tname">Heroic</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(6,182,212,.15);border-color:rgba(6,182,212,.45);color:#22d3ee;">TL</div><span class="dt-hist-tname">Liquid</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">0</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.45);color:#38bdf8;">C9</div><span class="dt-hist-tname">Cloud9</span></div><span class="dt-hist-bo">BO3</span></div>
+          </div></td></tr>
+
+          <!-- ── BIG ── -->
+          <tr class="dt-row" data-key="big" onclick="toggleTeam(this)">
+            <td><span class="dt-seed-badge">#33</span></td>
+            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(163,230,53,.15);border-color:rgba(163,230,53,.4);color:#a3e635;">BIG</div><span class="dt-name">BIG</span></div></td>
+            <td class="dt-stat">2</td><td class="dt-stat">2</td><td class="dt-stat">3</td>
+            <td class="dt-stat dt-rd-neg">-1</td>
+            <td class="dt-rec-cell"><span class="dt-rec-badge dr-neu">1-1</span></td>
+            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
+          </tr>
+          <tr class="dt-hist-tr" id="hist-big" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
+            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(163,230,53,.15);border-color:rgba(163,230,53,.4);color:#a3e635;">BIG</div><span class="dt-hist-tname">BIG</span></div><div class="dt-hist-score"><span class="dt-hs-l">0</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(250,204,21,.2);border-color:rgba(250,204,21,.55);color:#fde047;">VIT</div><span class="dt-hist-tname">Vitality</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(163,230,53,.15);border-color:rgba(163,230,53,.4);color:#a3e635;">BIG</div><span class="dt-hist-tname">BIG</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">1</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.4);color:#fdba74;">AST</div><span class="dt-hist-tname">Astralis</span></div><span class="dt-hist-bo">BO3</span></div>
+          </div></td></tr>
+
+          <!-- ── Cloud9 ── -->
+          <tr class="dt-row" data-key="c9" onclick="toggleTeam(this)">
+            <td><span class="dt-seed-badge">#35</span></td>
+            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.45);color:#38bdf8;">C9</div><span class="dt-name">Cloud9</span></div></td>
+            <td class="dt-stat">3</td><td class="dt-stat">2</td><td class="dt-stat">4</td>
+            <td class="dt-stat dt-rd-neg">-2</td>
+            <td class="dt-rec-cell"><span class="dt-rec-badge dr-los">1-2</span></td>
+            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
+          </tr>
+          <tr class="dt-hist-tr" id="hist-c9" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
+            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.45);color:#38bdf8;">C9</div><span class="dt-hist-tname">Cloud9</span></div><div class="dt-hist-score"><span class="dt-hs-l">0</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.4);color:#4ade80;">MZ</div><span class="dt-hist-tname">MOUZ</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.45);color:#38bdf8;">C9</div><span class="dt-hist-tname">Cloud9</span></div><div class="dt-hist-score"><span class="dt-hs-l">0</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(6,182,212,.15);border-color:rgba(6,182,212,.45);color:#22d3ee;">TL</div><span class="dt-hist-tname">Liquid</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">19 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.45);color:#38bdf8;">C9</div><span class="dt-hist-tname">Cloud9</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">0</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.4);color:#fdba74;">AST</div><span class="dt-hist-tname">Astralis</span></div><span class="dt-hist-bo">BO3</span></div>
+          </div></td></tr>
+
+          <!-- ── Astralis ── -->
+          <tr class="dt-row dt-row-e" data-key="ast" onclick="toggleTeam(this)">
+            <td><span class="dt-seed-badge">#38</span></td>
+            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.4);color:#fdba74;">AST</div><span class="dt-name">Astralis</span></div></td>
+            <td class="dt-stat">3</td><td class="dt-stat">2</td><td class="dt-stat">6</td>
+            <td class="dt-stat dt-rd-neg">-4</td>
+            <td class="dt-rec-cell"><span class="dt-rec-badge dr-03">0-3</span></td>
+            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
+          </tr>
+          <tr class="dt-hist-tr" id="hist-ast" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
+            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.4);color:#fdba74;">AST</div><span class="dt-hist-tname">Astralis</span></div><div class="dt-hist-score"><span class="dt-hs-l">1</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(245,158,11,.18);border-color:rgba(245,158,11,.45);color:#fcd34d;">FNC</div><span class="dt-hist-tname">Fnatic</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.4);color:#fdba74;">AST</div><span class="dt-hist-tname">Astralis</span></div><div class="dt-hist-score"><span class="dt-hs-l">1</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(163,230,53,.15);border-color:rgba(163,230,53,.4);color:#a3e635;">BIG</div><span class="dt-hist-tname">BIG</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">19 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.4);color:#fdba74;">AST</div><span class="dt-hist-tname">Astralis</span></div><div class="dt-hist-score"><span class="dt-hs-l">0</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.45);color:#38bdf8;">C9</div><span class="dt-hist-tname">Cloud9</span></div><span class="dt-hist-bo">BO3</span></div>
+          </div></td></tr>
+
+          <!-- ── GamerLegion ── -->
+          <tr class="dt-row" data-key="gl" onclick="toggleTeam(this)">
+            <td><span class="dt-seed-badge">#42</span></td>
+            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(244,114,182,.15);border-color:rgba(244,114,182,.4);color:#f472b6;">GL</div><span class="dt-name">GamerLegion</span></div></td>
+            <td class="dt-stat">3</td><td class="dt-stat">3</td><td class="dt-stat">5</td>
+            <td class="dt-stat dt-rd-neg">-2</td>
+            <td class="dt-rec-cell"><span class="dt-rec-badge dr-los">1-2</span></td>
+            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
+          </tr>
+          <tr class="dt-hist-tr" id="hist-gl" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
+            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(244,114,182,.15);border-color:rgba(244,114,182,.4);color:#f472b6;">GL</div><span class="dt-hist-tname">GL</span></div><div class="dt-hist-score"><span class="dt-hs-l">0</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(249,115,22,.2);border-color:rgba(249,115,22,.55);color:#fb923c;">G2</div><span class="dt-hist-tname">G2</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(244,114,182,.15);border-color:rgba(244,114,182,.4);color:#f472b6;">GL</div><span class="dt-hist-tname">GL</span></div><div class="dt-hist-score"><span class="dt-hs-l">1</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.4);color:#f87171;">FAL</div><span class="dt-hist-tname">Falcons</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">19 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(244,114,182,.15);border-color:rgba(244,114,182,.4);color:#f472b6;">GL</div><span class="dt-hist-tname">GL</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">1</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(148,163,184,.15);border-color:rgba(148,163,184,.4);color:#94a3b8;">MNT</div><span class="dt-hist-tname">Monte</span></div><span class="dt-hist-bo">BO3</span></div>
+          </div></td></tr>
+
+          <!-- ── paiN ── -->
+          <tr class="dt-row" data-key="pain" onclick="toggleTeam(this)">
+            <td><span class="dt-seed-badge">#45</span></td>
+            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(167,139,250,.18);border-color:rgba(167,139,250,.45);color:#a78bfa;">pN</div><span class="dt-name">paiN</span></div></td>
+            <td class="dt-stat">2</td><td class="dt-stat">2</td><td class="dt-stat">2</td>
+            <td class="dt-stat">0</td>
+            <td class="dt-rec-cell"><span class="dt-rec-badge dr-neu">1-1</span></td>
+            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
+          </tr>
+          <tr class="dt-hist-tr" id="hist-pain" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
+            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(167,139,250,.18);border-color:rgba(167,139,250,.45);color:#a78bfa;">pN</div><span class="dt-hist-tname">paiN</span></div><div class="dt-hist-score"><span class="dt-hs-l">0</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(251,191,36,.2);border-color:rgba(251,191,36,.55);color:#fbbf24;">NaVi</div><span class="dt-hist-tname">NAVI</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(167,139,250,.18);border-color:rgba(167,139,250,.45);color:#a78bfa;">pN</div><span class="dt-hist-tname">paiN</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">0</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(148,163,184,.15);border-color:rgba(148,163,184,.4);color:#94a3b8;">MNT</div><span class="dt-hist-tname">Monte</span></div><span class="dt-hist-bo">BO3</span></div>
+          </div></td></tr>
+
+          <!-- ── Monte ── -->
+          <tr class="dt-row dt-row-e" data-key="monte" onclick="toggleTeam(this)">
+            <td><span class="dt-seed-badge">#51</span></td>
+            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(148,163,184,.15);border-color:rgba(148,163,184,.4);color:#94a3b8;">MNT</div><span class="dt-name">Monte</span></div></td>
+            <td class="dt-stat">3</td><td class="dt-stat">2</td><td class="dt-stat">6</td>
+            <td class="dt-stat dt-rd-neg">-4</td>
+            <td class="dt-rec-cell"><span class="dt-rec-badge dr-03">0-3</span></td>
+            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
+          </tr>
+          <tr class="dt-hist-tr" id="hist-monte" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
+            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(148,163,184,.15);border-color:rgba(148,163,184,.4);color:#94a3b8;">MNT</div><span class="dt-hist-tname">Monte</span></div><div class="dt-hist-score"><span class="dt-hs-l">1</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(129,140,248,.2);border-color:rgba(129,140,248,.55);color:#818cf8;">FZ</div><span class="dt-hist-tname">FaZe</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(148,163,184,.15);border-color:rgba(148,163,184,.4);color:#94a3b8;">MNT</div><span class="dt-hist-tname">Monte</span></div><div class="dt-hist-score"><span class="dt-hs-l">0</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(167,139,250,.18);border-color:rgba(167,139,250,.45);color:#a78bfa;">pN</div><span class="dt-hist-tname">paiN</span></div><span class="dt-hist-bo">BO3</span></div>
+            <div class="dt-hist-match"><span class="dt-hist-date">19 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(148,163,184,.15);border-color:rgba(148,163,184,.4);color:#94a3b8;">MNT</div><span class="dt-hist-tname">Monte</span></div><div class="dt-hist-score"><span class="dt-hs-l">1</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(244,114,182,.15);border-color:rgba(244,114,182,.4);color:#f472b6;">GL</div><span class="dt-hist-tname">GL</span></div><span class="dt-hist-bo">BO3</span></div>
+          </div></td></tr>
+
+          </tbody>
+        </table>
+      </div>
+
+    </div><!-- /main-content -->
+
+    <!-- ══════════ SIDEBAR DROITE — BET BUILDER ══════════ -->
+    <aside class="sidebar-right">
+
+      <div class="bb-header">
+        <span class="bb-title">Bet Builder</span>
+        <span class="bb-count">2</span>
+        <button class="bb-toggle" id="bbToggle" title="Réduire / Agrandir">&#10095;</button>
+      </div>
+
+      <div class="bb-bet">
+        <div class="bb-bet-game">League of Legends · Worlds 2025</div>
+        <div class="bb-bet-match">T1 vs Gen.G</div>
+        <div class="bb-bet-pick">T1 à gagner</div>
+        <div class="bb-bet-odds">1.65</div>
+        <div class="bb-bet-remove">✕ retirer</div>
+      </div>
+
+      <div class="bb-bet">
+        <div class="bb-bet-game">CS2 · ESL Pro League</div>
+        <div class="bb-bet-match">NaVi vs FaZe Clan</div>
+        <div class="bb-bet-pick">NaVi à gagner</div>
+        <div class="bb-bet-odds">1.85</div>
+        <div class="bb-bet-remove">✕ retirer</div>
+      </div>
+
+      <div class="bb-divider"></div>
+
+      <div class="bb-combined">
+        <span class="bb-combined-label">Cote combinée</span>
+        <span class="bb-combined-val">3.05</span>
+      </div>
+
+      <div class="bb-divider"></div>
+
+      <div class="bb-stake-row">
+        <span class="bb-stake-label">Mise (£)</span>
+        <input class="bb-stake-input" type="number" placeholder="0.00" value="10" id="bbStake"/>
+      </div>
+
+      <div class="bb-quick-amounts">
+        <div class="bb-qa">+5</div>
+        <div class="bb-qa">+10</div>
+        <div class="bb-qa">+25</div>
+        <div class="bb-qa">+50</div>
+      </div>
+
+      <div class="bb-gains">
+        <span class="bb-gains-label">Gains potentiels</span>
+        <span class="bb-gains-val" id="bbGains">£30.50</span>
+      </div>
+
+      <button class="bb-submit">Placer le pari</button>
+      <div class="bb-terms">Jeu responsable · 18+ · Conditions applicables</div>
+
+    </aside>
+
+  </div><!-- /content-layout -->
+</div><!-- /page -->
+
+<script>
+  function toggleGame(el) {
+    var item = el.parentElement;
+    var isOpen = item.classList.contains('open');
+    document.querySelectorAll('.game-item').forEach(function(g) { g.classList.remove('open'); });
+    if (!isOpen) item.classList.add('open');
+  }
+
+  document.getElementById('bbToggle').addEventListener('click', function () {
+    document.querySelector('.sidebar-right').classList.toggle('collapsed');
+  });
+
+  (function () {
+    var stake = document.getElementById('bbStake');
+    var gains = document.getElementById('bbGains');
+    var COMBINED = 3.05;
+    function update() { gains.textContent = '£' + ((parseFloat(stake.value) || 0) * COMBINED).toFixed(2); }
+    stake.addEventListener('input', update);
+    document.querySelectorAll('.bb-qa').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        stake.value = (parseFloat(stake.value) || 0) + parseFloat(btn.textContent.replace('+', ''));
+        update();
+      });
+    });
+    update();
+  })();
+
+  // ── Detailed view ──────────────────────────────────────────
+  function toggleDetail(btn) {
+    var detail = document.getElementById('viewDetail');
+    var active = btn.classList.toggle('active');
+    if (active) {
+      // fade out all bracket views
+      ['viewSE','viewDE','viewSwiss'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el && el.style.display !== 'none') {
+          el.style.transition = 'opacity 0.15s';
+          el.style.opacity = '0';
+          setTimeout(function(){ el.style.display='none'; el.style.opacity=''; el.style.transition=''; }, 155);
+        }
+      });
+      // fade in detail
+      detail.style.display = 'block';
+      detail.style.opacity = '0';
+      detail.style.transition = 'opacity 0.15s';
+      requestAnimationFrame(function(){ detail.style.opacity = '1'; });
+    } else {
+      detail.style.transition = 'opacity 0.15s';
+      detail.style.opacity = '0';
+      setTimeout(function(){
+        detail.style.display = 'none';
+        detail.style.opacity = ''; detail.style.transition = '';
+        // restore active bracket
+        var af = document.querySelector('.fmt-btn.active');
+        if (af) {
+          var fmap = {'Single Elimination':'viewSE','Double Elimination':'viewDE','Swiss':'viewSwiss'};
+          var el = document.getElementById(fmap[af.textContent.trim()]);
+          if (el) {
+            el.style.display = '';
+            if (fmap[af.textContent.trim()] === 'viewDE') {
+              if (window.drawDE) window.drawDE();
+              setTimeout(function () { if (window.positionDE) window.positionDE(); }, 100);
+            }
+            if (fmap[af.textContent.trim()] === 'viewSwiss' && window.drawSW) window.drawSW();
+          }
+        }
+      }, 155);
+    }
+  }
+
+  function toggleTeam(row) {
+    var key = row.dataset.key;
+    var expanded = row.classList.toggle('expanded');
+    var hist = document.getElementById('hist-' + key);
+    if (hist) hist.style.display = expanded ? '' : 'none';
+  }
+
+  function setFormat(btn) {
+    // exit detail mode
+    var detailBtn = document.getElementById('detailBtn');
+    var detailView = document.getElementById('viewDetail');
+    if (detailBtn) detailBtn.classList.remove('active');
+    if (detailView) { detailView.style.display = 'none'; detailView.style.opacity = ''; }
+
+    document.querySelectorAll('.fmt-btn').forEach(function (b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    var map = { 'Single Elimination': 'viewSE', 'Double Elimination': 'viewDE', 'Swiss': 'viewSwiss' };
+    ['viewSE', 'viewDE', 'viewSwiss'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    var targetId = map[btn.textContent.trim()];
+    if (targetId) {
+      var el = document.getElementById(targetId);
+      if (el) {
+        el.style.display = '';
+        if (targetId === 'viewDE') {
+          if (window.drawDE) window.drawDE();
+          setTimeout(function () { if (window.positionDE) window.positionDE(); }, 100);
+        }
+        if (targetId === 'viewSwiss' && window.drawSW) window.drawSW();
+      }
+    }
+    // hint: show tooltip on Detailed button when SE or DE is active
+    var wrap = document.getElementById('detailWrap');
+    if (wrap) wrap.classList.toggle('hint-on', btn.textContent.trim() !== 'Swiss');
+  }
+
+  // SE bracket connector lines
+  (function () {
+    var container = document.getElementById('seBracket');
+    var svg       = document.getElementById('seConnectors');
+    if (!container || !svg) return;
+
+    var CONNECTIONS = [
+      { from: 'se-qf1', to: 'se-sf1', active: true  },
+      { from: 'se-qf2', to: 'se-sf1', active: true  },
+      { from: 'se-qf3', to: 'se-sf2', active: true  },
+      { from: 'se-qf4', to: 'se-sf2', active: true  },
+      { from: 'se-sf1', to: 'se-gf',  active: true  },
+      { from: 'se-sf2', to: 'se-gf',  active: false },
+    ];
+
+    function draw() {
+      svg.innerHTML = '';
+      var cr = container.getBoundingClientRect();
+      if (!cr.width) return;
+
+      CONNECTIONS.forEach(function (conn) {
+        var fromSlot = document.getElementById(conn.from);
+        var toSlot   = document.getElementById(conn.to);
+        if (!fromSlot || !toSlot) return;
+        var fromCard = fromSlot.querySelector('.mc');
+        var toCard   = toSlot.querySelector('.mc');
+        if (!fromCard || !toCard) return;
+
+        var fr = fromCard.getBoundingClientRect();
+        var tr = toCard.getBoundingClientRect();
+
+        // Source y: exact midpoint of the winner's team row
+        var winnerRow = fromCard.querySelector('.mc-winner') || fromCard.querySelector('.mc-team');
+        var wr = winnerRow ? winnerRow.getBoundingClientRect() : fr;
+        var x1 = fr.right - cr.left;
+        var y1 = wr.top + wr.height / 2 - cr.top;
+
+        // Target y: exact midpoint between the two team rows (boundary between slots)
+        var destTeams = toCard.querySelectorAll('.mc-team');
+        var x2 = tr.left - cr.left;
+        var y2;
+        if (destTeams.length >= 2) {
+          var dr1 = destTeams[0].getBoundingClientRect();
+          var dr2 = destTeams[1].getBoundingClientRect();
+          y2 = (dr1.bottom + dr2.top) / 2 - cr.top;
+        } else {
+          y2 = tr.top + tr.height / 2 - cr.top;
+        }
+
+        var mx = (x1 + x2) / 2;
+        var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', 'M ' + x1 + ',' + y1 + ' C ' + mx + ',' + y1 + ' ' + mx + ',' + y2 + ' ' + x2 + ',' + y2);
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', conn.active ? '#a855f7' : 'rgba(255,255,255,0.55)');
+        path.setAttribute('stroke-width', conn.active ? '2' : '1.5');
+        if (!conn.active) path.setAttribute('stroke-dasharray', '4 3');
+        svg.appendChild(path);
+      });
+    }
+
+    draw();
+    window.addEventListener('resize', draw);
+  })();
+
+  // DE bracket connector lines
+  (function () {
+    var container = document.getElementById('deBracket');
+    var svg       = document.getElementById('deConnectors');
+    if (!container || !svg) return;
+
+    var WIN  = { stroke: 'rgba(168,85,247,0.85)', width: '1.5', dash: '',    drop: false };
+    var DROP = { stroke: 'rgba(239,68,68,0.5)',   width: '1',   dash: '',    drop: true  };
+    var MUTE = { stroke: 'rgba(255,255,255,0.45)', width: '1',  dash: '5 4', drop: false };
+    var SLIM = { stroke: 'rgba(168,85,247,0.45)', width: '0.75', dash: '',   drop: false };
+
+    // { from: slotId, to: slotId|elemId, direct: bool, s: style }
+    var CONNS = [
+      // UB winner paths
+      { from: 'de-ub-r1s1', to: 'de-ub-r2s1', s: WIN  },
+      { from: 'de-ub-r1s2', to: 'de-ub-r2s1', s: WIN  },
+      { from: 'de-ub-r1s3', to: 'de-ub-r2s2', s: WIN  },
+      { from: 'de-ub-r1s4', to: 'de-ub-r2s2', s: WIN  },
+      { from: 'de-ub-r2s1', to: 'de-ub-r3s1', s: WIN  },
+      { from: 'de-ub-r2s2', to: 'de-ub-r3s1', s: WIN  },
+      // UB → LB drop paths
+      { from: 'de-ub-r1s1', to: 'de-lb-r1s1', s: DROP },
+      { from: 'de-ub-r1s2', to: 'de-lb-r1s1', s: DROP },
+      { from: 'de-ub-r1s3', to: 'de-lb-r1s2', s: DROP },
+      { from: 'de-ub-r1s4', to: 'de-lb-r1s2', s: DROP },
+      { from: 'de-ub-r2s1', to: 'de-lb-r2s1', s: DROP },
+      { from: 'de-ub-r2s2', to: 'de-lb-r2s2', s: DROP },
+      // LB winner paths
+      { from: 'de-lb-r1s1', to: 'de-lb-r2s1', s: WIN  },
+      { from: 'de-lb-r1s2', to: 'de-lb-r2s2', s: WIN  },
+      { from: 'de-lb-r2s1', to: 'de-lb-r3s1', s: WIN,  direct: true, fromWinner: true },
+      { from: 'de-lb-r2s2', to: 'de-lb-r3s1', s: WIN,  direct: true, fromWinner: true },
+      // UB R3 → GF and LB Final → GF drawn separately in positionDE (precise bezier + #7c5cfc)
+      // LB winner → GF bottom slot drawn separately in positionDE (precise bezier + color)
+    ];
+
+    function card(slotId) {
+      var s = document.getElementById(slotId);
+      return s ? s.querySelector('.mc') : null;
+    }
+
+    function draw() {
+      svg.innerHTML = '';
+      var cr = container.getBoundingClientRect();
+      if (!cr.width) return;
+
+      CONNS.forEach(function (c) {
+        if (c.s.drop) return;
+        var from = card(c.from);
+        var to   = c.direct ? document.getElementById(c.to) : card(c.to);
+        if (!from || !to) return;
+
+        var fr = from.getBoundingClientRect();
+        var tr = to.getBoundingClientRect();
+        var x1, y1;
+        if (c.s.drop) {
+          var loserRow = from.querySelector('.mc-loser') || from.querySelector('.mc-team:last-child');
+          var ref = loserRow ? loserRow.getBoundingClientRect() : fr;
+          x1 = fr.right - cr.left;
+          y1 = ref.top + ref.height / 2 - cr.top;
+        } else if (c.fromWinner) {
+          var winRow = from.querySelector('.mc-winner') || from.querySelector('.mc-team');
+          var ref2 = winRow ? winRow.getBoundingClientRect() : fr;
+          x1 = fr.right - cr.left;
+          y1 = ref2.top + ref2.height / 2 - cr.top;
+        } else {
+          x1 = fr.right - cr.left;
+          y1 = fr.top + fr.height / 2 - cr.top;
+        }
+        var x2 = tr.left - cr.left;
+        var y2 = tr.top  + tr.height / 2 - cr.top;
+
+        var d;
+        if (c.lbToGF) {
+          // Specific upward bezier: right from origin then curve up to target
+          d = 'M ' + x1 + ',' + y1 + ' C ' + (x1 + 80) + ',' + y1 + ' ' + (x1 + 80) + ',' + y2 + ' ' + x2 + ',' + y2;
+        } else {
+          var mx = (x1 + x2) / 2;
+          d = 'M ' + x1 + ',' + y1 + ' C ' + mx + ',' + y1 + ' ' + mx + ',' + y2 + ' ' + x2 + ',' + y2;
+        }
+
+        var p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        p.setAttribute('d', d);
+        p.setAttribute('fill', 'none');
+        p.setAttribute('stroke', c.s.stroke);
+        p.setAttribute('stroke-width', c.s.width);
+        if (c.s.dash) p.setAttribute('stroke-dasharray', c.s.dash);
+        svg.appendChild(p);
+      });
+    }
+
+    window.drawDE = draw;
+    window.addEventListener('resize', function () {
+      if (window.positionDE) {
+        clearTimeout(window._deResizeTimer);
+        window._deResizeTimer = setTimeout(window.positionDE, 50);
+      }
+    });
+  })();
+
+  window.positionDE = function () {
+    var container  = document.getElementById('deBracket');
+    var ubr3Slot   = document.getElementById('de-ub-r3s1');
+    var lbFinalCol = document.getElementById('de-lb-final-col');
+    var gfCol      = document.getElementById('de-gf-col');
+    if (!container || !ubr3Slot || !lbFinalCol || !gfCol) return;
+
+    var cr = container.getBoundingClientRect();
+
+    // LB Final is now in normal flow (4th col of LB body) — no absolute positioning needed
+
+    // ── GF: to the right of LB Final col, vertically centred on UB R3 (higher position) ──
+    var ubr3mc      = ubr3Slot.querySelector('.mc') || ubr3Slot;
+    var ur          = ubr3mc.getBoundingClientRect();
+    var ubr3CenterY = ur.top - cr.top + ur.height / 2;
+
+    var lbCard   = document.getElementById('de-lb-r3s1');
+    var gfCard   = document.getElementById('de-gf-card');
+    var gfLabel  = gfCol.querySelector('.br-col-label');
+    var gfLabelH = gfLabel ? gfLabel.offsetHeight : 34;
+    var gfCardH  = gfCard  ? gfCard.offsetHeight  : 160;
+    var gfCardW  = gfCard  ? gfCard.offsetWidth   : 260;
+
+    var lbCardRect = lbCard ? lbCard.getBoundingClientRect() : null;
+    var lbCenterY  = lbCardRect ? (lbCardRect.top + lbCardRect.height / 2 - cr.top) : 200;
+
+    var lbFinalRect = lbFinalCol.getBoundingClientRect();
+    var gfLeft      = lbFinalRect.right - cr.left + 100;
+
+    var gfTop = (ubr3CenterY + lbCenterY) / 2 - gfLabelH - gfCardH / 2;
+
+    gfCol.style.position = 'absolute';
+    gfCol.style.left     = gfLeft + 'px';
+    gfCol.style.top      = gfTop  + 'px';
+    gfCol.style.width    = (gfCardW + 20) + 'px';
+
+    // Redraw all standard connectors (clears SVG internally)
+    if (window.drawDE) window.drawDE();
+
+    // Redraw the two GF connector lines from scratch with fresh coordinates
+    var svg = document.getElementById('deConnectors');
+    if (!svg) return;
+
+    function addLine(x1, y1, x2, y2) {
+      var p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      p.setAttribute('d', 'M ' + x1 + ',' + y1
+              + ' C ' + (x1 + 80) + ',' + y1
+              + ' '   + (x1 + 80) + ',' + y2
+              + ' '   + x2 + ',' + y2);
+      p.setAttribute('fill', 'none');
+      p.setAttribute('stroke', '#7c5cfc');
+      p.setAttribute('stroke-width', '1.5');
+      svg.appendChild(p);
+    }
+
+    // Line 1 — UB Round 3 winner → GF UB Winner slot (top row)
+    var ubr3Card = ubr3Slot ? (ubr3Slot.querySelector('.mc') || ubr3Slot) : null;
+    var gfUbRow  = document.getElementById('de-gf-ub-row');
+    if (ubr3Card && gfUbRow) {
+      var fr1  = ubr3Card.getBoundingClientRect();
+      var wr1  = ubr3Card.querySelector('.mc-winner') || ubr3Card.querySelector('.mc-team');
+      var wr1r = wr1 ? wr1.getBoundingClientRect() : fr1;
+      var tr1  = gfUbRow.getBoundingClientRect();
+      addLine(
+              fr1.right - cr.left,
+              wr1r.top + wr1r.height / 2 - cr.top,
+              tr1.left  - cr.left,
+              tr1.top   + tr1.height / 2 - cr.top
+      );
+    }
+
+    // Line 2 — LB Final winner → GF LB Winner slot (dashed white — match not yet played)
+    var gfLbRow = document.getElementById('de-gf-lb-row');
+    if (lbCard && gfLbRow) {
+      var fr2 = lbCard.getBoundingClientRect();
+      var tr2 = gfLbRow.getBoundingClientRect();
+      var x2s = fr2.right - cr.left;
+      var y2s = fr2.top   + fr2.height / 2 - cr.top;
+      var x2e = tr2.left  - cr.left;
+      var y2e = tr2.top   + tr2.height / 2 - cr.top;
+      var p2  = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      p2.setAttribute('d', 'M ' + x2s + ',' + y2s + ' C ' + (x2s + 80) + ',' + y2s + ' ' + (x2s + 80) + ',' + y2e + ' ' + x2e + ',' + y2e);
+      p2.setAttribute('fill', 'none');
+      p2.setAttribute('stroke', 'rgba(255,255,255,0.5)');
+      p2.setAttribute('stroke-width', '1.5');
+      p2.setAttribute('stroke-dasharray', '5 4');
+      svg.appendChild(p2);
+    }
+    // Line 3 — Grand Finals has no outgoing line (last match); none added.
+  };
+
+  // Swiss connector arrows
+  (function () {
+    var CONNS = [
+      // R1 → R2 winners (green) and losers (red)
+      { f:'sw-r1-m1', t:'sw-r2-a1', w:true  }, { f:'sw-r1-m1', t:'sw-r2-b1', w:false },
+      { f:'sw-r1-m2', t:'sw-r2-a1', w:true  }, { f:'sw-r1-m2', t:'sw-r2-b1', w:false },
+      { f:'sw-r1-m3', t:'sw-r2-a2', w:true  }, { f:'sw-r1-m3', t:'sw-r2-b2', w:false },
+      { f:'sw-r1-m4', t:'sw-r2-a2', w:true  }, { f:'sw-r1-m4', t:'sw-r2-b2', w:false },
+      { f:'sw-r1-m5', t:'sw-r2-a3', w:true  }, { f:'sw-r1-m5', t:'sw-r2-b3', w:false },
+      { f:'sw-r1-m6', t:'sw-r2-a3', w:true  }, { f:'sw-r1-m6', t:'sw-r2-b3', w:false },
+      { f:'sw-r1-m7', t:'sw-r2-a4', w:true  }, { f:'sw-r1-m7', t:'sw-r2-b4', w:false },
+      { f:'sw-r1-m8', t:'sw-r2-a4', w:true  }, { f:'sw-r1-m8', t:'sw-r2-b4', w:false },
+      // R2 → R3 winners (green) and losers (red)
+      { f:'sw-r2-a1', t:'sw-r3-a1', w:true  }, { f:'sw-r2-a1', t:'sw-r3-b1', w:false },
+      { f:'sw-r2-a2', t:'sw-r3-a1', w:true  }, { f:'sw-r2-a2', t:'sw-r3-b1', w:false },
+      { f:'sw-r2-a3', t:'sw-r3-a2', w:true  }, { f:'sw-r2-a3', t:'sw-r3-b2', w:false },
+      { f:'sw-r2-a4', t:'sw-r3-a2', w:true  }, { f:'sw-r2-a4', t:'sw-r3-b2', w:false },
+      { f:'sw-r2-b1', t:'sw-r3-b3', w:true  }, { f:'sw-r2-b1', t:'sw-r3-c1', w:false },
+      { f:'sw-r2-b2', t:'sw-r3-b3', w:true  }, { f:'sw-r2-b2', t:'sw-r3-c1', w:false },
+      { f:'sw-r2-b3', t:'sw-r3-b4', w:true  }, { f:'sw-r2-b3', t:'sw-r3-c2', w:false },
+      { f:'sw-r2-b4', t:'sw-r3-b4', w:true  }, { f:'sw-r2-b4', t:'sw-r3-c2', w:false },
+    ];
+
+    function draw() {
+      var rounds = document.getElementById('swRounds');
+      var svg    = document.getElementById('swArrows');
+      if (!rounds || !svg) return;
+      var cr = rounds.getBoundingClientRect();
+      if (!cr.width) return;
+
+      svg.innerHTML =
+              '<defs>' +
+              '<marker id="aw" markerWidth="5" markerHeight="5" refX="4.5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="rgba(74,222,128,.7)"/></marker>' +
+              '<marker id="al" markerWidth="5" markerHeight="5" refX="4.5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="rgba(239,68,68,.65)"/></marker>' +
+              '</defs>';
+
+      CONNS.forEach(function (c) {
+        if (!c.w) return;
+        var fe = document.getElementById(c.f);
+        var te = document.getElementById(c.t);
+        if (!fe || !te) return;
+        var fr = fe.getBoundingClientRect();
+        var tr = te.getBoundingClientRect();
+        var x1 = fr.right  - cr.left, y1 = fr.top + fr.height / 2 - cr.top;
+        var x2 = tr.left   - cr.left, y2 = tr.top + tr.height / 2 - cr.top;
+        var p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        p.setAttribute('d', 'M ' + x1 + ',' + y1 + ' L ' + x2 + ',' + y2);
+        p.setAttribute('fill', 'none');
+        p.setAttribute('stroke', c.w ? 'rgba(74,222,128,.45)' : 'rgba(239,68,68,.38)');
+        p.setAttribute('stroke-width', '1.5');
+        p.setAttribute('stroke-dasharray', '3 3');
+        p.setAttribute('marker-end', c.w ? 'url(#aw)' : 'url(#al)');
+        svg.appendChild(p);
+      });
+    }
+
+    window.drawSW = draw;
+    window.addEventListener('resize', function () { if (window.drawSW) window.drawSW(); });
+  })();
+
+  // Init detail hint (SE active by default)
+  (function() {
+    var wrap = document.getElementById('detailWrap');
+    if (wrap) wrap.classList.add('hint-on');
+  })();
+
+  // GF odds button toggle
+  document.querySelectorAll('.mc-odd:not(.mc-odd-tbd)').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      btn.closest('.mc-foot').querySelectorAll('.mc-odd').forEach(function (b) { b.classList.remove('selected'); });
+      btn.classList.add('selected');
+    });
+  });
+</script>
+</body>
+</html>
