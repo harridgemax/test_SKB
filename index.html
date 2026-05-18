@@ -131,18 +131,22 @@
       justify-content: flex-end;
     }
 
-    /* Boutons avec PNG de forme angulaire */
+    /* Boutons parallélogramme style esport */
     .btn-nav {
       position: relative;
-      height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: default;
+      padding: 0 28px;
+      height: 38px;
+      cursor: pointer;
+      transform: skewX(-14deg);
+      transition: background 0.18s, border-color 0.18s;
+      white-space: nowrap;
     }
-    .btn-nav img { height: 40px; display: block; }
     .btn-nav span {
-      position: absolute;
+      display: inline-block;
+      transform: skewX(14deg);
       font-family: 'Exo 2', sans-serif;
       font-size: 11px;
       font-weight: 700;
@@ -151,8 +155,25 @@
       color: #fff;
       white-space: nowrap;
     }
-    .btn-register span { padding-right: 10px; }
-    .btn-login span    { padding-left: 10px; }
+    .btn-register {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 6px;
+    }
+    .btn-register:hover {
+      background: rgba(255,255,255,0.13);
+      border-color: rgba(255,255,255,0.4);
+    }
+    .btn-login {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 6px;
+      margin-left: 8px;
+    }
+    .btn-login:hover {
+      background: rgba(255,255,255,0.25);
+      border-color: rgba(255,255,255,0.6);
+    }
 
     /* ══════════════════════════════
        CAROUSEL
@@ -258,7 +279,10 @@
       color: #fff; background: #070b1f;
       border: 1px solid rgba(255,255,255,0.1); border-radius: 9px;
       padding: 5px 16px; cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
     }
+    .slide-team-odd:hover { border-color: rgba(255,255,255,0.35); }
+    .slide-team-odd.bb-selected { background: #0f1530 !important; border-color: rgba(255,255,255,0.5) !important; }
     .slide-graph-bar {
       background: linear-gradient(to bottom, transparent, #070b1f 38%);
       padding: 28px 24px 6px;
@@ -998,8 +1022,10 @@
       align-items: center;
       justify-content: space-between;
       padding: 7px 18px 7px 44px;
-      cursor: default;
+      cursor: pointer;
       transition: background 0.2s;
+      text-decoration: none;
+      color: inherit;
     }
     .tournament-item:hover { background: rgba(255,255,255,0.03); }
 
@@ -1141,19 +1167,23 @@
       position: absolute;
       top: 12px; right: 14px;
       font-family: 'Rajdhani', sans-serif;
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--pink);
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      background: #070b1f;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 7px;
+      padding: 3px 10px;
     }
     .bb-bet-remove {
       position: absolute;
       bottom: 10px; right: 14px;
       font-size: 10px;
-      color: rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.75);
       cursor: pointer;
       letter-spacing: 1px;
     }
-    .bb-bet-remove:hover { color: #f87171; }
+    .bb-bet-remove:hover { color: #fff; }
 
     .bb-divider {
       height: 1px;
@@ -1168,15 +1198,20 @@
     }
     .bb-combined-label {
       font-size: 11px;
-      color: rgba(255,255,255,0.4);
+      color: #fff;
       letter-spacing: 1px;
       text-transform: uppercase;
+      font-weight: 700;
     }
     .bb-combined-val {
       font-family: 'Rajdhani', sans-serif;
       font-size: 20px;
       font-weight: 700;
-      color: var(--pink);
+      color: #fff;
+      background: #070b1f;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 7px;
+      padding: 3px 10px;
     }
 
     .bb-stake-row {
@@ -1235,17 +1270,17 @@
       padding: 10px 14px;
     }
     .bb-gains-label {
-      font-size: 10px;
+      font-size: 12px;
       font-weight: 700;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.45);
+      color: #fff;
     }
     .bb-gains-val {
       font-family: 'Rajdhani', sans-serif;
       font-size: 22px;
       font-weight: 700;
-      color: #a855f7;
+      color: #fff;
     }
 
     .bb-submit {
@@ -1351,14 +1386,20 @@
     .tc-rank {
       position: absolute;
       top: -1px; right: 12px;
-      background: #e53e3e;
-      color: #fff;
-      font-size: 11px;
-      font-weight: 900;
-      font-family: 'Rajdhani', sans-serif;
-      padding: 2px 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      background: rgba(7,11,31,0.92);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-top: none;
       border-radius: 0 0 8px 8px;
-      letter-spacing: 0.5px;
+    }
+    .tc-rank img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+      display: block;
     }
     .tc-bets {
       display: flex;
@@ -1449,10 +1490,10 @@
         </div>
 
         <!-- MY BETS -->
-        <div class="nav-item">
+        <a class="nav-item" href="my-bets.html" style="text-decoration:none;color:inherit;">
           <img src="../Designs/bets.png" alt="My Bets" />
           MY BETS
-        </div>
+        </a>
 
         <!-- TEAMS -->
         <div class="nav-item">
@@ -1464,11 +1505,9 @@
 
       <div class="nav-right">
         <div class="btn-nav btn-register">
-          <img src="../Designs/button.png" alt="" />
           <span>REGISTER</span>
         </div>
         <div class="btn-nav btn-login">
-          <img src="../Designs/button2.png" alt="" />
           <span>LOGIN</span>
         </div>
       </div>
@@ -1488,9 +1527,9 @@
           <span class="game-chevron">▶</span>
         </div>
         <div class="tournament-list">
-          <div class="tournament-item"><span class="tournament-name">ESL Pro League S21</span><span class="t-live-dot"></span></div>
-          <div class="tournament-item"><span class="tournament-name">BLAST Premier Spring</span><span class="t-live-dot"></span></div>
-          <div class="tournament-item"><span class="tournament-name">IEM Cologne 2025</span><span class="t-count">3</span></div>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">ESL Pro League S21</span><span class="t-live-dot"></span></a>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">BLAST Premier Spring</span><span class="t-live-dot"></span></a>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">IEM Cologne 2025</span><span class="t-count">3</span></a>
         </div>
       </div>
 
@@ -1502,9 +1541,9 @@
           <span class="game-chevron">▶</span>
         </div>
         <div class="tournament-list">
-          <div class="tournament-item"><span class="tournament-name">LEC Spring Split</span><span class="t-live-dot"></span></div>
-          <div class="tournament-item"><span class="tournament-name">Worlds 2025</span><span class="t-count">8</span></div>
-          <div class="tournament-item"><span class="tournament-name">LCS Summer</span><span class="t-count">4</span></div>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">LEC Spring Split</span><span class="t-live-dot"></span></a>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">Worlds 2025</span><span class="t-count">8</span></a>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">LCS Summer</span><span class="t-count">4</span></a>
         </div>
       </div>
 
@@ -1516,9 +1555,9 @@
           <span class="game-chevron">▶</span>
         </div>
         <div class="tournament-list">
-          <div class="tournament-item"><span class="tournament-name">VCT Americas</span><span class="t-live-dot"></span></div>
-          <div class="tournament-item"><span class="tournament-name">VCT EMEA</span><span class="t-count">5</span></div>
-          <div class="tournament-item"><span class="tournament-name">Champions 2025</span><span class="t-count">2</span></div>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">VCT Americas</span><span class="t-live-dot"></span></a>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">VCT EMEA</span><span class="t-count">5</span></a>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">Champions 2025</span><span class="t-count">2</span></a>
         </div>
       </div>
 
@@ -1530,9 +1569,9 @@
           <span class="game-chevron">▶</span>
         </div>
         <div class="tournament-list">
-          <div class="tournament-item"><span class="tournament-name">The International 2025</span><span class="t-live-dot"></span></div>
-          <div class="tournament-item"><span class="tournament-name">ESL One Berlin</span><span class="t-count">6</span></div>
-          <div class="tournament-item"><span class="tournament-name">DreamLeague S25</span><span class="t-count">3</span></div>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">The International 2025</span><span class="t-live-dot"></span></a>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">ESL One Berlin</span><span class="t-count">6</span></a>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">DreamLeague S25</span><span class="t-count">3</span></a>
         </div>
       </div>
 
@@ -1544,9 +1583,9 @@
           <span class="game-chevron">▶</span>
         </div>
         <div class="tournament-list">
-          <div class="tournament-item"><span class="tournament-name">RLCS 2025 Majors</span><span class="t-count">4</span></div>
-          <div class="tournament-item"><span class="tournament-name">EU Regional</span><span class="t-live-dot"></span></div>
-          <div class="tournament-item"><span class="tournament-name">World Championship</span><span class="t-count">1</span></div>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">RLCS 2025 Majors</span><span class="t-count">4</span></a>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">EU Regional</span><span class="t-live-dot"></span></a>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">World Championship</span><span class="t-count">1</span></a>
         </div>
       </div>
 
@@ -1558,8 +1597,8 @@
           <span class="game-chevron">▶</span>
         </div>
         <div class="tournament-list">
-          <div class="tournament-item"><span class="tournament-name">OWL Grand Finals</span><span class="t-count">2</span></div>
-          <div class="tournament-item"><span class="tournament-name">Contenders EU</span><span class="t-count">5</span></div>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">OWL Grand Finals</span><span class="t-count">2</span></a>
+          <a class="tournament-item" href="bracket.html"><span class="tournament-name">Contenders EU</span><span class="t-count">5</span></a>
         </div>
       </div>
 
@@ -1574,7 +1613,7 @@
         <div class="carousel-arrow arrow-left"><img src="../Designs/arrow.png" alt="←"/></div>
         <div class="carousel-track">
           <div class="main-track" id="mainTrack">
-            <div class="match-slide">
+            <div class="match-slide" data-href="match2.html" data-game="League of Legends" data-match="T1 vs KCorp">
               <div class="match-bg"><img src="img_M/image.jpg" alt="" style="filter:brightness(0.5);"/></div>
               <div class="slide-teams-overlay">
                 <div class="slide-event-label">League of Legends — Worlds 2025 · Finale</div>
@@ -1582,11 +1621,11 @@
                 <div class="slide-teams-top">
                   <div class="slide-team-col">
                     <img src="img_M/logoT1.png" alt="T1"/>
-                    <div class="slide-team-odd">1.65</div>
+                    <div class="slide-team-odd" data-pick="T1 à gagner" data-odds="1.65">1.65</div>
                   </div>
                   <div class="slide-team-col">
                     <img src="img_M/logoKC.png" alt="KC"/>
-                    <div class="slide-team-odd">2.30</div>
+                    <div class="slide-team-odd" data-pick="KCorp à gagner" data-odds="2.30">2.30</div>
                   </div>
                 </div>
                 <div class="slide-graph-bar">
@@ -1640,7 +1679,7 @@
                 </div>
               </div>
             </div>
-            <div class="match-slide">
+            <div class="match-slide" data-game="Dota 2" data-match="OG vs Spirit">
               <div class="match-bg"><img src="img_M/image (1).jpg" alt="" style="filter:brightness(0.5);"/></div>
               <div class="slide-teams-overlay">
                 <div class="slide-event-label">Dota 2 — The International 2025 · Finale</div>
@@ -1648,11 +1687,11 @@
                 <div class="slide-teams-top">
                   <div class="slide-team-col">
                     <img src="img_M/OG_Logo.png" alt="OG"/>
-                    <div class="slide-team-odd">2.60</div>
+                    <div class="slide-team-odd" data-pick="OG à gagner" data-odds="2.60">2.60</div>
                   </div>
                   <div class="slide-team-col">
                     <img src="img_M/spirit.png" alt="Spirit" style="filter:invert(1);"/>
-                    <div class="slide-team-odd">1.45</div>
+                    <div class="slide-team-odd" data-pick="Spirit à gagner" data-odds="1.45">1.45</div>
                   </div>
                 </div>
                 <div class="slide-graph-bar">
@@ -1704,7 +1743,7 @@
                 </div>
               </div>
             </div>
-            <div class="match-slide">
+            <div class="match-slide" data-href="match.html" data-game="CS2" data-match="Vitality vs NaVi">
               <div class="match-bg contain-bg"><img src="img_M/Counter_Strike_2_Logo.png" alt="CS2" style="filter:brightness(0.5);opacity:0.4;"/></div>
               <div class="slide-teams-overlay">
                 <div class="slide-event-label">Counter-Strike 2 — ESL Pro League S21 · Finale</div>
@@ -1712,11 +1751,11 @@
                 <div class="slide-teams-top">
                   <div class="slide-team-col">
                     <img src="img_M/logovita.png" alt="Vitality"/>
-                    <div class="slide-team-odd">1.75</div>
+                    <div class="slide-team-odd" data-pick="Vitality à gagner" data-odds="1.75">1.75</div>
                   </div>
                   <div class="slide-team-col">
                     <img src="img_M/NAVI_Logo_2020.png" alt="NaVi" style="mix-blend-mode:multiply;"/>
-                    <div class="slide-team-odd">2.05</div>
+                    <div class="slide-team-odd" data-pick="NaVi à gagner" data-odds="2.05">2.05</div>
                   </div>
                 </div>
                 <div class="slide-graph-bar">
@@ -1973,7 +2012,7 @@
     <!-- ══════════ TOP COMBINÉS ══════════ -->
     <div class="tc-section">
       <div class="tc-heading">
-        <span class="tc-title">🏆 Top Combinés</span>
+        <span class="tc-title">Top Combinés</span>
         <span class="tc-sub">Les combinés les plus joués du moment</span>
       </div>
       <div class="tc-track-wrap">
@@ -1981,7 +2020,7 @@
 
             <!-- #1 -->
             <div class="tc-card">
-              <div class="tc-rank">#1</div>
+              <div class="tc-rank"><img src="img_M/logo lol.png" alt="LoL"/></div>
               <div class="tc-bets">
                 <div class="tc-bet"><span class="tc-game">🎮 LoL · Worlds</span><span class="tc-time">Auj. 20:00</span><div class="tc-pick">T1 à gagner <span class="tc-odd">1,65</span></div></div>
                 <div class="tc-bet"><span class="tc-game">🔫 CS2 · ESL Pro</span><span class="tc-time">Auj. 21:00</span><div class="tc-pick">NaVi à gagner <span class="tc-odd">1,85</span></div></div>
@@ -1992,7 +2031,7 @@
 
             <!-- #2 -->
             <div class="tc-card">
-              <div class="tc-rank">#2</div>
+              <div class="tc-rank"><img src="img_M/logo dota2.png" alt="Dota2"/></div>
               <div class="tc-bets">
                 <div class="tc-bet"><span class="tc-game">🐉 Dota 2 · TI</span><span class="tc-time">Auj. 19:00</span><div class="tc-pick">Spirit à gagner <span class="tc-odd">1,45</span></div></div>
                 <div class="tc-bet"><span class="tc-game">🚀 RL · RLCS</span><span class="tc-time">Auj. 20:30</span><div class="tc-pick">KC à gagner <span class="tc-odd">1,70</span></div></div>
@@ -2003,7 +2042,7 @@
 
             <!-- #3 -->
             <div class="tc-card">
-              <div class="tc-rank">#3</div>
+              <div class="tc-rank"><img src="img_M/logocs2.png" alt="CS2"/></div>
               <div class="tc-bets">
                 <div class="tc-bet"><span class="tc-game">🔫 CS2 · BLAST</span><span class="tc-time">Auj. 18:00</span><div class="tc-pick">Vitality à gagner <span class="tc-odd">1,55</span></div></div>
                 <div class="tc-bet"><span class="tc-game">⚡ Val · VCT</span><span class="tc-time">Auj. 19:30</span><div class="tc-pick">Paper Rex à gagner <span class="tc-odd">2,40</span></div></div>
@@ -2014,7 +2053,7 @@
 
             <!-- #4 -->
             <div class="tc-card">
-              <div class="tc-rank">#4</div>
+              <div class="tc-rank"><img src="img_M/logo dota2.png" alt="Dota2"/></div>
               <div class="tc-bets">
                 <div class="tc-bet"><span class="tc-game">🎮 LoL · Worlds</span><span class="tc-time">Auj. 17:00</span><div class="tc-pick">T1 +1,5 maps <span class="tc-odd">1,30</span></div></div>
                 <div class="tc-bet"><span class="tc-game">🚀 RL · RLCS</span><span class="tc-time">Auj. 20:00</span><div class="tc-pick">G2 à gagner <span class="tc-odd">2,20</span></div></div>
@@ -2025,7 +2064,7 @@
 
             <!-- #5 -->
             <div class="tc-card">
-              <div class="tc-rank">#5</div>
+              <div class="tc-rank"><img src="img_M/logocs2.png" alt="CS2"/></div>
               <div class="tc-bets">
                 <div class="tc-bet"><span class="tc-game">🔫 CS2 · IEM</span><span class="tc-time">Auj. 16:30</span><div class="tc-pick">G2 à gagner <span class="tc-odd">1,60</span></div></div>
                 <div class="tc-bet"><span class="tc-game">⚡ Val · VCT</span><span class="tc-time">Auj. 18:00</span><div class="tc-pick">Sentinels à gagner <span class="tc-odd">2,60</span></div></div>
@@ -2036,7 +2075,7 @@
 
             <!-- #6 -->
             <div class="tc-card">
-              <div class="tc-rank">#6</div>
+              <div class="tc-rank"><img src="img_M/logo lol.png" alt="LoL"/></div>
               <div class="tc-bets">
                 <div class="tc-bet"><span class="tc-game">🐉 Dota 2 · ESL</span><span class="tc-time">Auj. 15:00</span><div class="tc-pick">Liquid à gagner <span class="tc-odd">1,40</span></div></div>
                 <div class="tc-bet"><span class="tc-game">🚀 RL · RLCS</span><span class="tc-time">Auj. 17:30</span><div class="tc-pick">NRG à gagner <span class="tc-odd">1,55</span></div></div>
@@ -2047,7 +2086,7 @@
 
             <!-- #7 -->
             <div class="tc-card">
-              <div class="tc-rank">#7</div>
+              <div class="tc-rank"><img src="img_M/logo lol.png" alt="LoL"/></div>
               <div class="tc-bets">
                 <div class="tc-bet"><span class="tc-game">🎮 LoL · LEC</span><span class="tc-time">Auj. 18:00</span><div class="tc-pick">G2 à gagner <span class="tc-odd">1,30</span></div></div>
                 <div class="tc-bet"><span class="tc-game">⚡ Val · VCT</span><span class="tc-time">Auj. 20:00</span><div class="tc-pick">KRÜ à gagner <span class="tc-odd">1,80</span></div></div>
@@ -2058,7 +2097,7 @@
 
             <!-- #8 -->
             <div class="tc-card">
-              <div class="tc-rank">#8</div>
+              <div class="tc-rank"><img src="img_M/logocs2.png" alt="CS2"/></div>
               <div class="tc-bets">
                 <div class="tc-bet"><span class="tc-game">🔫 CS2 · BLAST</span><span class="tc-time">Auj. 17:00</span><div class="tc-pick">Heroic à gagner <span class="tc-odd">2,15</span></div></div>
                 <div class="tc-bet"><span class="tc-game">🐉 Dota 2 · TI</span><span class="tc-time">Auj. 19:00</span><div class="tc-pick">PSG.LGD à gagner <span class="tc-odd">2,40</span></div></div>
@@ -2069,7 +2108,7 @@
 
             <!-- #9 -->
             <div class="tc-card">
-              <div class="tc-rank">#9</div>
+              <div class="tc-rank"><img src="img_M/logo dota2.png" alt="Dota2"/></div>
               <div class="tc-bets">
                 <div class="tc-bet"><span class="tc-game">⚡ Val · VCT</span><span class="tc-time">Auj. 16:00</span><div class="tc-pick">Loud à gagner <span class="tc-odd">1,48</span></div></div>
                 <div class="tc-bet"><span class="tc-game">🎮 LoL · Worlds</span><span class="tc-time">Auj. 18:30</span><div class="tc-pick">Cloud9 à gagner <span class="tc-odd">2,00</span></div></div>
@@ -2080,7 +2119,7 @@
 
             <!-- #10 -->
             <div class="tc-card">
-              <div class="tc-rank">#10</div>
+              <div class="tc-rank"><img src="img_M/logocs2.png" alt="CS2"/></div>
               <div class="tc-bets">
                 <div class="tc-bet"><span class="tc-game">🚀 RL · RLCS</span><span class="tc-time">Auj. 15:30</span><div class="tc-pick">Faze à gagner <span class="tc-odd">3,20</span></div></div>
                 <div class="tc-bet"><span class="tc-game">🐉 Dota 2 · ESL</span><span class="tc-time">Auj. 17:00</span><div class="tc-pick">Gaimin à gagner <span class="tc-odd">1,45</span></div></div>
@@ -2096,7 +2135,7 @@
     <!-- ══════════ GAME CARDS ══════════ -->
     <div class="gc-section">
       <div class="tc-heading">
-        <span class="tc-title">🎮 Nos Jeux</span>
+        <span class="tc-title">Nos Jeux</span>
         <span class="tc-sub">Parie sur tes jeux favoris</span>
       </div>
       <div class="gc-grid">
@@ -2136,33 +2175,19 @@
 
       <div class="bb-header">
         <span class="bb-title">Bet Builder</span>
-        <span class="bb-count">2</span>
+        <span class="bb-count" id="bb-count">0</span>
         <button class="bb-toggle" id="bbToggle" title="Réduire / Agrandir">&#10095;</button>
       </div>
 
-      <!-- Paris ajoutés -->
-      <div class="bb-bet">
-        <div class="bb-bet-game">League of Legends · Worlds 2025</div>
-        <div class="bb-bet-match">T1 vs Gen.G</div>
-        <div class="bb-bet-pick">T1 à gagner</div>
-        <div class="bb-bet-odds">1.65</div>
-        <div class="bb-bet-remove">✕ retirer</div>
-      </div>
-
-      <div class="bb-bet">
-        <div class="bb-bet-game">CS2 · ESL Pro League</div>
-        <div class="bb-bet-match">NaVi vs FaZe Clan</div>
-        <div class="bb-bet-pick">NaVi à gagner</div>
-        <div class="bb-bet-odds">1.85</div>
-        <div class="bb-bet-remove">✕ retirer</div>
-      </div>
+      <!-- Paris ajoutés (injectés par betslip.js) -->
+      <div id="bb-bets-list"></div>
 
       <div class="bb-divider"></div>
 
       <!-- Cote combinée -->
       <div class="bb-combined">
         <span class="bb-combined-label">Cote combinée</span>
-        <span class="bb-combined-val">3.05</span>
+        <span class="bb-combined-val" id="bb-combined-val">1.00</span>
       </div>
 
       <div class="bb-divider"></div>
@@ -2197,6 +2222,7 @@
     </div><!-- /content-layout -->
 
   </div><!-- /page -->
+  <script>if(sessionStorage.getItem('sb_access')!=='1'){window.location.replace('gate.html');}</script>
   <script>
     // Carousel du bas (matchs/promos) — 5s
     (function () {
@@ -2275,38 +2301,7 @@
       if (!isOpen) item.classList.add('open');
     }
 
-    // Bet Builder — calcul des gains potentiels
-    (function () {
-      var stakeInput = document.querySelector('.bb-stake-input');
-      var gainsEl    = document.getElementById('bbGains');
-      var COMBINED   = 3.05;
-
-      function updateGains() {
-        var stake = parseFloat(stakeInput.value) || 0;
-        gainsEl.textContent = '£' + (stake * COMBINED).toFixed(2);
-      }
-
-      stakeInput.addEventListener('input', updateGains);
-      updateGains();
-
-      document.querySelectorAll('.bb-qa').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          var add = parseFloat(btn.textContent.replace('+', '')) || 0;
-          stakeInput.value = (parseFloat(stakeInput.value) || 0) + add;
-          updateGains();
-        });
-      });
-
-      document.getElementById('bbToggle').addEventListener('click', function () {
-        document.querySelector('.sidebar-right').classList.toggle('collapsed');
-      });
-
-      document.querySelector('.bb-submit').addEventListener('click', function () {
-        var stake = parseFloat(stakeInput.value) || 0;
-        if (stake <= 0) { alert('Entrez une mise valide.'); return; }
-        alert('Pari placé : £' + stake.toFixed(2) + ' — Gains potentiels : ' + gainsEl.textContent);
-      });
-    })();
+    /* Bet Builder géré par betslip.js */
 
     // Top Combinés — navigation flèches
     (function () {
@@ -2329,19 +2324,49 @@
       document.getElementById('tcRight').addEventListener('click', function () { goTo(current + 1); });
     })();
 
-    // Navigation vers match.html — carousel principal (slide active seulement)
+    // Carousel principal — cotes cliquables + navigation vers match
     document.querySelectorAll('.match-slide').forEach(function (slide) {
+      /* Cotes → bet builder */
+      slide.querySelectorAll('.slide-team-odd').forEach(function (oddBtn) {
+        oddBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var pick  = oddBtn.getAttribute('data-pick');
+          var odds  = parseFloat(oddBtn.getAttribute('data-odds')) || 1;
+          var game  = slide.getAttribute('data-game')  || 'Esport';
+          var match = slide.getAttribute('data-match') || '';
+          /* Toggle visuel */
+          var allOdds = slide.querySelectorAll('.slide-team-odd');
+          allOdds.forEach(function (o) { if (o !== oddBtn) o.classList.remove('bb-selected'); });
+          oddBtn.classList.toggle('bb-selected');
+          if (oddBtn.classList.contains('bb-selected')) {
+            if (window.addBet) window.addBet(game, match, pick, odds);
+          } else {
+            try {
+              var b = JSON.parse(localStorage.getItem('sb_bets')) || [];
+              localStorage.setItem('sb_bets', JSON.stringify(b.filter(function (x) { return !(x.match === match && x.pick === pick); })));
+              if (window.renderBets) window.renderBets();
+            } catch(err) {}
+          }
+        });
+      });
+      /* Clic sur le reste de la slide → navigation */
       slide.addEventListener('click', function () {
-        if (slide.classList.contains('ms-active')) {
-          window.location.href = 'match.html';
-        }
+        if (!slide.classList.contains('ms-active')) return;
+        var href = slide.getAttribute('data-href');
+        if (href) window.location.href = href;
       });
     });
 
-    // Navigation vers match.html — lignes Hot Matches
+    // Navigation Hot Matches — CS2 → match.html, LoL → match2.html, Dota 2 → match.html
     document.querySelectorAll('.hm-row').forEach(function (row) {
       row.addEventListener('click', function () {
-        window.location.href = 'match.html';
+        var gameImg = row.querySelector('.hm-game img');
+        var game = gameImg ? gameImg.getAttribute('alt') : '';
+        if (game === 'LoL') {
+          window.location.href = 'match2.html';
+        } else {
+          window.location.href = 'match.html';
+        }
       });
     });
 
@@ -2371,8 +2396,10 @@
       btn.addEventListener('mouseleave', function() { clearInterval(iv); });
     })();
   </script>
+  <script src="betslip.js"></script>
 </body>
 </html>
+
 
 
 

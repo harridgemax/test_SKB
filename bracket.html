@@ -123,6 +123,7 @@
     }
     .game-header:hover { background: rgba(255,255,255,0.04); }
     .game-icon { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+    .game-icon img { width: 28px; height: 28px; object-fit: contain; display: block; }
     .game-name { flex: 1; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.8); }
     .game-chevron { font-size: 10px; color: rgba(255,255,255,0.3); transition: transform 0.25s; }
     .game-item.open .game-chevron { transform: rotate(90deg); }
@@ -156,6 +157,7 @@
       scrollbar-width: thin; scrollbar-color: rgba(168,85,247,0.3) transparent;
       position: sticky; top: 0;
       display: flex; flex-direction: column; gap: 14px;
+      transition: width 0.25s ease, min-width 0.25s ease, padding 0.25s ease;
     }
     .sidebar-right::-webkit-scrollbar { width: 4px; }
     .sidebar-right::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.3); border-radius: 4px; }
@@ -757,6 +759,309 @@
     .sw-zone-record { font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; flex-shrink: 0; }
     .sw-zone-team.z-q .sw-zone-record { color: #4ade80; }
     .sw-zone-team.z-e .sw-zone-record { color: #f87171; }
+
+    /* ════════════════════════════════════════
+       SHARED — Info / Teams / Bets views
+    ════════════════════════════════════════ */
+    .section-view { padding: 0 28px 48px; }
+    .sv-heading {
+      font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: rgba(255,255,255,0.3); margin-bottom: 14px; padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .sv-heading + .sv-heading { margin-top: 22px; }
+    .info-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px; padding: 18px 20px;
+    }
+    .info-card-title {
+      font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.38);
+      margin-bottom: 12px;
+    }
+
+    /* ── INFO ── */
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 22px; }
+    .format-phase { margin-bottom: 14px; }
+    .format-phase:last-child { margin-bottom: 0; }
+    .fp-label {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 800; letter-spacing: 0.4px; text-transform: uppercase;
+      color: rgba(255,255,255,0.55); margin-bottom: 7px;
+    }
+    .fp-badge { font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 4px; }
+    .fp-swiss { background: rgba(168,85,247,0.2); color: #c084fc; }
+    .fp-se    { background: rgba(34,197,94,0.15); color: #4ade80; }
+    .fp-rows  { display: flex; flex-direction: column; gap: 4px; }
+    .fp-row {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; color: rgba(255,255,255,0.5); font-weight: 600;
+      padding: 5px 10px; background: rgba(255,255,255,0.025); border-radius: 7px;
+    }
+    .fp-row-key { color: rgba(255,255,255,0.85); }
+
+    .prize-table { width: 100%; border-collapse: collapse; }
+    .prize-table thead tr { border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .prize-table thead th {
+      font-size: 9px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;
+      color: rgba(255,255,255,0.22); padding: 0 0 8px; text-align: left;
+    }
+    .prize-table thead th:last-child { text-align: right; }
+    .prize-table tbody tr { border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .prize-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+    .prize-table tbody td { padding: 8px 0; vertical-align: middle; }
+    .pt-place { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.38); min-width: 56px; display: inline-block; }
+    .pt-place.gold   { color: #fbbf24; }
+    .pt-place.silver { color: #94a3b8; }
+    .pt-place.bronze { color: #fb923c; }
+    .pt-team { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.45); }
+    .pt-team.known { color: rgba(255,255,255,0.75); font-weight: 700; }
+    .pt-amount { font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; color: #fbbf24; float: right; }
+    .pt-amount.muted { color: rgba(255,255,255,0.28); font-size: 13px; }
+
+    .map-pool-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .map-pill {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 8px; padding: 6px 14px;
+      font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.7);
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .map-pill:hover { background: rgba(168,85,247,0.12); border-color: rgba(168,85,247,0.35); color: #fff; }
+    .map-pill-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--purple-light); flex-shrink: 0; }
+
+    .timeline-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 12px;
+    }
+    .timeline-row:last-child { border-bottom: none; }
+    .tl-season { color: rgba(255,255,255,0.28); min-width: 30px; font-weight: 700; font-family: 'Rajdhani', sans-serif; font-size: 13px; }
+    .tl-winner { color: rgba(255,255,255,0.65); font-weight: 600; flex: 1; }
+    .tl-date   { color: rgba(255,255,255,0.2); font-size: 11px; }
+
+    .stream-chips { display: flex; gap: 10px; flex-wrap: wrap; }
+    .stream-chip {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px; padding: 10px 14px;
+    }
+    .stream-chip-icon { font-size: 16px; }
+    .stream-chip-name { font-size: 12px; font-weight: 700; color: #fff; }
+    .stream-chip-sub  { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 2px; }
+
+    /* ── TEAMS ── */
+    .teams-region-label {
+      font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
+      color: rgba(255,255,255,0.22); margin-bottom: 10px; margin-top: 20px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .teams-region-label:first-child { margin-top: 0; }
+    .teams-region-label::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.06); }
+    .teams-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+    .team-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; padding: 14px 12px; display: flex; flex-direction: column; gap: 6px;
+      cursor: pointer; transition: background 0.15s, border-color 0.15s; text-decoration: none;
+    }
+    .team-card:hover { background: rgba(168,85,247,0.1); border-color: rgba(168,85,247,0.35); }
+    .team-card-top { display: flex; align-items: center; justify-content: space-between; }
+    .team-card-logo {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Rajdhani', sans-serif; font-size: 8px; font-weight: 700; border: 1px solid;
+    }
+    .team-card-seed { font-size: 10px; font-weight: 800; color: rgba(255,255,255,0.25); font-family: 'Rajdhani', sans-serif; }
+    .team-card-name { font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; color: rgba(255,255,255,0.85); letter-spacing: 0.3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .team-card-flag { font-size: 14px; }
+    .h2h-section { margin-top: 24px; }
+    .h2h-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; padding: 14px 18px; margin-bottom: 9px;
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    }
+    .h2h-matchup { font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; color: rgba(255,255,255,0.85); min-width: 150px; }
+    .h2h-record { font-size: 12px; color: rgba(255,255,255,0.42); font-weight: 600; flex: 1; line-height: 1.55; }
+    .h2h-record strong { color: rgba(255,255,255,0.82); }
+    .h2h-bar-wrap { width: 120px; height: 5px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; flex-shrink: 0; }
+    .h2h-bar { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--purple), var(--purple-light)); }
+
+    /* ── BETS ── */
+    .bets-layout { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; }
+    .bets-col { display: flex; flex-direction: column; gap: 12px; }
+
+    .popular-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .popular-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .popular-label { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.55); flex: 1; }
+    .popular-bar-wrap { width: 80px; height: 4px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
+    .popular-bar { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--purple), var(--purple-light)); }
+    .popular-pct { font-size: 11px; font-weight: 800; color: var(--purple-light); min-width: 28px; text-align: right; }
+
+    .outright-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .outright-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .or-seed { font-size: 10px; color: rgba(255,255,255,0.2); font-family: 'Rajdhani', sans-serif; font-weight: 700; min-width: 18px; }
+    .or-logo {
+      width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Rajdhani', sans-serif; font-size: 6.5px; font-weight: 700; border: 1px solid;
+    }
+    .or-name { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.78); flex: 1; }
+    .or-btn {
+      font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 800;
+      padding: 4px 14px; border-radius: 7px; cursor: pointer;
+      background: rgba(124,58,237,0.22); border: 1px solid rgba(168,85,247,0.35);
+      color: #c084fc; transition: filter 0.15s, background 0.15s; flex-shrink: 0;
+    }
+    .or-btn:hover { filter: brightness(1.25); background: rgba(124,58,237,0.42); }
+    .or-btn.selected { background: var(--purple); border-color: var(--purple-light); color: #fff; }
+
+    .upcoming-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; overflow: hidden; transition: border-color 0.15s;
+    }
+    .upcoming-card:hover { border-color: rgba(168,85,247,0.32); }
+    .uc-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 9px 14px; background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .uc-label { font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: rgba(255,255,255,0.28); }
+    .uc-live-badge { display: flex; align-items: center; gap: 4px; font-size: 9px; font-weight: 800; letter-spacing: 1px; background: rgba(239,68,68,0.14); border: 1px solid rgba(239,68,68,0.32); color: #f87171; padding: 2px 7px; border-radius: 20px; }
+    .uc-live-dot { width: 5px; height: 5px; border-radius: 50%; background: #ef4444; animation: blink 1.2s infinite; }
+    .uc-upcoming-badge { font-size: 9px; font-weight: 800; letter-spacing: 0.5px; background: rgba(168,85,247,0.14); border: 1px solid rgba(168,85,247,0.3); color: #c084fc; padding: 2px 7px; border-radius: 20px; }
+    .uc-teams { display: flex; align-items: center; gap: 8px; padding: 12px 14px; }
+    .uc-team { display: flex; align-items: center; gap: 8px; flex: 1; }
+    .uc-team.right { justify-content: flex-end; }
+    .uc-logo { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: 'Rajdhani', sans-serif; font-size: 7px; font-weight: 700; border: 1px solid; }
+    .uc-team-name { font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; color: rgba(255,255,255,0.85); }
+    .uc-vs    { font-size: 11px; color: rgba(255,255,255,0.2); font-weight: 700; flex-shrink: 0; }
+    .uc-score { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; color: #fff; flex-shrink: 0; letter-spacing: 2px; }
+    .uc-foot  { display: flex; gap: 6px; padding: 0 14px 12px; }
+    .uc-odd-btn {
+      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 1px;
+      background: rgba(124,58,237,0.2); border: 1px solid rgba(168,85,247,0.3);
+      border-radius: 8px; padding: 7px 8px; cursor: pointer;
+      transition: filter 0.15s, background 0.15s;
+    }
+    .uc-odd-btn:hover { filter: brightness(1.25); background: rgba(124,58,237,0.4); }
+    .uc-odd-btn.selected { background: var(--purple); border-color: var(--purple-light); }
+    .uc-odd-label { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.38); text-transform: uppercase; letter-spacing: 0.3px; }
+    .uc-odd-val { font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 800; color: #c084fc; line-height: 1; }
+    .uc-odd-btn.selected .uc-odd-val { color: #fff; }
+
+    .rules-row { display: flex; gap: 8px; font-size: 12px; color: rgba(255,255,255,0.5); }
+    .rules-icon { flex-shrink: 0; }
+    /* ── Bottom info ── */  .bottom-info { padding: 32px 28px 80px; }
+    .bi-section { margin-bottom: 72px; }
+    .bi-section-title {
+      font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase; color: #fff;
+      margin-bottom: 20px; display: flex; align-items: center; gap: 14px;
+    }
+    .bi-section-title::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.1); }
+
+    /* Prize pool v2 */
+    .pp-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1e2130; padding-bottom: 12px; margin-bottom: 20px; }
+    .pp-header-title { font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #fff; }
+    .pp-header-total { font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700; color: var(--purple-light); }
+    .pp-podium { display: flex; gap: 8px; align-items: flex-end; margin-bottom: 8px; }
+    .pp-podium-card { border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 16px 12px; flex: 1; }
+    .pp-podium-card.first  { min-height: 140px; border: 1px solid rgba(212,175,55,0.4);  background: linear-gradient(180deg, rgba(212,175,55,0.08) 0%, transparent 100%); }
+    .pp-podium-card.second { min-height: 110px; border: 1px solid rgba(192,192,192,0.3);  background: linear-gradient(180deg, rgba(192,192,192,0.06) 0%, transparent 100%); }
+    .pp-podium-card.third  { min-height: 95px;  border: 1px solid rgba(205,127,50,0.3);  background: linear-gradient(180deg, rgba(205,127,50,0.06) 0%, transparent 100%); }
+    .pp-medal { font-size: 22px; line-height: 1; }
+    .pp-place-label { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.3); }
+    .pp-podium-amount { font-family: 'Rajdhani', sans-serif; font-weight: 700; line-height: 1; }
+    .pp-podium-card.first  .pp-podium-amount { font-size: 28px; color: #d4af37; }
+    .pp-podium-card.second .pp-podium-amount { font-size: 22px; color: #c0c0c0; }
+    .pp-podium-card.third  .pp-podium-amount { font-size: 18px; color: #cd7f32; }
+    .pp-podium-team { font-size: 11px; color: rgba(255,255,255,0.3); font-style: italic; }
+    .pp-podium-team.known { color: rgba(255,255,255,0.65); font-style: normal; font-weight: 600; }
+    .pp-4th { display: flex; align-items: center; gap: 16px; height: 56px; border-left: 3px solid rgba(205,127,50,0.5); border-top: 1px solid rgba(255,255,255,0.12); border-right: 1px solid rgba(255,255,255,0.12); border-bottom: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.06); border-radius: 0 8px 8px 0; padding: 0 18px; margin-bottom: 8px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 4px 20px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.1); }
+    .pp-4th-place  { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.28); min-width: 64px; }
+    .pp-4th-amount { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; color: var(--purple-light); flex: 1; text-align: center; }
+    .pp-4th-team   { font-size: 12px; color: rgba(255,255,255,0.3); text-align: right; min-width: 64px; font-style: italic; }
+    .pp-std-row { display: flex; gap: 8px; margin-bottom: 8px; }
+    .pp-std-card { flex: 1; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.06); border-radius: 8px; padding: 12px 10px; display: flex; flex-direction: column; align-items: center; gap: 4px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 4px 20px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.1); }
+    .pp-std-place  { font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.25); }
+    .pp-std-amount { font-family: 'Rajdhani', sans-serif; font-size: 17px; font-weight: 700; color: #fff; line-height: 1; }
+    .pp-std-team   { font-size: 11px; color: rgba(255,255,255,0.38); }
+    .pp-exits { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 8px 0; margin-top: 12px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); }
+    .pp-exits-header { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #4b5563; padding: 0 12px 8px; }
+    .pp-exits-cols { display: flex; }
+    .pp-exits-col { flex: 1; }
+    .pp-exits-col:first-child { border-right: 1px solid #1a1d2a; }
+    .pp-exits-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; border-bottom: 1px solid #1a1d2a; }
+    .pp-exits-row:last-child { border-bottom: none; }
+    .pp-exits-place { font-size: 10px; font-weight: 600; color: #4b5563; min-width: 28px; }
+    .pp-exits-team { font-size: 11px; color: #9ca3af; flex: 1; text-align: center; }
+    .pp-exits-amount { font-size: 12px; font-weight: 600; color: #fff; text-align: right; }
+
+    /* Format section */
+    .fmt-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .fmt-col { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 16px 18px; }
+    .fmt-badge { display: inline-flex; font-size: 9px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 10px; border-radius: 4px; margin-bottom: 10px; }
+    .fmt-badge-swiss   { background: rgba(168,85,247,0.18); color: #c084fc; border: 1px solid rgba(168,85,247,0.3); }
+    .fmt-badge-playoff { background: rgba(34,197,94,0.14); color: #4ade80; border: 1px solid rgba(34,197,94,0.28); }
+    .fmt-desc { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.75; font-weight: 500; }
+    .fmt-desc strong { color: rgba(255,255,255,0.82); font-weight: 700; }
+
+    /* Teams grid */
+    .teams-new-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+    .tn-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 16px; cursor: pointer; transition: border-color 0.2s, background 0.2s, box-shadow 0.2s; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 4px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1); }
+    .tn-card:hover { border-color: rgba(168,85,247,0.5); background: rgba(168,85,247,0.1); box-shadow: 0 4px 32px rgba(124,58,237,0.2), inset 0 1px 0 rgba(255,255,255,0.12); }
+    .tn-card.active { border-color: #7c5cfc; }
+    .tn-head { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .tn-seed { align-self: flex-start; font-size: 9px; font-weight: 800; letter-spacing: 1px; color: #fbbf24; background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.25); padding: 1px 6px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; }
+    .tn-logo { width: 62px; height: 62px; border-radius: 50%; margin: 6px auto 4px; display: flex; align-items: center; justify-content: center; font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700; border: 1px solid; }
+    .tn-name { font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; color: #fff; text-align: center; }
+    .tn-rank { font-size: 10px; color: rgba(255,255,255,0.25); text-align: center; margin-top: 1px; }
+    .team-row-panel { width: 100%; grid-column: 1 / -1; background: rgba(255,255,255,0.05); border-top: 1px solid rgba(255,255,255,0.12); border-bottom: 1px solid rgba(255,255,255,0.12); overflow: hidden; max-height: 0; transition: max-height 0.3s ease; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); }
+    .trp-inner { display: flex; align-items: flex-start; gap: 24px; padding: 20px 24px; }
+    .trp-logo-circle { width: 64px; height: 64px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; border: 1px solid; }
+    .trp-info { flex: 1; min-width: 0; }
+    .trp-name { font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+    .trp-rank { font-size: 11px; color: rgba(255,255,255,0.28); margin-bottom: 12px; }
+    .trp-roster { display: flex; flex-direction: column; }
+    .tn-player { display: flex; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 12px; }
+    .tn-player:last-child { border-bottom: none; }
+    .tn-flag { font-size: 13px; flex-shrink: 0; }
+    .tn-pname { flex: 1; font-weight: 600; color: rgba(255,255,255,0.82); }
+    .tn-role { font-size: 8px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; padding: 1px 5px; border-radius: 3px; flex-shrink: 0; }
+    .role-igl     { background: rgba(168,85,247,0.18); color: #c084fc; }
+    .role-awp     { background: rgba(251,191,36,0.14); color: #fbbf24; }
+    .role-rifler  { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.38); }
+    .role-support { background: rgba(34,197,94,0.12); color: #4ade80; }
+    .role-entry   { background: rgba(239,68,68,0.14); color: #f87171; }
+
+    /* Broadcast */
+    .bc-grid { display: flex; gap: 12px; }
+    .bc-card { flex: 1; min-width: 0; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 7px; transition: border-color 0.18s; }
+    .bc-card:hover { border-color: rgba(168,85,247,0.4); }
+    .bc-platform { display: inline-flex; align-items: center; gap: 5px; font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; width: fit-content; }
+    .bc-twitch  { background: rgba(145,70,255,0.2); color: #bf94ff; border: 1px solid rgba(145,70,255,0.35); }
+    .bc-youtube { background: rgba(255,0,0,0.15); color: #ff7070; border: 1px solid rgba(255,0,0,0.28); }
+    .bc-channel { font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700; color: #fff; }
+    .bc-lang    { display: flex; align-items: center; gap: 5px; font-size: 11px; color: rgba(255,255,255,0.4); }
+    .bc-viewers { font-size: 11px; color: rgba(255,255,255,0.25); }
+    .bc-watch { display: inline-flex; align-items: center; gap: 4px; background: rgba(168,85,247,0.16); border: 1px solid rgba(168,85,247,0.3); color: var(--purple-light); font-size: 11px; font-weight: 700; letter-spacing: 0.5px; padding: 6px 14px; border-radius: 7px; text-decoration: none; transition: background 0.15s, color 0.15s; align-self: flex-start; margin-top: auto; }
+    .bc-watch:hover { background: rgba(168,85,247,0.3); color: #fff; }
+
+    /* News */
+    .news-list { display: flex; flex-direction: column; }
+    .news-row { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .news-row:last-child { border-bottom: none; }
+    .news-badge { font-size: 8px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; flex-shrink: 0; white-space: nowrap; background: rgba(249,115,22,0.18); color: #fb923c; border: 1px solid rgba(249,115,22,0.3); }
+    .news-headline { flex: 1; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.7); line-height: 1.4; }
+    .news-date { font-size: 10px; color: rgba(255,255,255,0.2); flex-shrink: 0; white-space: nowrap; }
+    .news-more { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: var(--purple-light); text-decoration: none; letter-spacing: 0.3px; margin-top: 12px; transition: color 0.15s; }
+    .news-more:hover { color: #fff; }
   </style>
 </head>
 <body>
@@ -776,14 +1081,14 @@
 
     <div class="nav-center">
       <div class="nav-live">
-        <img src="../Designs/live 3.png" alt="Live" />
+        <img src="img_M/live 4.png" alt="Live" />
       </div>
-      <div class="nav-item">
-        <img src="../Designs/bets.png" alt="My Bets" />
+      <a class="nav-item" href="my-bets.html">
+        <img src="img_M/bets.png" alt="My Bets" />
         MY BETS
-      </div>
+      </a>
       <div class="nav-item">
-        <img src="../Designs/teams.png" alt="Teams" />
+        <img src="img_M/teams.png" alt="Teams" />
         TEAMS
       </div>
     </div>
@@ -808,7 +1113,7 @@
 
       <div class="game-item open">
         <div class="game-header" onclick="toggleGame(this)">
-          <div class="game-icon" style="background:rgba(249,115,22,0.15);">🔫</div>
+          <div class="game-icon"><img src="img_M/logocs2.png" alt="CS2"/></div>
           <span class="game-name">CS2</span>
           <span class="game-chevron">▶</span>
         </div>
@@ -821,7 +1126,7 @@
 
       <div class="game-item">
         <div class="game-header" onclick="toggleGame(this)">
-          <div class="game-icon" style="background:rgba(30,111,168,0.15);">⚔️</div>
+          <div class="game-icon"><img src="img_M/logo lol.png" alt="LoL"/></div>
           <span class="game-name">League of Legends</span>
           <span class="game-chevron">▶</span>
         </div>
@@ -834,7 +1139,7 @@
 
       <div class="game-item">
         <div class="game-header" onclick="toggleGame(this)">
-          <div class="game-icon" style="background:rgba(244,63,94,0.15);">⚡</div>
+          <div class="game-icon"><img src="img_M/logo valo.png" alt="Valorant"/></div>
           <span class="game-name">Valorant</span>
           <span class="game-chevron">▶</span>
         </div>
@@ -847,7 +1152,7 @@
 
       <div class="game-item">
         <div class="game-header" onclick="toggleGame(this)">
-          <div class="game-icon" style="background:rgba(168,85,247,0.15);">🛡️</div>
+          <div class="game-icon"><img src="img_M/logo dota2.png" alt="Dota 2"/></div>
           <span class="game-name">Dota 2</span>
           <span class="game-chevron">▶</span>
         </div>
@@ -860,7 +1165,7 @@
 
       <div class="game-item">
         <div class="game-header" onclick="toggleGame(this)">
-          <div class="game-icon" style="background:rgba(56,189,248,0.15);">🚀</div>
+          <div class="game-icon"><img src="img_M/logo rocket league.png" alt="Rocket League"/></div>
           <span class="game-name">Rocket League</span>
           <span class="game-chevron">▶</span>
         </div>
@@ -873,7 +1178,7 @@
 
       <div class="game-item">
         <div class="game-header" onclick="toggleGame(this)">
-          <div class="game-icon" style="background:rgba(250,204,21,0.12);">🎯</div>
+          <div class="game-icon"><img src="img_M/logo overwatch2.png" alt="Overwatch 2"/></div>
           <span class="game-name">Overwatch 2</span>
           <span class="game-chevron">▶</span>
         </div>
@@ -931,11 +1236,6 @@
         <button class="fmt-btn active" onclick="setFormat(this)">Single Elimination</button>
         <button class="fmt-btn"        onclick="setFormat(this)">Double Elimination</button>
         <button class="fmt-btn"        onclick="setFormat(this)">Swiss</button>
-        <div class="fmt-sep"></div>
-        <div class="fmt-detail-wrap hint-on" id="detailWrap">
-          <button class="fmt-btn" id="detailBtn" onclick="toggleDetail(this)">Detailed view</button>
-          <span class="detail-hint">Best used with Swiss</span>
-        </div>
       </div>
 
       <!-- ══ Single Elimination bracket ══ -->
@@ -957,7 +1257,7 @@
                   <div class="mc-head"><span class="mc-status badge-final">FINAL</span><span class="mc-bo">BO3</span></div>
                   <div class="mc-teams">
                     <div class="mc-team mc-winner">
-                      <div class="mc-logo" style="background:rgba(251,191,36,0.2);border-color:rgba(251,191,36,0.55);color:#fbbf24;">NaVi</div>
+                      <img src="img_M/NAVI_Logo_2020.png" style="width:28px;height:28px;object-fit:contain;display:block;flex-shrink:0;"/>
                       <span class="mc-name">NAVI</span><span class="mc-score mc-score-win">2</span>
                     </div>
                     <div class="mc-team mc-loser">
@@ -1033,7 +1333,7 @@
                   <div class="mc-head"><span class="mc-status badge-final">FINAL</span><span class="mc-bo">BO3</span></div>
                   <div class="mc-teams">
                     <div class="mc-team mc-winner">
-                      <div class="mc-logo" style="background:rgba(251,191,36,0.2);border-color:rgba(251,191,36,0.55);color:#fbbf24;">NaVi</div>
+                      <img src="img_M/NAVI_Logo_2020.png" style="width:28px;height:28px;object-fit:contain;display:block;flex-shrink:0;"/>
                       <span class="mc-name">NAVI</span><span class="mc-score mc-score-win">2</span>
                     </div>
                     <div class="mc-team mc-loser">
@@ -1083,7 +1383,7 @@
                   <div class="mc-head"><span class="mc-status badge-upcoming">UPCOMING</span><span class="mc-bo">BO5 🏆</span></div>
                   <div class="mc-teams">
                     <div class="mc-team">
-                      <div class="mc-logo" style="background:rgba(251,191,36,0.2);border-color:rgba(251,191,36,0.55);color:#fbbf24;">NaVi</div>
+                      <img src="img_M/NAVI_Logo_2020.png" style="width:28px;height:28px;object-fit:contain;display:block;flex-shrink:0;"/>
                       <span class="mc-name">NAVI</span>
                     </div>
                     <div class="mc-team">
@@ -1550,261 +1850,124 @@
       </div>
 
 
-      <!-- ══ Detailed group-play view ══ -->
-      <div id="viewDetail" style="display:none">
-        <table class="dt-table">
-          <thead>
-          <tr class="dt-thead-tr">
-            <th class="dt-th" style="width:52px">Seed</th>
-            <th class="dt-th">Team</th>
-            <th class="dt-th dt-th-c" style="width:44px">M</th>
-            <th class="dt-th dt-th-c" style="width:44px">RW</th>
-            <th class="dt-th dt-th-c" style="width:44px">RL</th>
-            <th class="dt-th dt-th-c" style="width:52px">RD</th>
-            <th class="dt-th dt-th-c" style="width:80px">Record</th>
-            <th class="dt-th" style="width:32px"></th>
-          </tr>
-          </thead>
-          <tbody>
+      <!-- ══ Bottom info ══ -->
+      <div class="bottom-info">
 
-          <!-- ── Vitality ── -->
-          <tr class="dt-row dt-row-q" data-key="vit" onclick="toggleTeam(this)">
-            <td><span class="dt-seed-badge">#1</span></td>
-            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(250,204,21,.2);border-color:rgba(250,204,21,.55);color:#fde047;">VIT</div><span class="dt-name">Vitality</span></div></td>
-            <td class="dt-stat">3</td><td class="dt-stat">6</td><td class="dt-stat">1</td>
-            <td class="dt-stat dt-rd-pos">+5</td>
-            <td class="dt-rec-cell"><span class="dt-rec-badge dr-30">3-0</span></td>
-            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
-          </tr>
-          <tr class="dt-hist-tr" id="hist-vit" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
-            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(250,204,21,.2);border-color:rgba(250,204,21,.55);color:#fde047;">VIT</div><span class="dt-hist-tname">Vitality</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">0</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(163,230,53,.15);border-color:rgba(163,230,53,.4);color:#a3e635;">BIG</div><span class="dt-hist-tname">BIG</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(250,204,21,.2);border-color:rgba(250,204,21,.55);color:#fde047;">VIT</div><span class="dt-hist-tname">Vitality</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">1</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(245,158,11,.18);border-color:rgba(245,158,11,.45);color:#fcd34d;">FNC</div><span class="dt-hist-tname">Fnatic</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">19 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(250,204,21,.2);border-color:rgba(250,204,21,.55);color:#fde047;">VIT</div><span class="dt-hist-tname">Vitality</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">0</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.4);color:#4ade80;">MZ</div><span class="dt-hist-tname">MOUZ</span></div><span class="dt-hist-bo">BO3</span></div>
-          </div></td></tr>
+        <!-- 1. Prize Pool -->
+        <div class="bi-section">
+          <div class="pp-header">
+            <span class="pp-header-title">Prize Pool</span>
+            <span class="pp-header-total">$1,000,000</span>
+          </div>
 
-          <!-- ── NAVI ── -->
-          <tr class="dt-row" data-key="navi" onclick="toggleTeam(this)">
-            <td><span class="dt-seed-badge">#3</span></td>
-            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(251,191,36,.2);border-color:rgba(251,191,36,.55);color:#fbbf24;">NaVi</div><span class="dt-name">NAVI</span></div></td>
-            <td class="dt-stat">2</td><td class="dt-stat">4</td><td class="dt-stat">1</td>
-            <td class="dt-stat dt-rd-pos">+3</td>
-            <td class="dt-rec-cell"><span class="dt-rec-badge dr-win">2-0</span></td>
-            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
-          </tr>
-          <tr class="dt-hist-tr" id="hist-navi" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
-            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(251,191,36,.2);border-color:rgba(251,191,36,.55);color:#fbbf24;">NaVi</div><span class="dt-hist-tname">NAVI</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">0</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(167,139,250,.18);border-color:rgba(167,139,250,.45);color:#a78bfa;">pN</div><span class="dt-hist-tname">paiN</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(251,191,36,.2);border-color:rgba(251,191,36,.55);color:#fbbf24;">NaVi</div><span class="dt-hist-tname">NAVI</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">1</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(129,140,248,.2);border-color:rgba(129,140,248,.55);color:#818cf8;">FZ</div><span class="dt-hist-tname">FaZe</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">19 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(251,191,36,.2);border-color:rgba(251,191,36,.55);color:#fbbf24;">NaVi</div><span class="dt-hist-tname">NAVI</span></div><div class="dt-hist-score"><span class="dt-hs-w">1</span><span class="dt-hs-s">—</span><span class="dt-hs-l">0</span><span class="live-dot" style="margin-left:5px;width:6px;height:6px"></span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(249,115,22,.2);border-color:rgba(249,115,22,.55);color:#fb923c;">G2</div><span class="dt-hist-tname">G2</span></div><span class="dt-hist-bo">BO3</span></div>
-          </div></td></tr>
+          <!-- Podium: 2nd | 1st | 3rd -->
+          <div class="pp-podium">
+            <div class="pp-podium-card second">
+              <span class="pp-medal">🥈</span>
+              <span class="pp-place-label">2nd Place</span>
+              <span class="pp-podium-amount">$200,000</span>
+              <span class="pp-podium-team">TBD</span>
+            </div>
+            <div class="pp-podium-card first">
+              <span class="pp-medal">🥇</span>
+              <span class="pp-place-label">1st Place</span>
+              <span class="pp-podium-amount">$400,000</span>
+              <span class="pp-podium-team">TBD</span>
+            </div>
+            <div class="pp-podium-card third">
+              <span class="pp-medal">🥉</span>
+              <span class="pp-place-label">3rd Place</span>
+              <span class="pp-podium-amount">$80,000</span>
+              <span class="pp-podium-team known">G2 Esports</span>
+            </div>
+          </div>
 
-          <!-- ── G2 ── -->
-          <tr class="dt-row" data-key="g2" onclick="toggleTeam(this)">
-            <td><span class="dt-seed-badge">#4</span></td>
-            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(249,115,22,.2);border-color:rgba(249,115,22,.55);color:#fb923c;">G2</div><span class="dt-name">G2</span></div></td>
-            <td class="dt-stat">2</td><td class="dt-stat">4</td><td class="dt-stat">0</td>
-            <td class="dt-stat dt-rd-pos">+4</td>
-            <td class="dt-rec-cell"><span class="dt-rec-badge dr-win">2-0</span></td>
-            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
-          </tr>
-          <tr class="dt-hist-tr" id="hist-g2" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
-            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(249,115,22,.2);border-color:rgba(249,115,22,.55);color:#fb923c;">G2</div><span class="dt-hist-tname">G2</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">0</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(244,114,182,.15);border-color:rgba(244,114,182,.4);color:#f472b6;">GL</div><span class="dt-hist-tname">GL</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(249,115,22,.2);border-color:rgba(249,115,22,.55);color:#fb923c;">G2</div><span class="dt-hist-tname">G2</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">0</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(59,130,246,.18);border-color:rgba(59,130,246,.45);color:#60a5fa;">NIP</div><span class="dt-hist-tname">NIP</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">19 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(249,115,22,.2);border-color:rgba(249,115,22,.55);color:#fb923c;">G2</div><span class="dt-hist-tname">G2</span></div><div class="dt-hist-score"><span class="dt-hs-l">0</span><span class="dt-hs-s">—</span><span class="dt-hs-w">1</span><span class="live-dot" style="margin-left:5px;width:6px;height:6px"></span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(251,191,36,.2);border-color:rgba(251,191,36,.55);color:#fbbf24;">NaVi</div><span class="dt-hist-tname">NAVI</span></div><span class="dt-hist-bo">BO3</span></div>
-          </div></td></tr>
+          <!-- 4th place full-width -->
+          <div class="pp-4th">
+            <span class="pp-4th-place">4th Place</span>
+            <span class="pp-4th-amount">$80,000</span>
+            <span class="pp-4th-team">TBD</span>
+          </div>
 
-          <!-- ── MOUZ ── -->
-          <tr class="dt-row" data-key="mouz" onclick="toggleTeam(this)">
-            <td><span class="dt-seed-badge">#5</span></td>
-            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.4);color:#4ade80;">MZ</div><span class="dt-name">MOUZ</span></div></td>
-            <td class="dt-stat">3</td><td class="dt-stat">4</td><td class="dt-stat">3</td>
-            <td class="dt-stat dt-rd-pos">+1</td>
-            <td class="dt-rec-cell"><span class="dt-rec-badge dr-win">2-1</span></td>
-            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
-          </tr>
-          <tr class="dt-hist-tr" id="hist-mouz" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
-            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.4);color:#4ade80;">MZ</div><span class="dt-hist-tname">MOUZ</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">0</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.45);color:#38bdf8;">C9</div><span class="dt-hist-tname">Cloud9</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.4);color:#4ade80;">MZ</div><span class="dt-hist-tname">MOUZ</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">1</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(45,212,191,.15);border-color:rgba(45,212,191,.45);color:#2dd4bf;">HRC</div><span class="dt-hist-tname">Heroic</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">19 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.4);color:#4ade80;">MZ</div><span class="dt-hist-tname">MOUZ</span></div><div class="dt-hist-score"><span class="dt-hs-l">0</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(250,204,21,.2);border-color:rgba(250,204,21,.55);color:#fde047;">VIT</div><span class="dt-hist-tname">Vitality</span></div><span class="dt-hist-bo">BO3</span></div>
-          </div></td></tr>
+          <!-- 5th–8th -->
+          <div class="pp-std-row">
+            <div class="pp-std-card"><span class="pp-std-place">5th</span><span class="pp-std-amount">$30,000</span><span class="pp-std-team">Team Liquid</span></div>
+            <div class="pp-std-card"><span class="pp-std-place">6th</span><span class="pp-std-amount">$30,000</span><span class="pp-std-team">Fnatic</span></div>
+            <div class="pp-std-card"><span class="pp-std-place">7th</span><span class="pp-std-amount">$30,000</span><span class="pp-std-team">Cloud9</span></div>
+            <div class="pp-std-card"><span class="pp-std-place">8th</span><span class="pp-std-amount">$30,000</span><span class="pp-std-team">Ninjas in P.</span></div>
+          </div>
 
-          <!-- ── FaZe ── -->
-          <tr class="dt-row" data-key="faze" onclick="toggleTeam(this)">
-            <td><span class="dt-seed-badge">#8</span></td>
-            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(129,140,248,.2);border-color:rgba(129,140,248,.55);color:#818cf8;">FZ</div><span class="dt-name">FaZe</span></div></td>
-            <td class="dt-stat">3</td><td class="dt-stat">5</td><td class="dt-stat">4</td>
-            <td class="dt-stat dt-rd-pos">+1</td>
-            <td class="dt-rec-cell"><span class="dt-rec-badge dr-win">2-1</span></td>
-            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
-          </tr>
-          <tr class="dt-hist-tr" id="hist-faze" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
-            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(129,140,248,.2);border-color:rgba(129,140,248,.55);color:#818cf8;">FZ</div><span class="dt-hist-tname">FaZe</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">1</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(148,163,184,.15);border-color:rgba(148,163,184,.4);color:#94a3b8;">MNT</div><span class="dt-hist-tname">Monte</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(129,140,248,.2);border-color:rgba(129,140,248,.55);color:#818cf8;">FZ</div><span class="dt-hist-tname">FaZe</span></div><div class="dt-hist-score"><span class="dt-hs-l">1</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(251,191,36,.2);border-color:rgba(251,191,36,.55);color:#fbbf24;">NaVi</div><span class="dt-hist-tname">NAVI</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">19 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(129,140,248,.2);border-color:rgba(129,140,248,.55);color:#818cf8;">FZ</div><span class="dt-hist-tname">FaZe</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">1</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(59,130,246,.18);border-color:rgba(59,130,246,.45);color:#60a5fa;">NIP</div><span class="dt-hist-tname">NIP</span></div><span class="dt-hist-bo">BO3</span></div>
-          </div></td></tr>
+          <!-- 9th–16th exits -->
+          <div class="pp-exits">
+            <div class="pp-exits-header">Group Stage Exits</div>
+            <div class="pp-exits-cols">
+              <div class="pp-exits-col">
+                <div class="pp-exits-row"><span class="pp-exits-place">9th</span><span class="pp-exits-team">Heroic</span><span class="pp-exits-amount">$12,500</span></div>
+                <div class="pp-exits-row"><span class="pp-exits-place">10th</span><span class="pp-exits-team">Astralis</span><span class="pp-exits-amount">$12,500</span></div>
+                <div class="pp-exits-row"><span class="pp-exits-place">11th</span><span class="pp-exits-team">MOUZ</span><span class="pp-exits-amount">$12,500</span></div>
+                <div class="pp-exits-row"><span class="pp-exits-place">12th</span><span class="pp-exits-team">BIG</span><span class="pp-exits-amount">$12,500</span></div>
+              </div>
+              <div class="pp-exits-col">
+                <div class="pp-exits-row"><span class="pp-exits-place">13th</span><span class="pp-exits-team">Falcons</span><span class="pp-exits-amount">$6,250</span></div>
+                <div class="pp-exits-row"><span class="pp-exits-place">14th</span><span class="pp-exits-team">paiN</span><span class="pp-exits-amount">$6,250</span></div>
+                <div class="pp-exits-row"><span class="pp-exits-place">15th</span><span class="pp-exits-team">Monte</span><span class="pp-exits-amount">$6,250</span></div>
+                <div class="pp-exits-row"><span class="pp-exits-place">16th</span><span class="pp-exits-team">GamerLegion</span><span class="pp-exits-amount">$6,250</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-          <!-- ── Heroic ── -->
-          <tr class="dt-row" data-key="heroic" onclick="toggleTeam(this)">
-            <td><span class="dt-seed-badge">#12</span></td>
-            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(45,212,191,.15);border-color:rgba(45,212,191,.45);color:#2dd4bf;">HRC</div><span class="dt-name">Heroic</span></div></td>
-            <td class="dt-stat">3</td><td class="dt-stat">5</td><td class="dt-stat">3</td>
-            <td class="dt-stat dt-rd-pos">+2</td>
-            <td class="dt-rec-cell"><span class="dt-rec-badge dr-win">2-1</span></td>
-            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
-          </tr>
-          <tr class="dt-hist-tr" id="hist-heroic" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
-            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(45,212,191,.15);border-color:rgba(45,212,191,.45);color:#2dd4bf;">HRC</div><span class="dt-hist-tname">Heroic</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">1</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(6,182,212,.15);border-color:rgba(6,182,212,.45);color:#22d3ee;">TL</div><span class="dt-hist-tname">Liquid</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(45,212,191,.15);border-color:rgba(45,212,191,.45);color:#2dd4bf;">HRC</div><span class="dt-hist-tname">Heroic</span></div><div class="dt-hist-score"><span class="dt-hs-l">1</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.4);color:#4ade80;">MZ</div><span class="dt-hist-tname">MOUZ</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">19 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(45,212,191,.15);border-color:rgba(45,212,191,.45);color:#2dd4bf;">HRC</div><span class="dt-hist-tname">Heroic</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">0</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(245,158,11,.18);border-color:rgba(245,158,11,.45);color:#fcd34d;">FNC</div><span class="dt-hist-tname">Fnatic</span></div><span class="dt-hist-bo">BO3</span></div>
-          </div></td></tr>
+        <!-- 3. Teams -->
+        <div class="bi-section">
+          <div class="bi-section-title">Participating Teams</div>
+          <div class="teams-new-grid" id="teamsGrid">
+            <div class="tn-card"><div class="tn-head"><span class="tn-seed">#1</span><div class="tn-logo" style="background:rgba(250,204,21,.2);border-color:rgba(250,204,21,.55);color:#fde047;">VIT</div><div class="tn-name">Vitality</div><div class="tn-rank">HLTV #1</div></div></div>
+            <div class="tn-card"><div class="tn-head"><span class="tn-seed">#2</span><img src="img_M/NAVI_Logo_2020.png" style="width:62px;height:62px;object-fit:contain;display:block;margin:6px auto 4px;"/><div class="tn-name">NAVI</div><div class="tn-rank">HLTV #3</div></div></div>
+            <div class="tn-card"><div class="tn-head"><span class="tn-seed">#3</span><div class="tn-logo" style="background:rgba(129,140,248,.2);border-color:rgba(129,140,248,.55);color:#818cf8;">FZ</div><div class="tn-name">FaZe Clan</div><div class="tn-rank">HLTV #2</div></div></div>
+            <div class="tn-card"><div class="tn-head"><span class="tn-seed">#4</span><img src="img_M/spirit.png" style="width:62px;height:62px;object-fit:contain;display:block;margin:6px auto 4px;filter:invert(1);"/><div class="tn-name">Team Spirit</div><div class="tn-rank">HLTV #4</div></div></div>
+            <div class="tn-card"><div class="tn-head"><span class="tn-seed">#5</span><div class="tn-logo" style="background:rgba(249,115,22,.2);border-color:rgba(249,115,22,.55);color:#fb923c;">G2</div><div class="tn-name">G2 Esports</div><div class="tn-rank">HLTV #5</div></div></div>
+            <div class="tn-card"><div class="tn-head"><span class="tn-seed">#6</span><div class="tn-logo" style="background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.4);color:#4ade80;">MOZ</div><div class="tn-name">MOUZ</div><div class="tn-rank">HLTV #6</div></div></div>
+            <div class="tn-card"><div class="tn-head"><span class="tn-seed">#7</span><div class="tn-logo" style="background:rgba(6,182,212,.15);border-color:rgba(6,182,212,.4);color:#22d3ee;">TL</div><div class="tn-name">Team Liquid</div><div class="tn-rank">HLTV #7</div></div></div>
+            <div class="tn-card"><div class="tn-head"><span class="tn-seed">#8</span><div class="tn-logo" style="background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.4);color:#38bdf8;">C9</div><div class="tn-name">Cloud9</div><div class="tn-rank">HLTV #12</div></div></div>
+            <div class="tn-card"><div class="tn-head"><span class="tn-seed">#9</span><div class="tn-logo" style="background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.4);color:#f87171;">HRC</div><div class="tn-name">Heroic</div><div class="tn-rank">HLTV #9</div></div></div>
+            <div class="tn-card"><div class="tn-head"><span class="tn-seed">#10</span><div class="tn-logo" style="background:rgba(244,114,182,.15);border-color:rgba(244,114,182,.4);color:#f472b6;">FAL</div><div class="tn-name">Falcons</div><div class="tn-rank">HLTV #10</div></div></div>
+            <div class="tn-card"><div class="tn-head"><span class="tn-seed">#11</span><div class="tn-logo" style="background:rgba(244,114,182,.15);border-color:rgba(244,114,182,.4);color:#f472b6;">GL</div><div class="tn-name">GamerLegion</div><div class="tn-rank">HLTV #11</div></div></div>
+            <div class="tn-card"><div class="tn-head"><span class="tn-seed">#12</span><div class="tn-logo" style="background:rgba(245,158,11,.15);border-color:rgba(245,158,11,.4);color:#fcd34d;">FNC</div><div class="tn-name">Fnatic</div><div class="tn-rank">HLTV #13</div></div></div>
+            <div class="tn-card"><div class="tn-head"><span class="tn-seed">#13</span><div class="tn-logo" style="background:rgba(163,230,53,.15);border-color:rgba(163,230,53,.4);color:#a3e635;">BIG</div><div class="tn-name">BIG</div><div class="tn-rank">HLTV #15</div></div></div>
+            <div class="tn-card"><div class="tn-head"><span class="tn-seed">#14</span><div class="tn-logo" style="background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.4);color:#60a5fa;">NIP</div><div class="tn-name">Ninjas in P.</div><div class="tn-rank">HLTV #14</div></div></div>
+            <div class="tn-card"><div class="tn-head"><span class="tn-seed">#15</span><div class="tn-logo" style="background:rgba(167,139,250,.18);border-color:rgba(167,139,250,.45);color:#a78bfa;">pN</div><div class="tn-name">paiN Gaming</div><div class="tn-rank">HLTV #20</div></div></div>
+            <div class="tn-card"><div class="tn-head"><span class="tn-seed">#16</span><div class="tn-logo" style="background:rgba(148,163,184,.15);border-color:rgba(148,163,184,.4);color:#94a3b8;">MNT</div><div class="tn-name">Monte</div><div class="tn-rank">HLTV #16</div></div></div>
+          </div>
+        </div>
 
-          <!-- ── Falcons ── -->
-          <tr class="dt-row" data-key="fal" onclick="toggleTeam(this)">
-            <td><span class="dt-seed-badge">#17</span></td>
-            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.4);color:#f87171;">FAL</div><span class="dt-name">Falcons</span></div></td>
-            <td class="dt-stat">2</td><td class="dt-stat">3</td><td class="dt-stat">3</td>
-            <td class="dt-stat">0</td>
-            <td class="dt-rec-cell"><span class="dt-rec-badge dr-neu">1-1</span></td>
-            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
-          </tr>
-          <tr class="dt-hist-tr" id="hist-fal" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
-            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.4);color:#f87171;">FAL</div><span class="dt-hist-tname">Falcons</span></div><div class="dt-hist-score"><span class="dt-hs-l">1</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(59,130,246,.18);border-color:rgba(59,130,246,.45);color:#60a5fa;">NIP</div><span class="dt-hist-tname">NIP</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.4);color:#f87171;">FAL</div><span class="dt-hist-tname">Falcons</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">1</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(244,114,182,.15);border-color:rgba(244,114,182,.4);color:#f472b6;">GL</div><span class="dt-hist-tname">GL</span></div><span class="dt-hist-bo">BO3</span></div>
-          </div></td></tr>
+        <!-- 4. Broadcast -->
+        <div class="bi-section">
+          <div class="bi-section-title">Broadcast &amp; Casters</div>
+          <div class="bc-grid">
+            <div class="bc-card">
+              <span class="bc-platform bc-twitch">🟣 Twitch</span>
+              <div class="bc-channel">ESL_CSGO</div>
+              <div class="bc-lang">🇬🇧 English</div>
+              <div class="bc-viewers">~45,000 concurrent viewers</div>
+              <a class="bc-watch" href="#">Watch →</a>
+            </div>
+            <div class="bc-card">
+              <span class="bc-platform bc-youtube">▶ YouTube</span>
+              <div class="bc-channel">ESL Counter-Strike</div>
+              <div class="bc-lang">🇬🇧 English</div>
+              <div class="bc-viewers">~12,000 concurrent viewers</div>
+              <a class="bc-watch" href="#">Watch →</a>
+            </div>
+            <div class="bc-card">
+              <span class="bc-platform bc-twitch">🟣 Twitch</span>
+              <div class="bc-channel">LaurenceCS</div>
+              <div class="bc-lang">🇫🇷 Français</div>
+              <div class="bc-viewers">~8,000 concurrent viewers</div>
+              <a class="bc-watch" href="#">Watch →</a>
+            </div>
+          </div>
+        </div>
 
-          <!-- ── NIP ── -->
-          <tr class="dt-row" data-key="nip" onclick="toggleTeam(this)">
-            <td><span class="dt-seed-badge">#19</span></td>
-            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(59,130,246,.18);border-color:rgba(59,130,246,.45);color:#60a5fa;">NIP</div><span class="dt-name">NIP</span></div></td>
-            <td class="dt-stat">3</td><td class="dt-stat">3</td><td class="dt-stat">5</td>
-            <td class="dt-stat dt-rd-neg">-2</td>
-            <td class="dt-rec-cell"><span class="dt-rec-badge dr-los">1-2</span></td>
-            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
-          </tr>
-          <tr class="dt-hist-tr" id="hist-nip" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
-            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(59,130,246,.18);border-color:rgba(59,130,246,.45);color:#60a5fa;">NIP</div><span class="dt-hist-tname">NIP</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">1</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.4);color:#f87171;">FAL</div><span class="dt-hist-tname">Falcons</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(59,130,246,.18);border-color:rgba(59,130,246,.45);color:#60a5fa;">NIP</div><span class="dt-hist-tname">NIP</span></div><div class="dt-hist-score"><span class="dt-hs-l">0</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(249,115,22,.2);border-color:rgba(249,115,22,.55);color:#fb923c;">G2</div><span class="dt-hist-tname">G2</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">19 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(59,130,246,.18);border-color:rgba(59,130,246,.45);color:#60a5fa;">NIP</div><span class="dt-hist-tname">NIP</span></div><div class="dt-hist-score"><span class="dt-hs-l">1</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(129,140,248,.2);border-color:rgba(129,140,248,.55);color:#818cf8;">FZ</div><span class="dt-hist-tname">FaZe</span></div><span class="dt-hist-bo">BO3</span></div>
-          </div></td></tr>
-
-          <!-- ── Fnatic ── -->
-          <tr class="dt-row" data-key="fnatic" onclick="toggleTeam(this)">
-            <td><span class="dt-seed-badge">#24</span></td>
-            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(245,158,11,.18);border-color:rgba(245,158,11,.45);color:#fcd34d;">FNC</div><span class="dt-name">Fnatic</span></div></td>
-            <td class="dt-stat">3</td><td class="dt-stat">3</td><td class="dt-stat">5</td>
-            <td class="dt-stat dt-rd-neg">-2</td>
-            <td class="dt-rec-cell"><span class="dt-rec-badge dr-los">1-2</span></td>
-            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
-          </tr>
-          <tr class="dt-hist-tr" id="hist-fnatic" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
-            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(245,158,11,.18);border-color:rgba(245,158,11,.45);color:#fcd34d;">FNC</div><span class="dt-hist-tname">Fnatic</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">1</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.4);color:#fdba74;">AST</div><span class="dt-hist-tname">Astralis</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(245,158,11,.18);border-color:rgba(245,158,11,.45);color:#fcd34d;">FNC</div><span class="dt-hist-tname">Fnatic</span></div><div class="dt-hist-score"><span class="dt-hs-l">1</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(250,204,21,.2);border-color:rgba(250,204,21,.55);color:#fde047;">VIT</div><span class="dt-hist-tname">Vitality</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">19 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(245,158,11,.18);border-color:rgba(245,158,11,.45);color:#fcd34d;">FNC</div><span class="dt-hist-tname">Fnatic</span></div><div class="dt-hist-score"><span class="dt-hs-l">0</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(45,212,191,.15);border-color:rgba(45,212,191,.45);color:#2dd4bf;">HRC</div><span class="dt-hist-tname">Heroic</span></div><span class="dt-hist-bo">BO3</span></div>
-          </div></td></tr>
-
-          <!-- ── Liquid ── -->
-          <tr class="dt-row" data-key="liquid" onclick="toggleTeam(this)">
-            <td><span class="dt-seed-badge">#28</span></td>
-            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(6,182,212,.15);border-color:rgba(6,182,212,.45);color:#22d3ee;">TL</div><span class="dt-name">Liquid</span></div></td>
-            <td class="dt-stat">2</td><td class="dt-stat">3</td><td class="dt-stat">2</td>
-            <td class="dt-stat dt-rd-pos">+1</td>
-            <td class="dt-rec-cell"><span class="dt-rec-badge dr-neu">1-1</span></td>
-            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
-          </tr>
-          <tr class="dt-hist-tr" id="hist-liquid" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
-            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(6,182,212,.15);border-color:rgba(6,182,212,.45);color:#22d3ee;">TL</div><span class="dt-hist-tname">Liquid</span></div><div class="dt-hist-score"><span class="dt-hs-l">1</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(45,212,191,.15);border-color:rgba(45,212,191,.45);color:#2dd4bf;">HRC</div><span class="dt-hist-tname">Heroic</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(6,182,212,.15);border-color:rgba(6,182,212,.45);color:#22d3ee;">TL</div><span class="dt-hist-tname">Liquid</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">0</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.45);color:#38bdf8;">C9</div><span class="dt-hist-tname">Cloud9</span></div><span class="dt-hist-bo">BO3</span></div>
-          </div></td></tr>
-
-          <!-- ── BIG ── -->
-          <tr class="dt-row" data-key="big" onclick="toggleTeam(this)">
-            <td><span class="dt-seed-badge">#33</span></td>
-            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(163,230,53,.15);border-color:rgba(163,230,53,.4);color:#a3e635;">BIG</div><span class="dt-name">BIG</span></div></td>
-            <td class="dt-stat">2</td><td class="dt-stat">2</td><td class="dt-stat">3</td>
-            <td class="dt-stat dt-rd-neg">-1</td>
-            <td class="dt-rec-cell"><span class="dt-rec-badge dr-neu">1-1</span></td>
-            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
-          </tr>
-          <tr class="dt-hist-tr" id="hist-big" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
-            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(163,230,53,.15);border-color:rgba(163,230,53,.4);color:#a3e635;">BIG</div><span class="dt-hist-tname">BIG</span></div><div class="dt-hist-score"><span class="dt-hs-l">0</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(250,204,21,.2);border-color:rgba(250,204,21,.55);color:#fde047;">VIT</div><span class="dt-hist-tname">Vitality</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(163,230,53,.15);border-color:rgba(163,230,53,.4);color:#a3e635;">BIG</div><span class="dt-hist-tname">BIG</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">1</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.4);color:#fdba74;">AST</div><span class="dt-hist-tname">Astralis</span></div><span class="dt-hist-bo">BO3</span></div>
-          </div></td></tr>
-
-          <!-- ── Cloud9 ── -->
-          <tr class="dt-row" data-key="c9" onclick="toggleTeam(this)">
-            <td><span class="dt-seed-badge">#35</span></td>
-            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.45);color:#38bdf8;">C9</div><span class="dt-name">Cloud9</span></div></td>
-            <td class="dt-stat">3</td><td class="dt-stat">2</td><td class="dt-stat">4</td>
-            <td class="dt-stat dt-rd-neg">-2</td>
-            <td class="dt-rec-cell"><span class="dt-rec-badge dr-los">1-2</span></td>
-            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
-          </tr>
-          <tr class="dt-hist-tr" id="hist-c9" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
-            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.45);color:#38bdf8;">C9</div><span class="dt-hist-tname">Cloud9</span></div><div class="dt-hist-score"><span class="dt-hs-l">0</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.4);color:#4ade80;">MZ</div><span class="dt-hist-tname">MOUZ</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.45);color:#38bdf8;">C9</div><span class="dt-hist-tname">Cloud9</span></div><div class="dt-hist-score"><span class="dt-hs-l">0</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(6,182,212,.15);border-color:rgba(6,182,212,.45);color:#22d3ee;">TL</div><span class="dt-hist-tname">Liquid</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">19 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.45);color:#38bdf8;">C9</div><span class="dt-hist-tname">Cloud9</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">0</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.4);color:#fdba74;">AST</div><span class="dt-hist-tname">Astralis</span></div><span class="dt-hist-bo">BO3</span></div>
-          </div></td></tr>
-
-          <!-- ── Astralis ── -->
-          <tr class="dt-row dt-row-e" data-key="ast" onclick="toggleTeam(this)">
-            <td><span class="dt-seed-badge">#38</span></td>
-            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.4);color:#fdba74;">AST</div><span class="dt-name">Astralis</span></div></td>
-            <td class="dt-stat">3</td><td class="dt-stat">2</td><td class="dt-stat">6</td>
-            <td class="dt-stat dt-rd-neg">-4</td>
-            <td class="dt-rec-cell"><span class="dt-rec-badge dr-03">0-3</span></td>
-            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
-          </tr>
-          <tr class="dt-hist-tr" id="hist-ast" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
-            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.4);color:#fdba74;">AST</div><span class="dt-hist-tname">Astralis</span></div><div class="dt-hist-score"><span class="dt-hs-l">1</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(245,158,11,.18);border-color:rgba(245,158,11,.45);color:#fcd34d;">FNC</div><span class="dt-hist-tname">Fnatic</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.4);color:#fdba74;">AST</div><span class="dt-hist-tname">Astralis</span></div><div class="dt-hist-score"><span class="dt-hs-l">1</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(163,230,53,.15);border-color:rgba(163,230,53,.4);color:#a3e635;">BIG</div><span class="dt-hist-tname">BIG</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">19 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.4);color:#fdba74;">AST</div><span class="dt-hist-tname">Astralis</span></div><div class="dt-hist-score"><span class="dt-hs-l">0</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.45);color:#38bdf8;">C9</div><span class="dt-hist-tname">Cloud9</span></div><span class="dt-hist-bo">BO3</span></div>
-          </div></td></tr>
-
-          <!-- ── GamerLegion ── -->
-          <tr class="dt-row" data-key="gl" onclick="toggleTeam(this)">
-            <td><span class="dt-seed-badge">#42</span></td>
-            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(244,114,182,.15);border-color:rgba(244,114,182,.4);color:#f472b6;">GL</div><span class="dt-name">GamerLegion</span></div></td>
-            <td class="dt-stat">3</td><td class="dt-stat">3</td><td class="dt-stat">5</td>
-            <td class="dt-stat dt-rd-neg">-2</td>
-            <td class="dt-rec-cell"><span class="dt-rec-badge dr-los">1-2</span></td>
-            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
-          </tr>
-          <tr class="dt-hist-tr" id="hist-gl" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
-            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(244,114,182,.15);border-color:rgba(244,114,182,.4);color:#f472b6;">GL</div><span class="dt-hist-tname">GL</span></div><div class="dt-hist-score"><span class="dt-hs-l">0</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(249,115,22,.2);border-color:rgba(249,115,22,.55);color:#fb923c;">G2</div><span class="dt-hist-tname">G2</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(244,114,182,.15);border-color:rgba(244,114,182,.4);color:#f472b6;">GL</div><span class="dt-hist-tname">GL</span></div><div class="dt-hist-score"><span class="dt-hs-l">1</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.4);color:#f87171;">FAL</div><span class="dt-hist-tname">Falcons</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">19 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(244,114,182,.15);border-color:rgba(244,114,182,.4);color:#f472b6;">GL</div><span class="dt-hist-tname">GL</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">1</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(148,163,184,.15);border-color:rgba(148,163,184,.4);color:#94a3b8;">MNT</div><span class="dt-hist-tname">Monte</span></div><span class="dt-hist-bo">BO3</span></div>
-          </div></td></tr>
-
-          <!-- ── paiN ── -->
-          <tr class="dt-row" data-key="pain" onclick="toggleTeam(this)">
-            <td><span class="dt-seed-badge">#45</span></td>
-            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(167,139,250,.18);border-color:rgba(167,139,250,.45);color:#a78bfa;">pN</div><span class="dt-name">paiN</span></div></td>
-            <td class="dt-stat">2</td><td class="dt-stat">2</td><td class="dt-stat">2</td>
-            <td class="dt-stat">0</td>
-            <td class="dt-rec-cell"><span class="dt-rec-badge dr-neu">1-1</span></td>
-            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
-          </tr>
-          <tr class="dt-hist-tr" id="hist-pain" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
-            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(167,139,250,.18);border-color:rgba(167,139,250,.45);color:#a78bfa;">pN</div><span class="dt-hist-tname">paiN</span></div><div class="dt-hist-score"><span class="dt-hs-l">0</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(251,191,36,.2);border-color:rgba(251,191,36,.55);color:#fbbf24;">NaVi</div><span class="dt-hist-tname">NAVI</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(167,139,250,.18);border-color:rgba(167,139,250,.45);color:#a78bfa;">pN</div><span class="dt-hist-tname">paiN</span></div><div class="dt-hist-score"><span class="dt-hs-w">2</span><span class="dt-hs-s">—</span><span class="dt-hs-l">0</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(148,163,184,.15);border-color:rgba(148,163,184,.4);color:#94a3b8;">MNT</div><span class="dt-hist-tname">Monte</span></div><span class="dt-hist-bo">BO3</span></div>
-          </div></td></tr>
-
-          <!-- ── Monte ── -->
-          <tr class="dt-row dt-row-e" data-key="monte" onclick="toggleTeam(this)">
-            <td><span class="dt-seed-badge">#51</span></td>
-            <td><div class="dt-team-cell"><div class="dt-logo-t" style="background:rgba(148,163,184,.15);border-color:rgba(148,163,184,.4);color:#94a3b8;">MNT</div><span class="dt-name">Monte</span></div></td>
-            <td class="dt-stat">3</td><td class="dt-stat">2</td><td class="dt-stat">6</td>
-            <td class="dt-stat dt-rd-neg">-4</td>
-            <td class="dt-rec-cell"><span class="dt-rec-badge dr-03">0-3</span></td>
-            <td class="dt-expand-cell"><span class="dt-arrow">▶</span></td>
-          </tr>
-          <tr class="dt-hist-tr" id="hist-monte" style="display:none"><td colspan="8"><div class="dt-hist-wrap">
-            <div class="dt-hist-match"><span class="dt-hist-date">15 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(148,163,184,.15);border-color:rgba(148,163,184,.4);color:#94a3b8;">MNT</div><span class="dt-hist-tname">Monte</span></div><div class="dt-hist-score"><span class="dt-hs-l">1</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(129,140,248,.2);border-color:rgba(129,140,248,.55);color:#818cf8;">FZ</div><span class="dt-hist-tname">FaZe</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">17 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(148,163,184,.15);border-color:rgba(148,163,184,.4);color:#94a3b8;">MNT</div><span class="dt-hist-tname">Monte</span></div><div class="dt-hist-score"><span class="dt-hs-l">0</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(167,139,250,.18);border-color:rgba(167,139,250,.45);color:#a78bfa;">pN</div><span class="dt-hist-tname">paiN</span></div><span class="dt-hist-bo">BO3</span></div>
-            <div class="dt-hist-match"><span class="dt-hist-date">19 fév</span><div class="dt-hist-team"><div class="dt-logo-sm" style="background:rgba(148,163,184,.15);border-color:rgba(148,163,184,.4);color:#94a3b8;">MNT</div><span class="dt-hist-tname">Monte</span></div><div class="dt-hist-score"><span class="dt-hs-l">1</span><span class="dt-hs-s">—</span><span class="dt-hs-w">2</span></div><div class="dt-hist-team right"><div class="dt-logo-sm" style="background:rgba(244,114,182,.15);border-color:rgba(244,114,182,.4);color:#f472b6;">GL</div><span class="dt-hist-tname">GL</span></div><span class="dt-hist-bo">BO3</span></div>
-          </div></td></tr>
-
-          </tbody>
-        </table>
       </div>
 
     </div><!-- /main-content -->
@@ -1814,31 +1977,17 @@
 
       <div class="bb-header">
         <span class="bb-title">Bet Builder</span>
-        <span class="bb-count">2</span>
+        <span class="bb-count" id="bb-count">0</span>
         <button class="bb-toggle" id="bbToggle" title="Réduire / Agrandir">&#10095;</button>
       </div>
 
-      <div class="bb-bet">
-        <div class="bb-bet-game">League of Legends · Worlds 2025</div>
-        <div class="bb-bet-match">T1 vs Gen.G</div>
-        <div class="bb-bet-pick">T1 à gagner</div>
-        <div class="bb-bet-odds">1.65</div>
-        <div class="bb-bet-remove">✕ retirer</div>
-      </div>
-
-      <div class="bb-bet">
-        <div class="bb-bet-game">CS2 · ESL Pro League</div>
-        <div class="bb-bet-match">NaVi vs FaZe Clan</div>
-        <div class="bb-bet-pick">NaVi à gagner</div>
-        <div class="bb-bet-odds">1.85</div>
-        <div class="bb-bet-remove">✕ retirer</div>
-      </div>
+      <div id="bb-bets-list"></div>
 
       <div class="bb-divider"></div>
 
       <div class="bb-combined">
         <span class="bb-combined-label">Cote combinée</span>
-        <span class="bb-combined-val">3.05</span>
+        <span class="bb-combined-val" id="bb-combined-val">1.00</span>
       </div>
 
       <div class="bb-divider"></div>
@@ -1857,7 +2006,7 @@
 
       <div class="bb-gains">
         <span class="bb-gains-label">Gains potentiels</span>
-        <span class="bb-gains-val" id="bbGains">£30.50</span>
+        <span class="bb-gains-val" id="bbGains">£0.00</span>
       </div>
 
       <button class="bb-submit">Placer le pari</button>
@@ -1868,6 +2017,7 @@
   </div><!-- /content-layout -->
 </div><!-- /page -->
 
+<script>if(sessionStorage.getItem('sb_access')!=='1'){window.location.replace('gate.html');}</script>
 <script>
   function toggleGame(el) {
     var item = el.parentElement;
@@ -1876,86 +2026,14 @@
     if (!isOpen) item.classList.add('open');
   }
 
-  document.getElementById('bbToggle').addEventListener('click', function () {
-    document.querySelector('.sidebar-right').classList.toggle('collapsed');
-  });
-
-  (function () {
-    var stake = document.getElementById('bbStake');
-    var gains = document.getElementById('bbGains');
-    var COMBINED = 3.05;
-    function update() { gains.textContent = '£' + ((parseFloat(stake.value) || 0) * COMBINED).toFixed(2); }
-    stake.addEventListener('input', update);
-    document.querySelectorAll('.bb-qa').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        stake.value = (parseFloat(stake.value) || 0) + parseFloat(btn.textContent.replace('+', ''));
-        update();
-      });
-    });
-    update();
-  })();
 
   // ── Detailed view ──────────────────────────────────────────
-  function toggleDetail(btn) {
-    var detail = document.getElementById('viewDetail');
-    var active = btn.classList.toggle('active');
-    if (active) {
-      // fade out all bracket views
-      ['viewSE','viewDE','viewSwiss'].forEach(function(id) {
-        var el = document.getElementById(id);
-        if (el && el.style.display !== 'none') {
-          el.style.transition = 'opacity 0.15s';
-          el.style.opacity = '0';
-          setTimeout(function(){ el.style.display='none'; el.style.opacity=''; el.style.transition=''; }, 155);
-        }
-      });
-      // fade in detail
-      detail.style.display = 'block';
-      detail.style.opacity = '0';
-      detail.style.transition = 'opacity 0.15s';
-      requestAnimationFrame(function(){ detail.style.opacity = '1'; });
-    } else {
-      detail.style.transition = 'opacity 0.15s';
-      detail.style.opacity = '0';
-      setTimeout(function(){
-        detail.style.display = 'none';
-        detail.style.opacity = ''; detail.style.transition = '';
-        // restore active bracket
-        var af = document.querySelector('.fmt-btn.active');
-        if (af) {
-          var fmap = {'Single Elimination':'viewSE','Double Elimination':'viewDE','Swiss':'viewSwiss'};
-          var el = document.getElementById(fmap[af.textContent.trim()]);
-          if (el) {
-            el.style.display = '';
-            if (fmap[af.textContent.trim()] === 'viewDE') {
-              if (window.drawDE) window.drawDE();
-              setTimeout(function () { if (window.positionDE) window.positionDE(); }, 100);
-            }
-            if (fmap[af.textContent.trim()] === 'viewSwiss' && window.drawSW) window.drawSW();
-          }
-        }
-      }, 155);
-    }
-  }
-
-  function toggleTeam(row) {
-    var key = row.dataset.key;
-    var expanded = row.classList.toggle('expanded');
-    var hist = document.getElementById('hist-' + key);
-    if (hist) hist.style.display = expanded ? '' : 'none';
-  }
-
   function setFormat(btn) {
-    // exit detail mode
-    var detailBtn = document.getElementById('detailBtn');
-    var detailView = document.getElementById('viewDetail');
-    if (detailBtn) detailBtn.classList.remove('active');
-    if (detailView) { detailView.style.display = 'none'; detailView.style.opacity = ''; }
-
     document.querySelectorAll('.fmt-btn').forEach(function (b) { b.classList.remove('active'); });
     btn.classList.add('active');
+    var ALL_VIEWS = ['viewSE', 'viewDE', 'viewSwiss'];
     var map = { 'Single Elimination': 'viewSE', 'Double Elimination': 'viewDE', 'Swiss': 'viewSwiss' };
-    ['viewSE', 'viewDE', 'viewSwiss'].forEach(function (id) {
+    ALL_VIEWS.forEach(function (id) {
       var el = document.getElementById(id);
       if (el) el.style.display = 'none';
     });
@@ -1971,10 +2049,81 @@
         if (targetId === 'viewSwiss' && window.drawSW) window.drawSW();
       }
     }
-    // hint: show tooltip on Detailed button when SE or DE is active
-    var wrap = document.getElementById('detailWrap');
-    if (wrap) wrap.classList.toggle('hint-on', btn.textContent.trim() !== 'Swiss');
   }
+
+  (function() {
+    var TEAMS = [
+      { logo: '<div class="trp-logo-circle" style="background:rgba(250,204,21,.2);border-color:rgba(250,204,21,.55);color:#fde047;">VIT</div>', name: 'Vitality', rank: 'HLTV #1', players: [{f:'🇫🇷',n:'ZywOo',r:'AWP',c:'role-awp'},{f:'🇫🇷',n:'apEX',r:'IGL',c:'role-igl'},{f:'🇬🇧',n:'mezii',r:'Rifler',c:'role-rifler'},{f:'🇮🇱',n:'flameZ',r:'Entry',c:'role-entry'},{f:'🇿🇦',n:'Spinx',r:'Rifler',c:'role-rifler'}] },
+      { logo: '<img src="img_M/NAVI_Logo_2020.png" style="width:64px;height:64px;object-fit:contain;display:block;flex-shrink:0;"/>', name: 'NAVI', rank: 'HLTV #3', players: [{f:'🇺🇦',n:'s1mple',r:'AWP',c:'role-awp'},{f:'🇷🇺',n:'electronic',r:'Rifler',c:'role-rifler'},{f:'🇺🇦',n:'b1t',r:'Entry',c:'role-entry'},{f:'🇷🇺',n:'Perfecto',r:'Support',c:'role-support'},{f:'🇺🇦',n:'npl',r:'IGL',c:'role-igl'}] },
+      { logo: '<div class="trp-logo-circle" style="background:rgba(129,140,248,.2);border-color:rgba(129,140,248,.55);color:#818cf8;">FZ</div>', name: 'FaZe Clan', rank: 'HLTV #2', players: [{f:'🇧🇪',n:'ropz',r:'Rifler',c:'role-rifler'},{f:'🇩🇰',n:'karrigan',r:'IGL',c:'role-igl'},{f:'🇨🇿',n:'broky',r:'AWP',c:'role-awp'},{f:'🇳🇴',n:'rain',r:'Entry',c:'role-entry'},{f:'🇸🇰',n:'frozen',r:'Rifler',c:'role-rifler'}] },
+      { logo: '<img src="img_M/spirit.png" style="width:64px;height:64px;object-fit:contain;display:block;flex-shrink:0;filter:invert(1);"/>', name: 'Team Spirit', rank: 'HLTV #4', players: [{f:'🇷🇺',n:'donk',r:'Rifler',c:'role-rifler'},{f:'🇷🇺',n:'chopper',r:'IGL',c:'role-igl'},{f:'🇷🇺',n:'magixx',r:'AWP',c:'role-awp'},{f:'🇺🇦',n:'mir',r:'Support',c:'role-support'},{f:'🇷🇺',n:'zont1x',r:'Entry',c:'role-entry'}] },
+      { logo: '<div class="trp-logo-circle" style="background:rgba(249,115,22,.2);border-color:rgba(249,115,22,.55);color:#fb923c;">G2</div>', name: 'G2 Esports', rank: 'HLTV #5', players: [{f:'🇧🇦',n:'NiKo',r:'Rifler',c:'role-rifler'},{f:'🇸🇪',n:'Hooxi',r:'IGL',c:'role-igl'},{f:'🇧🇦',n:'huNter',r:'Entry',c:'role-entry'},{f:'🇦🇺',n:'jks',r:'Rifler',c:'role-rifler'},{f:'🇷🇸',n:'nexa',r:'Support',c:'role-support'}] },
+      { logo: '<div class="trp-logo-circle" style="background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.4);color:#4ade80;">MOZ</div>', name: 'MOUZ', rank: 'HLTV #6', players: [{f:'🇭🇺',n:'torzsi',r:'AWP',c:'role-awp'},{f:'🇦🇺',n:'dexter',r:'IGL',c:'role-igl'},{f:'🇩🇪',n:'xertioN',r:'Rifler',c:'role-rifler'},{f:'🇩🇰',n:'siuhy',r:'Rifler',c:'role-rifler'},{f:'🇫🇮',n:'Jimpphat',r:'Entry',c:'role-entry'}] },
+      { logo: '<div class="trp-logo-circle" style="background:rgba(6,182,212,.15);border-color:rgba(6,182,212,.4);color:#22d3ee;">TL</div>', name: 'Team Liquid', rank: 'HLTV #7', players: [{f:'🇱🇻',n:'YEKINDAR',r:'Entry',c:'role-entry'},{f:'🇺🇸',n:'nitr0',r:'IGL',c:'role-igl'},{f:'🇨🇦',n:'NAF',r:'Rifler',c:'role-rifler'},{f:'🇺🇸',n:'EliGE',r:'Rifler',c:'role-rifler'},{f:'🇺🇸',n:'oSee',r:'AWP',c:'role-awp'}] },
+      { logo: '<div class="trp-logo-circle" style="background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.4);color:#38bdf8;">C9</div>', name: 'Cloud9', rank: 'HLTV #12', players: [{f:'🇷🇺',n:'ax1Le',r:'Rifler',c:'role-rifler'},{f:'🇷🇺',n:'Boombl4',r:'IGL',c:'role-igl'},{f:'🇷🇺',n:'Perfecto',r:'Support',c:'role-support'},{f:'🇰🇿',n:'HObbit',r:'Rifler',c:'role-rifler'},{f:'🇷🇺',n:'ICY',r:'Entry',c:'role-entry'}] },
+      { logo: '<div class="trp-logo-circle" style="background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.4);color:#f87171;">HRC</div>', name: 'Heroic', rank: 'HLTV #9', players: [{f:'🇩🇰',n:'stavn',r:'Rifler',c:'role-rifler'},{f:'🇩🇰',n:'cadiaN',r:'IGL',c:'role-igl'},{f:'🇩🇰',n:'sjuush',r:'Rifler',c:'role-rifler'},{f:'🇩🇰',n:'TeSeS',r:'Rifler',c:'role-rifler'},{f:'🇸🇪',n:'nicoodoz',r:'AWP',c:'role-awp'}] },
+      { logo: '<div class="trp-logo-circle" style="background:rgba(244,114,182,.15);border-color:rgba(244,114,182,.4);color:#f472b6;">FAL</div>', name: 'Falcons', rank: 'HLTV #10', players: [{f:'🇫🇷',n:'Sunpayus',r:'Rifler',c:'role-rifler'},{f:'🇫🇷',n:'maLeK',r:'IGL',c:'role-igl'},{f:'🇩🇰',n:'dupreeh',r:'Entry',c:'role-entry'},{f:'🇩🇪',n:'SyrsoN',r:'AWP',c:'role-awp'},{f:'🇷🇺',n:'flamie',r:'Support',c:'role-support'}] },
+      { logo: '<div class="trp-logo-circle" style="background:rgba(244,114,182,.15);border-color:rgba(244,114,182,.4);color:#f472b6;">GL</div>', name: 'GamerLegion', rank: 'HLTV #11', players: [{f:'🇸🇪',n:'FASHR',r:'Entry',c:'role-entry'},{f:'🇸🇪',n:'hampus',r:'IGL',c:'role-igl'},{f:'🇸🇪',n:'afro',r:'Rifler',c:'role-rifler'},{f:'🇭🇺',n:'BOROS',r:'AWP',c:'role-awp'},{f:'🇫🇷',n:'misutaaa',r:'Rifler',c:'role-rifler'}] },
+      { logo: '<div class="trp-logo-circle" style="background:rgba(245,158,11,.15);border-color:rgba(245,158,11,.4);color:#fcd34d;">FNC</div>', name: 'Fnatic', rank: 'HLTV #13', players: [{f:'🇸🇪',n:'KRIMZ',r:'Support',c:'role-support'},{f:'🇸🇪',n:'Brollan',r:'IGL',c:'role-igl'},{f:'🇩🇰',n:'blameF',r:'Entry',c:'role-entry'},{f:'🇸🇪',n:'REZ',r:'Rifler',c:'role-rifler'},{f:'🇫🇮',n:'Senzu',r:'Rifler',c:'role-rifler'}] },
+      { logo: '<div class="trp-logo-circle" style="background:rgba(163,230,53,.15);border-color:rgba(163,230,53,.4);color:#a3e635;">BIG</div>', name: 'BIG', rank: 'HLTV #15', players: [{f:'🇩🇪',n:'tabseN',r:'AWP',c:'role-awp'},{f:'🇩🇪',n:'faveN',r:'IGL',c:'role-igl'},{f:'🇹🇷',n:'XANTARES',r:'Entry',c:'role-entry'},{f:'🇩🇪',n:'prosus',r:'Rifler',c:'role-rifler'},{f:'🇩🇪',n:'hyped',r:'Support',c:'role-support'}] },
+      { logo: '<div class="trp-logo-circle" style="background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.4);color:#60a5fa;">NIP</div>', name: 'Ninjas in P.', rank: 'HLTV #14', players: [{f:'🇸🇪',n:'REZ',r:'Rifler',c:'role-rifler'},{f:'🇬🇧',n:'alex',r:'IGL',c:'role-igl'},{f:'🇩🇰',n:'es3tag',r:'Support',c:'role-support'},{f:'🇸🇪',n:'maxster',r:'Entry',c:'role-entry'},{f:'🇸🇪',n:'Brollan',r:'Rifler',c:'role-rifler'}] },
+      { logo: '<div class="trp-logo-circle" style="background:rgba(167,139,250,.18);border-color:rgba(167,139,250,.45);color:#a78bfa;">pN</div>', name: 'paiN Gaming', rank: 'HLTV #20', players: [{f:'🇧🇷',n:'skullz',r:'Rifler',c:'role-rifler'},{f:'🇧🇷',n:'LUCAS1',r:'IGL',c:'role-igl'},{f:'🇵🇹',n:'nqz',r:'Entry',c:'role-entry'},{f:'🇧🇷',n:'kye',r:'Support',c:'role-support'},{f:'🇧🇷',n:'b4rtiN',r:'AWP',c:'role-awp'}] },
+      { logo: '<div class="trp-logo-circle" style="background:rgba(148,163,184,.15);border-color:rgba(148,163,184,.4);color:#94a3b8;">MNT</div>', name: 'Monte', rank: 'HLTV #16', players: [{f:'🇺🇦',n:'sdy',r:'AWP',c:'role-awp'},{f:'🇵🇱',n:'DemQQ',r:'IGL',c:'role-igl'},{f:'🇺🇦',n:'rAge',r:'Entry',c:'role-entry'},{f:'🇺🇦',n:'Krad',r:'Rifler',c:'role-rifler'},{f:'🇹🇷',n:'ANKHBT',r:'Rifler',c:'role-rifler'}] }
+    ];
+
+    var grid = document.getElementById('teamsGrid');
+    if (!grid) return;
+    var cards = Array.prototype.slice.call(grid.querySelectorAll('.tn-card'));
+
+    // Assign data-row and data-idx to each card
+    cards.forEach(function(card, i) {
+      card.dataset.row = Math.floor(i / 4);
+      card.dataset.idx = i;
+    });
+
+    // Inject one panel per row (after card index 3, 7, 11, 15)
+    var panels = [];
+    [3, 7, 11, 15].forEach(function(lastInRow, rowIdx) {
+      var panel = document.createElement('div');
+      panel.className = 'team-row-panel';
+      panel.dataset.row = rowIdx;
+      cards[lastInRow].insertAdjacentElement('afterend', panel);
+      panels.push(panel);
+    });
+
+    var activeCard = null;
+
+    function buildPanel(panel, team) {
+      var rows = team.players.map(function(p) {
+        return '<div class="tn-player"><span class="tn-flag">' + p.f + '</span><span class="tn-pname">' + p.n + '</span><span class="tn-role ' + p.c + '">' + p.r + '</span></div>';
+      }).join('');
+      panel.innerHTML = '<div class="trp-inner">' + team.logo + '<div class="trp-info"><div class="trp-name">' + team.name + '</div><div class="trp-rank">' + team.rank + '</div><div class="trp-roster">' + rows + '</div></div></div>';
+    }
+
+    function closeAll() {
+      panels.forEach(function(p) { p.style.maxHeight = '0'; });
+      if (activeCard) { activeCard.classList.remove('active'); activeCard = null; }
+    }
+
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        var idx  = parseInt(card.dataset.idx);
+        var row  = parseInt(card.dataset.row);
+        var panel = panels[row];
+        var same = activeCard === card;
+
+        closeAll();
+        if (!same) {
+          buildPanel(panel, TEAMS[idx]);
+          // force reflow then animate
+          panel.offsetHeight;
+          panel.style.maxHeight = '260px';
+          card.classList.add('active');
+          activeCard = card;
+        }
+      });
+    });
+  })();
 
   // SE bracket connector lines
   (function () {
@@ -2036,6 +2185,7 @@
       });
     }
 
+    window.drawSE = draw;
     draw();
     window.addEventListener('resize', draw);
   })();
@@ -2291,13 +2441,27 @@
     window.addEventListener('resize', function () { if (window.drawSW) window.drawSW(); });
   })();
 
-  // Init detail hint (SE active by default)
-  (function() {
-    var wrap = document.getElementById('detailWrap');
-    if (wrap) wrap.classList.add('hint-on');
+  // ── Redessiner les traits quand le sidebar se collapse / s'ouvre ──
+  (function () {
+    function redrawAll() {
+      if (window.drawSE) window.drawSE();
+      if (window.drawDE) window.drawDE();
+      if (window.positionDE) window.positionDE();
+      if (window.drawSW) window.drawSW();
+    }
+    /* Redessine à la fin de la transition CSS width */
+    var sidebar = document.querySelector('.sidebar-right');
+    if (sidebar) sidebar.addEventListener('transitionend', function (e) {
+      if (e.propertyName === 'width') redrawAll();
+    });
+    /* Sécurité : redessine aussi directement au clic du toggle */
+    var toggle = document.getElementById('bbToggle');
+    if (toggle) toggle.addEventListener('click', function () {
+      setTimeout(redrawAll, 260); /* juste après la fin de la transition 0.25s */
+    });
   })();
 
-  // GF odds button toggle
+// GF odds button toggle
   document.querySelectorAll('.mc-odd:not(.mc-odd-tbd)').forEach(function (btn) {
     btn.addEventListener('click', function () {
       btn.closest('.mc-foot').querySelectorAll('.mc-odd').forEach(function (b) { b.classList.remove('selected'); });
@@ -2305,5 +2469,6 @@
     });
   });
 </script>
+<script src="betslip.js"></script>
 </body>
 </html>
