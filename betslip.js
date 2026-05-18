@@ -58,7 +58,7 @@
     /* Vider et reconstruire les cartes de paris */
     list.innerHTML = '';
     if (isEmpty) {
-      list.innerHTML = '<div class="bb-empty">C\'est vide par ici...</div>';
+      list.innerHTML = '<div class="bb-empty">Nothing here yet...</div>';
     } else {
       bets.forEach(function (bet, i) {
         var div = document.createElement('div');
@@ -68,7 +68,7 @@
           '<div class="bb-bet-match">'  + esc(bet.match) + '</div>' +
           '<div class="bb-bet-pick">'   + esc(bet.pick)  + '</div>' +
           '<div class="bb-bet-odds">'   + bet.odds.toFixed(2) + '</div>' +
-          '<div class="bb-bet-remove" data-idx="' + i + '">✕ retirer</div>';
+          '<div class="bb-bet-remove" data-idx="' + i + '">✕ remove</div>';
         list.appendChild(div);
       });
       list.querySelectorAll('.bb-bet-remove').forEach(function (btn) {
@@ -176,9 +176,9 @@
     var submit = document.querySelector('.bb-submit');
     if (submit) submit.addEventListener('click', function () {
       var stake = parseFloat(stakeEl ? stakeEl.value : '0') || 0;
-      if (stake <= 0) { alert('Entrez une mise valide.'); return; }
+      if (stake <= 0) { alert('Please enter a valid stake.'); return; }
       var gainsEl = document.getElementById('bbGains');
-      alert('Pari placé : £' + stake.toFixed(2) + ' — Gains potentiels : ' + (gainsEl ? gainsEl.textContent : ''));
+      alert('Bet placed: £' + stake.toFixed(2) + ' — Potential winnings: ' + (gainsEl ? gainsEl.textContent : ''));
       saveBets([]);
       if (stakeEl) stakeEl.value = '10';
       renderBets();
@@ -228,7 +228,7 @@
         var matchStr = teamA + ' vs ' + teamB;
         var allOdds  = row ? Array.from(row.querySelectorAll('.hm-odd')) : [];
         var oddIndex = allOdds.indexOf(odd);
-        var pick     = (oddIndex === 0 ? teamA : teamB) + ' à gagner';
+        var pick     = (oddIndex === 0 ? teamA : teamB) + ' to win';
         var oddsVal  = parseFloat(odd.textContent) || 1;
         /* Toggle visuel */
         allOdds.forEach(function (o) { if (o !== odd) o.classList.remove('bb-selected'); });

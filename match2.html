@@ -228,20 +228,7 @@
   </div>
 
   <div class="page">
-    <nav>
-      <div class="nav-left">
-        <a class="nav-logo" href="index.html"><img src="../Designs/SKB LOGO.png" alt="SkillBet"/></a>
-      </div>
-      <div class="nav-center">
-        <div class="nav-live"><img src="img_M/live 4.png" alt="LIVE"/></div>
-        <div class="nav-icon"><img src="img_M/bets.png" alt="Bets"/></div>
-        <div class="nav-icon"><img src="img_M/teams.png" alt="Teams"/></div>
-      </div>
-      <div class="nav-right">
-        <div class="btn-nav btn-register"><span>REGISTER</span></div>
-        <div class="btn-nav btn-login"><span>LOGIN</span></div>
-      </div>
-    </nav>
+    <script src="header.js"></script>
 
     <div class="content-layout">
 
@@ -297,7 +284,7 @@
             </div>
             <div class="mhc-team-name">T1</div>
             <div class="mhc-score-label">Cote victoire</div>
-            <div class="mhc-odd" onclick="addBet('LoL · LEC 2025','T1 vs KCorp','T1 à gagner',1.55)">1.55</div>
+            <div class="mhc-odd" onclick="addBet('LoL · LEC 2025','T1 vs KCorp','T1 to win',1.55)">1.55</div>
           </div>
 
           <!-- Centre -->
@@ -363,7 +350,7 @@
             </div>
             <div class="mhc-team-name">KCorp</div>
             <div class="mhc-score-label">Cote victoire</div>
-            <div class="mhc-odd" onclick="addBet('LoL · LEC 2025','T1 vs KCorp','KCorp à gagner',2.55)">2.55</div>
+            <div class="mhc-odd" onclick="addBet('LoL · LEC 2025','T1 vs KCorp','KCorp to win',2.55)">2.55</div>
           </div>
         </div>
 
@@ -447,7 +434,7 @@
 
           </div>
 
-          <div class="section-title">Paris à double choix</div>
+          <div class="section-title">Two-way bets</div>
           <div class="double-bets">
 
             <div class="double-bet-row">
@@ -671,7 +658,7 @@
           </div>
 
           <!-- Saisis ta chance -->
-          <div class="section-title" style="margin-top:28px;">🎲 Saisis ta chance</div>
+          <div class="section-title" style="margin-top:28px;">🎲 Pick your shot</div>
           <div class="chance-section">
 
             <div class="chance-card">
@@ -711,7 +698,7 @@
             </div>
 
             <div class="chance-card">
-              <div class="chance-head"><span class="chance-head-icon">⏱️</span><span class="chance-head-title">Game 2 — Durée de la partie</span></div>
+              <div class="chance-head"><span class="chance-head-icon">⏱️</span><span class="chance-head-title">Game 2 — Match Duration</span></div>
               <div class="chance-options">
                 <div class="chance-option" onclick="this.closest('.chance-options').querySelectorAll('.chance-option').forEach(o=>o.classList.remove('selected'));this.classList.add('selected')">
                   <span class="chance-option-label">Moins de 25 min</span><div class="chance-option-bar-wrap"><div class="chance-option-bar" style="width:8%"></div></div><span class="chance-option-odd">5.50</span>
@@ -733,7 +720,7 @@
 
         <!-- ══ TAB MATCH ══ -->
         <div id="tab-match" style="display:none">
-          <div class="section-title">Paris Match — T1 vs KCorp</div>
+          <div class="section-title">Match Bets — T1 vs KCorp</div>
           <div class="double-bets">
 
             <div class="double-bet-row">
@@ -806,7 +793,7 @@
 
         <!-- ══ TAB MAP ══ -->
         <div id="tab-map" style="display:none">
-          <div class="section-title">Paris par game</div>
+          <div class="section-title">Per game bets</div>
           <div class="double-bets">
 
             <div class="double-bet-row">
@@ -896,7 +883,7 @@
         <!-- ══ TAB PLAYERS ══ -->
         <div id="tab-players" style="display:none">
 
-          <div class="section-title">T1 — Roster</div>
+          <div class="section-title">T1 — Squad</div>
           <div class="tp-grid" style="grid-template-columns: repeat(5, 1fr);">
 
             <!-- Zeus -->
@@ -1013,7 +1000,7 @@
           </div>
 
           <!-- Paris joueurs T1 -->
-          <div class="section-title" style="margin-top:20px; font-size:13px;">Paris joueurs — T1</div>
+          <div class="section-title" style="margin-top:20px; font-size:13px;">Player bets — T1</div>
           <div class="double-bets">
 
             <div class="double-bet-row">
@@ -1098,7 +1085,7 @@
 
           </div>
 
-          <div class="section-title" style="margin-top:28px;">KCorp — Roster</div>
+          <div class="section-title" style="margin-top:28px;">KCorp — Squad</div>
           <div class="tp-grid" style="grid-template-columns: repeat(5, 1fr);">
 
             <!-- Wunder -->
@@ -1215,7 +1202,7 @@
           </div>
 
           <!-- Paris joueurs KCorp -->
-          <div class="section-title" style="margin-top:20px; font-size:13px;">Paris joueurs — KCorp</div>
+          <div class="section-title" style="margin-top:20px; font-size:13px;">Player bets — KCorp</div>
           <div class="double-bets">
 
             <div class="double-bet-row">
@@ -1303,7 +1290,7 @@
 
         <!-- ══ TAB ANALYST ══ -->
         <div id="tab-analyst" style="display:none">
-          <div class="section-title" style="margin-top:40px; text-align:center; color:rgba(255,255,255,0.2);">Analyse — Bientôt disponible</div>
+          <div class="section-title" style="margin-top:40px; text-align:center; color:rgba(255,255,255,0.2);">Analysis — Coming soon</div>
         </div>
 
       </div><!-- /main-content -->
@@ -1311,7 +1298,7 @@
       <!-- ══ SIDEBAR DROITE — BET BUILDER ══ -->
       <aside class="sidebar-right">
         <div class="bb-header">
-          <span class="bb-title">Bet Builder</span>
+          <span class="bb-title">Bet Slip</span>
           <span class="bb-count" id="bb-count">0</span>
           <button class="bb-toggle" id="bbToggle">&#10095;</button>
         </div>
@@ -1320,13 +1307,13 @@
 
         <div class="bb-divider"></div>
         <div class="bb-combined">
-          <span class="bb-combined-label">Cote combinée</span>
+          <span class="bb-combined-label">Combined odds</span>
           <span class="bb-combined-val" id="bb-combined-val">1.00</span>
         </div>
         <div class="bb-divider"></div>
 
         <div class="bb-stake-row">
-          <span class="bb-stake-label">Mise (£)</span>
+          <span class="bb-stake-label">Stake (£)</span>
           <input class="bb-stake-input" type="number" value="10" id="bbStake"/>
         </div>
 
@@ -1338,12 +1325,12 @@
         </div>
 
         <div class="bb-gains">
-          <span class="bb-gains-label">Gains potentiels</span>
+          <span class="bb-gains-label">Potential winnings</span>
           <span class="bb-gains-val" id="bbGains">£0.00</span>
         </div>
 
-        <button class="bb-submit">Placer le pari</button>
-        <div class="bb-terms">Jeu responsable · 18+ · Conditions applicables</div>
+        <button class="bb-submit">Place bet</button>
+        <div class="bb-terms">Responsible gambling · 18+ · T&Cs apply</div>
       </aside>
 
     </div><!-- /content-layout -->

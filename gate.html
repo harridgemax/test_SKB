@@ -1,220 +1,61 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SkillBet — Accès privé</title>
+  <title>SkillBet</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800&family=Rajdhani:wght@600;700&display=swap');
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     html, body {
       width: 100%; height: 100%;
-      font-family: 'Exo 2', sans-serif;
-      background:
-        radial-gradient(900px 700px at 20% 20%, rgba(124,58,237,.28), transparent 60%),
-        radial-gradient(700px 500px at 80% 80%, rgba(236,72,153,.22), transparent 55%),
-        #070b1f;
+      background: #fff;
       display: flex; align-items: center; justify-content: center;
-      color: #fff;
-      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
-
-    /* Blobs animés */
-    .blob {
-      position: fixed; border-radius: 999px; pointer-events: none;
-      filter: blur(80px); opacity: .7;
-      background: radial-gradient(circle at 35% 35%, rgba(124,58,237,.9), transparent 60%),
-                  radial-gradient(circle at 65% 65%, rgba(236,72,153,.85), transparent 62%);
-      animation: floaty 6s ease-in-out infinite;
+    .wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    input {
+      border: none; border-bottom: 1.5px solid #000;
+      outline: none; background: transparent;
+      font-size: 16px; letter-spacing: 4px;
+      text-align: center; width: 200px; padding: 6px 0;
+      color: #000;
     }
-    .b1 { width: 400px; height: 400px; top: -150px; left: -150px; }
-    .b2 { width: 350px; height: 350px; bottom: -150px; right: -100px; animation-delay: -3s; }
-    @keyframes floaty {
-      0%,100% { transform: translate(0,0) scale(1); }
-      50%      { transform: translate(30px,-25px) scale(1.07); }
-    }
-
-    /* Carte centrale */
-    .gate-card {
-      position: relative; z-index: 1;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 24px;
-      padding: 52px 48px 44px;
-      width: 420px;
-      backdrop-filter: blur(20px);
-      box-shadow: 0 24px 80px rgba(0,0,0,0.5);
-      text-align: center;
-    }
-
-    .gate-logo {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 32px; font-weight: 700;
-      letter-spacing: 2px; text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-    .gate-logo span { color: #a855f7; }
-
-    .gate-badge {
-      display: inline-block;
-      font-size: 9px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
-      color: rgba(255,255,255,0.45);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 20px; padding: 4px 14px;
-      margin-bottom: 36px;
-    }
-
-    .gate-title {
-      font-size: 18px; font-weight: 700; letter-spacing: 0.5px;
-      margin-bottom: 6px;
-    }
-    .gate-sub {
-      font-size: 12px; color: rgba(255,255,255,0.4);
-      margin-bottom: 28px; line-height: 1.6;
-    }
-
-    .gate-input-wrap {
-      position: relative; margin-bottom: 14px;
-    }
-    .gate-input {
-      width: 100%;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 12px;
-      padding: 14px 48px 14px 18px;
-      font-family: 'Exo 2', sans-serif;
-      font-size: 15px; font-weight: 600; letter-spacing: 4px;
-      color: #fff; outline: none;
-      text-align: center;
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .gate-input::placeholder { letter-spacing: 2px; font-size: 13px; color: rgba(255,255,255,0.25); font-weight: 400; }
-    .gate-input:focus { border-color: rgba(168,85,247,0.6); background: rgba(168,85,247,0.06); }
-
-    .gate-eye {
-      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
-      cursor: pointer; opacity: 0.4; transition: opacity 0.15s;
-      font-size: 16px; user-select: none;
-    }
-    .gate-eye:hover { opacity: 0.8; }
-
-    .gate-btn {
-      width: 100%;
-      background: linear-gradient(135deg, #7c3aed, #be185d);
-      border: none; border-radius: 12px;
-      padding: 14px;
-      font-family: 'Exo 2', sans-serif;
-      font-size: 13px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
-      color: #fff; cursor: pointer;
-      transition: opacity 0.2s, transform 0.1s;
-      margin-bottom: 16px;
-    }
-    .gate-btn:hover  { opacity: 0.88; }
-    .gate-btn:active { transform: scale(0.98); }
-
-    .gate-error {
-      font-size: 12px; font-weight: 600;
-      color: #f87171;
-      min-height: 20px;
-      transition: opacity 0.2s;
-    }
-    .gate-error.hidden { opacity: 0; }
-
-    .gate-footer {
-      margin-top: 32px;
-      font-size: 10px; color: rgba(255,255,255,0.18);
-      letter-spacing: 0.5px; line-height: 1.6;
-    }
-
-    /* Shake animation */
+    input::placeholder { letter-spacing: 2px; color: #999; font-size: 13px; }
+    .err { font-size: 12px; color: #000; opacity: 0; transition: opacity 0.2s; min-height: 16px; }
+    .err.show { opacity: 1; }
     @keyframes shake {
-      0%,100% { transform: translateX(0); }
-      20%      { transform: translateX(-8px); }
-      40%      { transform: translateX(8px); }
-      60%      { transform: translateX(-5px); }
-      80%      { transform: translateX(5px); }
+      0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}
     }
-    .shake { animation: shake 0.4s ease; }
+    .shake { animation: shake 0.3s ease; }
   </style>
 </head>
 <body>
-
-  <div class="blob b1"></div>
-  <div class="blob b2"></div>
-
-  <div class="gate-card">
-
-    <div class="gate-logo">Skill<span>Bet</span></div>
-    <div class="gate-badge">Accès restreint · Version démo</div>
-
-    <div class="gate-title">Entrez le code d'accès</div>
-    <div class="gate-sub">Cette maquette est réservée à une audience privée.<br>Contactez l'équipe pour obtenir le code.</div>
-
-    <div class="gate-input-wrap">
-      <input
-        class="gate-input"
-        id="gateInput"
-        type="password"
-        placeholder="Code d'accès"
-        autocomplete="off"
-        spellcheck="false"
-        maxlength="30"
-      />
-      <span class="gate-eye" id="gateEye" title="Afficher / Masquer">👁</span>
-    </div>
-
-    <button class="gate-btn" id="gateBtn">Accéder au site</button>
-    <div class="gate-error hidden" id="gateError">Code incorrect. Réessayez.</div>
-
-    <div class="gate-footer">SkillBet © 2025 · Maquette confidentielle · Ne pas diffuser</div>
-
+  <div class="wrap">
+    <input id="inp" type="password" placeholder="enter code" autocomplete="off" maxlength="30"/>
+    <div class="err" id="err">Incorrect code</div>
   </div>
-
   <script>
-    // ── Code d'accès (à changer ici) ──
-    var ACCESS_CODE = 'skbtest26';
-    var SESSION_KEY = 'sb_access';
-
-    // Si déjà authentifié, rediriger directement
-    if (sessionStorage.getItem(SESSION_KEY) === '1') {
-      window.location.replace('index.html');
-    }
-
-    var input  = document.getElementById('gateInput');
-    var btn    = document.getElementById('gateBtn');
-    var errEl  = document.getElementById('gateError');
-    var eyeEl  = document.getElementById('gateEye');
-
-    function tryAccess() {
-      if (input.value.trim() === ACCESS_CODE) {
-        sessionStorage.setItem(SESSION_KEY, '1');
+    var CODE = 'skbtest26';
+    var KEY  = 'sb_access';
+    if (sessionStorage.getItem(KEY) === '1') window.location.replace('index.html');
+    var inp = document.getElementById('inp');
+    var err = document.getElementById('err');
+    function attempt() {
+      if (inp.value.trim() === CODE) {
+        sessionStorage.setItem(KEY, '1');
         window.location.replace('index.html');
       } else {
-        errEl.classList.remove('hidden');
-        errEl.textContent = 'Code incorrect. Réessayez.';
-        var wrap = document.querySelector('.gate-input-wrap');
-        wrap.classList.remove('shake');
-        void wrap.offsetWidth;
-        wrap.classList.add('shake');
-        input.value = '';
-        input.focus();
+        err.classList.add('show');
+        inp.classList.remove('shake');
+        void inp.offsetWidth;
+        inp.classList.add('shake');
+        inp.value = '';
+        inp.focus();
       }
     }
-
-    btn.addEventListener('click', tryAccess);
-    input.addEventListener('keydown', function (e) { if (e.key === 'Enter') tryAccess(); });
-    input.addEventListener('input', function () { errEl.classList.add('hidden'); });
-
-    // Toggle visibilité
-    eyeEl.addEventListener('click', function () {
-      input.type = input.type === 'password' ? 'text' : 'password';
-      eyeEl.textContent = input.type === 'password' ? '👁' : '🙈';
-    });
-
-    input.focus();
+    inp.addEventListener('keydown', function(e){ if(e.key==='Enter') attempt(); });
+    inp.addEventListener('input', function(){ err.classList.remove('show'); });
+    inp.focus();
   </script>
-
 </body>
 </html>
