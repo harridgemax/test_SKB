@@ -17,6 +17,7 @@
     '  backdrop-filter:blur(14px);',
     '  border-bottom:1px solid rgba(255,255,255,0.05);',
     '  flex-shrink:0;',
+    '  position:relative;z-index:500;',
     '}',
     '.nav-logo{flex:1;text-decoration:none;}',
     '.nav-logo img{height:30px;mix-blend-mode:screen;display:block;}',
@@ -33,24 +34,77 @@
     '  text-transform:uppercase;text-decoration:none;',
     '}',
     '.nav-item img{height:28px;}',
+
+    /* ── Right section ── */
+    '.nav-right{display:flex;align-items:center;gap:12px;flex:1;justify-content:flex-end;}',
+
+    /* Balance pill */
+    '.nav-balance{',
+    '  display:flex;align-items:center;gap:10px;',
+    '  background:rgba(255,255,255,0.05);',
+    '  border:1px solid rgba(255,255,255,0.08);',
+    '  border-radius:9px;padding:6px 14px 6px 12px;',
+    '}',
+    '.nav-balance-inner{display:flex;flex-direction:column;line-height:1;}',
+    '.nav-balance-label{',
+    '  font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;',
+    '  color:rgba(196,200,226,0.4);',
+    '}',
+    '.nav-balance-amount{',
+    "  font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;",
+    '  color:#e8eaf6;line-height:1.1;',
+    '}',
+    '.nav-deposit-btn{',
+    '  background:#7c3aed;border:none;border-radius:7px;',
+    '  padding:6px 14px;cursor:pointer;',
+    "  font-family:'Exo 2',sans-serif;font-size:10px;font-weight:800;",
+    '  letter-spacing:1.2px;text-transform:uppercase;color:#fff;',
+    '  transition:background 0.15s;white-space:nowrap;',
+    '}',
+    '.nav-deposit-btn:hover{background:#a855f7;}',
+
+    /* Avatar + dropdown */
+    '.nav-avatar-wrap{position:relative;}',
+    '.nav-avatar{',
+    '  width:36px;height:36px;border-radius:50%;cursor:pointer;',
+    '  background:#7c3aed;border:2px solid rgba(168,85,247,0.5);',
+    '  display:flex;align-items:center;justify-content:center;',
+    "  font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;",
+    '  color:#fff;user-select:none;transition:border-color 0.2s;',
     '.nav-right{',
     '  display:flex;align-items:center;gap:14px;flex:1;justify-content:flex-end;',
     '}',
-    '.btn-nav{',
-    '  position:relative;display:flex;align-items:center;justify-content:center;',
-    '  padding:0 28px;height:38px;cursor:pointer;',
-    '  transform:skewX(-14deg);',
-    '  transition:background 0.18s,border-color 0.18s;white-space:nowrap;',
+    '.nav-avatar:hover{border-color:rgba(168,85,247,0.9);}',
+    '.nav-online{',
+    '  position:absolute;bottom:0;right:0;',
+    '  width:9px;height:9px;border-radius:50%;',
+    '  background:#4ade80;border:2px solid rgba(5,8,22,0.9);',
     '}',
-    '.btn-nav span{',
-    '  display:inline-block;transform:skewX(14deg);',
-    "  font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;",
-    '  letter-spacing:2px;text-transform:uppercase;color:#fff;white-space:nowrap;',
+
+    '.nav-dropdown{',
+    '  position:absolute;top:calc(100% + 12px);right:0;',
+    '  width:210px;',
+    '  background:#12152a;',
+    '  border:1px solid rgba(139,92,246,0.22);',
+    '  border-radius:12px;padding:6px;',
+    '  display:none;z-index:2000;',
+    '  box-shadow:0 12px 40px rgba(0,0,0,0.5);',
     '}',
-    '.btn-register{',
-    '  background:rgba(255,255,255,0.07);',
-    '  border:1px solid rgba(255,255,255,0.2);border-radius:6px;',
+    '.nav-dropdown.open{display:block;}',
+
+    '.nav-dd-item{',
+    '  display:flex;align-items:center;gap:10px;',
+    '  padding:9px 12px;border-radius:8px;',
+    '  font-size:13px;font-weight:600;',
+    '  color:rgba(196,200,226,0.8);',
+    '  text-decoration:none;cursor:pointer;',
+    '  transition:background 0.12s,color 0.12s;',
     '}',
+    '.nav-dd-item:hover{background:rgba(255,255,255,0.06);color:#e8eaf6;}',
+    '.nav-dd-icon{',
+    '  width:28px;height:28px;border-radius:7px;flex-shrink:0;',
+    '  background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.2);',
+    '  display:flex;align-items:center;justify-content:center;',
     '.btn-register:hover{background:rgba(255,255,255,0.13);border-color:rgba(255,255,255,0.4);}',
     '.btn-login{',
     '  background:rgba(255,255,255,0.15);',
@@ -473,6 +527,14 @@
     '.skb-mob-match-card-row{',
     '  display:flex;align-items:center;justify-content:space-between;',
     '}',
+    '.nav-dd-icon svg{width:14px;height:14px;}',
+    '.nav-dd-sep{height:1px;background:rgba(139,92,246,0.15);margin:4px 0;}',
+    '.nav-dd-deposit .nav-dd-icon{background:rgba(124,58,237,0.18);border-color:rgba(124,58,237,0.35);}',
+    '.nav-dd-deposit{color:#a855f7;}',
+    '.nav-dd-deposit:hover{background:rgba(124,58,237,0.12);color:#c084fc;}',
+    '.nav-dd-logout .nav-dd-icon{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.2);}',
+    '.nav-dd-logout{color:rgba(239,68,68,0.65);}',
+    '.nav-dd-logout:hover{background:rgba(239,68,68,0.08);color:#ef4444;}',
     '.skb-mob-match-card-team{display:flex;align-items:center;gap:8px;}',
     '.skb-mob-match-card-team img{width:30px;height:30px;object-fit:contain;}',
     '.skb-mob-match-card-name{',
@@ -644,30 +706,85 @@
   styleEl.textContent = css;
   document.head.appendChild(styleEl);
 
+  /* ── SVG icons ────────────────────────────────────────────────── */
+  function icon(path) {
+    return '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' + path + '</svg>';
+  }
+  var icons = {
+    profile:  icon('<circle cx="8" cy="5.5" r="2.5"/><path d="M2.5 14c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/>'),
+    locker:   icon('<rect x="3" y="7" width="10" height="8" rx="2"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/>'),
+    settings: icon('<circle cx="8" cy="8" r="2.5"/><path d="M8 2v1.5M8 12.5V14M2 8h1.5M12.5 8H14M3.9 3.9l1 1M11.1 11.1l1 1M3.9 12.1l1-1M11.1 4.9l1-1"/>'),
+    deposit:  icon('<rect x="2" y="4" width="12" height="9" rx="2"/><path d="M2 8h12"/><circle cx="11" cy="11" r="1" fill="currentColor" stroke="none"/>'),
+    logout:   icon('<path d="M10 3h3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-3"/><path d="M7 10l-3-2 3-2"/><path d="M4 8h8"/>'),
+  };
+
+  /* ── HTML ─────────────────────────────────────────────────────── */
   /* ════════════════════════════════════════════
      NAV HTML
   ════════════════════════════════════════════ */
   var nav = document.createElement('nav');
   nav.innerHTML = [
     '<a class="nav-logo" href="index.html">',
-    '  <img src="img_M/SKB LOGO.png" alt="SkillBet" />',
+    '  <img src="img_M/SKB LOGO.png" alt="SkillBet"/>',
     '</a>',
 
     '<div class="nav-center">',
-    '  <div class="nav-live">',
-    '    <img src="img_M/live 4.png" alt="Live" />',
-    '  </div>',
+    '  <div class="nav-live"><img src="img_M/live 4.png" alt="Live"/></div>',
     '  <a class="nav-item" href="my-bets.html">',
-    '    <img src="img_M/bets.png" alt="My Bets" />',
-    '    MY BETS',
+    '    <img src="img_M/bets.png" alt="My Bets"/>MY BETS',
     '  </a>',
     '  <div class="nav-item">',
-    '    <img src="img_M/teams.png" alt="Teams" />',
-    '    TEAMS',
+    '    <img src="img_M/teams.png" alt="Teams"/>TEAMS',
     '  </div>',
     '</div>',
 
     '<div class="nav-right">',
+
+    /* Balance permanente */
+    '  <div class="nav-balance">',
+    '    <div class="nav-balance-inner">',
+    '      <span class="nav-balance-label">Balance</span>',
+    '      <span class="nav-balance-amount">£1,247.50</span>',
+    '    </div>',
+    '    <button class="nav-deposit-btn" onclick="openWallet(\'deposit\')">+ Deposit</button>',
+    '  </div>',
+
+    /* Avatar + dropdown */
+    '  <div class="nav-avatar-wrap">',
+    '    <div class="nav-avatar" id="skbNavAvatar">',
+    '      GR',
+    '      <div class="nav-online"></div>',
+    '    </div>',
+    '    <div class="nav-dropdown" id="skbNavDropdown">',
+
+    '      <a class="nav-dd-item" href="profile.html">',
+    '        <span class="nav-dd-icon">' + icons.profile + '</span>My Profile',
+    '      </a>',
+
+    '      <a class="nav-dd-item" href="#">',
+    '        <span class="nav-dd-icon">' + icons.locker + '</span>Locker',
+    '      </a>',
+
+    '      <a class="nav-dd-item" href="settings.html">',
+    '        <span class="nav-dd-icon">' + icons.settings + '</span>Settings',
+    '      </a>',
+
+    '      <div class="nav-dd-sep"></div>',
+
+    '      <a class="nav-dd-item nav-dd-deposit" href="#" onclick="event.preventDefault();closeWallet&&closeWallet();openWallet(\'deposit\')">',
+    '        <span class="nav-dd-icon">' + icons.deposit + '</span>Deposit',
+    '      </a>',
+
+    '      <div class="nav-dd-sep"></div>',
+
+    '      <a class="nav-dd-item nav-dd-logout" href="gate.html" onclick="sessionStorage.removeItem(\'sb_access\')">',
+    '        <span class="nav-dd-icon">' + icons.logout + '</span>Log out',
+    '      </a>',
+
+    '    </div>',
+    '  </div>',
+
+    '</div>',
     /* phone icon button */
     '  <button class="skb-phone-btn" id="skb-phone-btn" title="Mobile preview">',
     '    <svg width="17" height="17" viewBox="0 0 24 24" fill="none"',
@@ -1721,5 +1838,29 @@
   } else {
     mountOverlay();
   }
+
+  /* ── Inject wallet.js once ───────────────────────────────────── */
+  if (!document.getElementById('skb-wallet-script')) {
+    var ws = document.createElement('script');
+    ws.id = 'skb-wallet-script';
+    ws.src = (document.currentScript ? document.currentScript.src.replace('header.js','') : '') + 'wallet.js';
+    document.head.appendChild(ws);
+  }
+
+  /* ── Toggle dropdown ─────────────────────────────────────────── */
+  document.addEventListener('DOMContentLoaded', function () {
+    var avatar   = document.getElementById('skbNavAvatar');
+    var dropdown = document.getElementById('skbNavDropdown');
+    if (!avatar || !dropdown) return;
+
+    avatar.addEventListener('click', function (e) {
+      e.stopPropagation();
+      dropdown.classList.toggle('open');
+    });
+
+    document.addEventListener('click', function () {
+      dropdown.classList.remove('open');
+    });
+  });
 
 })();

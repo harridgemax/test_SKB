@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SkillBet — Settings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple: #7c3aed;
+      --purple-light: #a855f7;
+      --surface: #13172e;
+      --surface-hi: #181d36;
+      --border: rgba(139,92,246,0.18);
+      --border-hi: rgba(139,92,246,0.32);
+      --text: #c4c8e2;
+      --text-dim: rgba(196,200,226,0.55);
+      --text-faint: rgba(196,200,226,0.32);
+      --green: #4ade80;
+      --red: #ef4444;
+    }
+
+    html, body {
+      height: 100%; overflow: hidden;
+      font-family: 'Exo 2', sans-serif; color: var(--text);
+      background:
+        radial-gradient(1200px 800px at 20% 10%, rgba(124,58,237,.26), transparent 60%),
+        radial-gradient(900px 600px at 40% 80%, rgba(236,72,153,.22), transparent 55%),
+        #070b1f;
+    }
+    .bg-blobs { position: fixed; inset: 0; pointer-events: none; z-index: 0; filter: blur(70px); opacity: .85; }
+    .blob {
+      position: absolute; width: 460px; height: 460px; border-radius: 999px;
+      background:
+        radial-gradient(circle at 35% 35%, rgba(124,58,237,.95), transparent 60%),
+        radial-gradient(circle at 65% 65%, rgba(236,72,153,.90), transparent 62%);
+      animation: floaty 5s ease-in-out infinite;
+    }
+    .b1 { top:-140px; left:-140px; }
+    .b2 { top:12%; right:-180px; animation-delay:-1s; }
+    .b3 { bottom:-200px; left:30%; animation-delay:-2s; }
+    @keyframes floaty { 0%,100%{transform:translate3d(0,0,0) scale(1)} 50%{transform:translate3d(40px,-30px,0) scale(1.08)} }
+
+    .page { position:relative; z-index:1; height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+    /* ── Layout ── */
+    .content-layout { display:flex; flex:1; min-height:0; align-items:flex-start; overflow:hidden; gap:10px; }
+
+    /* Sidebar gauche */
+    .sidebar-left {
+      width:230px; flex-shrink:0;
+      height:calc(100vh - 64px); overflow-y:auto;
+      background:rgba(5,8,22,0.65);
+      border-right:1px solid rgba(255,255,255,0.06);
+      padding:20px 0 40px;
+      scrollbar-width:thin; scrollbar-color:rgba(168,85,247,0.3) transparent;
+      position:sticky; top:0;
+    }
+    .sidebar-left::-webkit-scrollbar { width:4px; }
+    .sidebar-left::-webkit-scrollbar-thumb { background:rgba(168,85,247,0.3); border-radius:4px; }
+    .sidebar-title { font-family:'Rajdhani',sans-serif; font-size:11px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.35); padding:0 18px 12px; }
+    .game-item { border-bottom:1px solid rgba(255,255,255,0.04); }
+    .game-header { display:flex; align-items:center; gap:10px; padding:11px 18px; cursor:pointer; transition:background 0.2s; user-select:none; }
+    .game-header:hover { background:rgba(255,255,255,0.04); }
+    .game-icon { width:28px; height:28px; border-radius:7px; display:flex; align-items:center; justify-content:center; flex-shrink:0; overflow:hidden; }
+    .game-icon img { width:28px; height:28px; object-fit:contain; display:block; }
+    .game-name { flex:1; font-size:12px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,0.8); }
+    .game-chevron { font-size:10px; color:rgba(255,255,255,0.3); transition:transform 0.25s; }
+    .game-item.open .game-chevron { transform:rotate(90deg); }
+    .tournament-list { display:none; padding:2px 0 8px; }
+    .game-item.open .tournament-list { display:block; }
+    .tournament-item { display:flex; align-items:center; justify-content:space-between; padding:7px 18px 7px 44px; cursor:pointer; transition:background 0.2s; text-decoration:none; color:inherit; }
+    .tournament-item:hover { background:rgba(255,255,255,0.03); }
+    .tournament-name { font-size:11px; color:rgba(255,255,255,0.55); letter-spacing:0.5px; }
+    .t-live-dot { width:6px; height:6px; border-radius:50%; background:#ef4444; box-shadow:0 0 5px #ef4444; animation:pulse-dot 1.2s ease-in-out infinite; }
+    @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.35} }
+    .t-count { font-size:10px; color:rgba(255,255,255,0.3); }
+
+    /* Main content */
+    .main-content {
+      flex:1; min-width:0; height:100%;
+      overflow-y:auto; padding:22px 28px 40px;
+      display:flex; flex-direction:column; gap:0;
+      scrollbar-width:thin; scrollbar-color:rgba(168,85,247,0.2) transparent;
+    }
+    .main-content::-webkit-scrollbar { width:4px; }
+    .main-content::-webkit-scrollbar-thumb { background:rgba(168,85,247,0.3); border-radius:4px; }
+
+    .page-title { font-family:'Rajdhani',sans-serif; font-size:38px; font-weight:700; color:#fff; line-height:1; margin-bottom:20px; }
+
+    /* ── Tab navigation ── */
+    .tabs {
+      display:flex; gap:2px;
+      border-bottom:1px solid var(--border);
+      margin-bottom:22px;
+    }
+    .tab-btn {
+      display:flex; align-items:center; gap:7px;
+      padding:10px 18px 11px;
+      font-size:12px; font-weight:700; letter-spacing:0.3px;
+      color:var(--text-dim);
+      background:none; border:none; border-bottom:2px solid transparent;
+      margin-bottom:-1px; cursor:pointer;
+      transition:color 0.15s, border-color 0.15s;
+    }
+    .tab-btn svg { width:14px; height:14px; opacity:0.6; transition:opacity 0.15s; }
+    .tab-btn:hover { color:var(--text); }
+    .tab-btn:hover svg { opacity:0.9; }
+    .tab-btn.active { color:#e8eaf6; border-bottom-color:var(--purple-light); }
+    .tab-btn.active svg { opacity:1; }
+
+    .tab-panel { display:none; flex-direction:column; gap:16px; }
+    .tab-panel.active { display:flex; }
+
+    /* ── Shared card ── */
+    .s-card {
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:14px;
+    }
+    .s-card-header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:16px 22px;
+      border-bottom:1px solid var(--border);
+    }
+    .s-card-title { font-size:13px; font-weight:700; color:#d6d9ef; }
+    .s-card-desc { font-size:11px; color:var(--text-dim); margin-top:2px; }
+    .s-card-body { padding:20px 22px; display:flex; flex-direction:column; gap:18px; }
+
+    /* Field rows */
+    .field-row { display:flex; flex-direction:column; gap:6px; }
+    .field-label { font-size:11px; font-weight:600; color:var(--text-dim); }
+    .field-input {
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.1);
+      border-radius:9px; padding:10px 14px;
+      color:#d6d9ef; font-family:'Exo 2',sans-serif;
+      font-size:13px; font-weight:500; outline:none; width:100%;
+      transition:border-color 0.2s;
+    }
+    .field-input:focus { border-color:var(--purple-light); }
+    .field-input:disabled { opacity:0.45; cursor:not-allowed; }
+    .field-hint { font-size:10px; color:var(--text-faint); }
+
+    .field-row-inline { display:flex; gap:14px; }
+    .field-row-inline .field-row { flex:1; }
+
+    /* Buttons */
+    .btn-primary {
+      align-self:flex-start; padding:10px 22px;
+      border:none; border-radius:9px; background:var(--purple);
+      color:#fff; font-family:'Exo 2',sans-serif;
+      font-size:11px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase;
+      cursor:pointer; transition:background 0.15s;
+    }
+    .btn-primary:hover { background:var(--purple-light); }
+    .btn-outline {
+      align-self:flex-start; padding:9px 20px;
+      border:1px solid var(--border-hi); border-radius:9px; background:transparent;
+      color:var(--purple-light); font-family:'Exo 2',sans-serif;
+      font-size:11px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase;
+      cursor:pointer; transition:border-color 0.15s, color 0.15s;
+    }
+    .btn-outline:hover { border-color:var(--purple-light); color:#fff; }
+    .btn-danger {
+      align-self:flex-start; padding:9px 20px;
+      border:1px solid rgba(239,68,68,0.3); border-radius:9px; background:transparent;
+      color:rgba(239,68,68,0.7); font-family:'Exo 2',sans-serif;
+      font-size:11px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase;
+      cursor:pointer; transition:border-color 0.15s, color 0.15s, background 0.15s;
+    }
+    .btn-danger:hover { border-color:#ef4444; color:#ef4444; background:rgba(239,68,68,0.06); }
+
+    /* Avatar editor */
+    .avatar-editor { display:flex; align-items:center; gap:20px; }
+    .avatar-large {
+      width:72px; height:72px; border-radius:50%; flex-shrink:0;
+      background:var(--purple); border:2px solid rgba(168,85,247,0.5);
+      display:flex; align-items:center; justify-content:center;
+      font-family:'Rajdhani',sans-serif; font-size:26px; font-weight:700; color:#fff;
+    }
+    .avatar-actions { display:flex; flex-direction:column; gap:8px; }
+    .avatar-hint { font-size:10px; color:var(--text-faint); }
+
+    /* Status badge */
+    .status-badge {
+      display:inline-flex; align-items:center; gap:5px;
+      font-size:10px; font-weight:700; letter-spacing:0.3px;
+      border-radius:20px; padding:3px 10px;
+    }
+    .status-badge.verified { color:var(--green); background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.25); }
+    .status-badge.pending  { color:#f59e0b; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.25); }
+    .status-badge.missing  { color:rgba(239,68,68,0.8); background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2); }
+
+    /* Field with badge */
+    .field-with-badge { display:flex; align-items:center; gap:10px; }
+    .field-with-badge .field-input { flex:1; }
+
+    /* Toggle (2FA, etc.) */
+    .toggle-row {
+      display:flex; align-items:center; justify-content:space-between;
+      gap:16px;
+    }
+    .toggle-info { flex:1; }
+    .toggle-label { font-size:13px; font-weight:700; color:#d6d9ef; margin-bottom:3px; }
+    .toggle-desc  { font-size:11px; color:var(--text-dim); line-height:1.5; }
+    .toggle-switch {
+      width:42px; height:24px; border-radius:12px; cursor:pointer;
+      background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.12);
+      position:relative; flex-shrink:0; transition:background 0.2s, border-color 0.2s;
+    }
+    .toggle-switch.on { background:var(--purple); border-color:var(--purple); }
+    .toggle-switch::after {
+      content:''; position:absolute; top:3px; left:3px;
+      width:16px; height:16px; border-radius:50%;
+      background:#fff; transition:transform 0.2s;
+    }
+    .toggle-switch.on::after { transform:translateX(18px); }
+
+    /* Connection cards */
+    .connection-row {
+      display:flex; align-items:center; gap:16px;
+      padding:16px 22px;
+      border-bottom:1px solid var(--border);
+    }
+    .connection-row:last-child { border-bottom:none; }
+    .connection-icon {
+      width:38px; height:38px; border-radius:10px; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center;
+      border:1px solid rgba(255,255,255,0.08);
+    }
+    .connection-icon svg { width:20px; height:20px; }
+    .connection-info { flex:1; }
+    .connection-name { font-size:13px; font-weight:700; color:#d6d9ef; }
+    .connection-status { font-size:11px; color:var(--text-dim); margin-top:2px; }
+
+    /* KYC steps */
+    .kyc-step {
+      display:flex; align-items:flex-start; gap:16px;
+      padding:16px 22px;
+      border-bottom:1px solid var(--border);
+    }
+    .kyc-step:last-child { border-bottom:none; }
+    .kyc-step-num {
+      width:32px; height:32px; border-radius:50%; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center;
+      font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:700;
+      background:rgba(139,92,246,0.12); border:1px solid var(--border);
+      color:var(--text-dim);
+    }
+    .kyc-step-num.done { background:rgba(74,222,128,0.1); border-color:rgba(74,222,128,0.3); color:var(--green); }
+    .kyc-step-info { flex:1; }
+    .kyc-step-title { font-size:13px; font-weight:700; color:#d6d9ef; margin-bottom:3px; }
+    .kyc-step-desc  { font-size:11px; color:var(--text-dim); line-height:1.5; }
+
+    /* Preferences: select */
+    .field-select {
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.1);
+      border-radius:9px; padding:10px 14px;
+      color:#d6d9ef; font-family:'Exo 2',sans-serif;
+      font-size:13px; outline:none; width:100%; cursor:pointer;
+      appearance:none;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='rgba(196,200,226,0.4)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat:no-repeat; background-position:right 14px center;
+      transition:border-color 0.2s;
+    }
+    .field-select:focus { border-color:var(--purple-light); }
+
+    /* Odds preview chips */
+    .odds-preview { display:flex; gap:8px; margin-top:4px; }
+    .odds-chip {
+      padding:4px 12px; border-radius:6px;
+      font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:700;
+      background:rgba(139,92,246,0.1); border:1px solid var(--border);
+      color:var(--purple-light);
+    }
+
+    /* Sidebar droite */
+    .sidebar-right {
+      width:290px; flex-shrink:0;
+      height:calc(100vh - 64px); overflow-y:auto;
+      background:rgba(5,8,22,0.65);
+      border-left:1px solid rgba(255,255,255,0.06);
+      padding:20px 16px 40px;
+      scrollbar-width:thin; scrollbar-color:rgba(168,85,247,0.3) transparent;
+      position:sticky; top:0;
+      display:flex; flex-direction:column; gap:14px;
+    }
+    .sidebar-right::-webkit-scrollbar { width:4px; }
+    .sidebar-right::-webkit-scrollbar-thumb { background:rgba(168,85,247,0.3); border-radius:4px; }
+    .sidebar-right.collapsed { width:38px; min-width:38px; padding:14px 6px; overflow:hidden; }
+    .sidebar-right.collapsed > *:not(.bb-header) { display:none; }
+    .sidebar-right.collapsed .bb-title,.sidebar-right.collapsed .bb-count { display:none; }
+    .bb-toggle { margin-left:auto; background:none; border:none; cursor:pointer; color:rgba(168,85,247,0.8); font-size:18px; line-height:1; padding:2px 4px; transition:transform 0.3s,color 0.2s; flex-shrink:0; }
+    .bb-toggle:hover { color:#a855f7; }
+    .sidebar-right.collapsed .bb-toggle { transform:scaleX(-1); }
+    .bb-header { display:flex; align-items:center; gap:10px; }
+    .bb-title { font-family:'Rajdhani',sans-serif; font-size:15px; font-weight:700; letter-spacing:3px; text-transform:uppercase; flex:1; }
+    .bb-count { background:var(--purple); color:#fff; font-size:10px; font-weight:700; width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+    .bb-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:32px 16px; background:rgba(255,255,255,0.03); border:1px dashed rgba(255,255,255,0.1); border-radius:14px; text-align:center; }
+    .bb-divider { height:1px; background:rgba(255,255,255,0.06); }
+    .bb-combined { display:flex; justify-content:space-between; align-items:center; padding:4px 0; }
+    .bb-combined-label { font-size:11px; color:#fff; letter-spacing:1px; text-transform:uppercase; font-weight:700; }
+    .bb-combined-val { font-family:'Rajdhani',sans-serif; font-size:20px; font-weight:700; color:#fff; background:#070b1f; border:1px solid rgba(255,255,255,0.1); border-radius:7px; padding:3px 10px; }
+    .bb-stake-row { display:flex; flex-direction:column; gap:6px; }
+    .bb-stake-label { font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.4); }
+    .bb-stake-input { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:10px 14px; color:#fff; font-family:'Exo 2',sans-serif; font-size:14px; font-weight:600; outline:none; width:100%; transition:border-color 0.2s; }
+    .bb-stake-input:focus { border-color:var(--purple-light); }
+    .bb-quick-amounts { display:flex; gap:6px; }
+    .bb-qa { flex:1; padding:6px 0; text-align:center; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:8px; font-size:11px; font-weight:700; color:rgba(255,255,255,0.6); cursor:pointer; transition:background 0.2s,color 0.2s; }
+    .bb-qa:hover { background:rgba(168,85,247,0.2); color:#fff; border-color:var(--purple-light); }
+    .bb-gains { display:flex; justify-content:space-between; align-items:center; background:rgba(168,85,247,0.08); border:1px solid rgba(168,85,247,0.2); border-radius:10px; padding:10px 14px; }
+    .bb-gains-label { font-size:12px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#fff; }
+    .bb-gains-val { font-family:'Rajdhani',sans-serif; font-size:22px; font-weight:700; color:#fff; }
+    .bb-submit { width:100%; padding:12px; border:1px solid rgba(255,255,255,0.35); border-radius:12px; cursor:pointer; font-family:'Rajdhani',sans-serif; font-size:16px; font-weight:700; letter-spacing:1px; background:rgba(255,255,255,0.18); color:#fff; transition:background 0.2s,border-color 0.2s; position:relative; }
+    .bb-submit:hover { background:rgba(255,255,255,0.24); border-color:rgba(255,255,255,0.55); }
+    .bb-terms { font-size:9px; color:rgba(255,255,255,0.2); text-align:center; letter-spacing:0.5px; line-height:1.5; }
+  </style>
+</head>
+<body>
+  <div class="bg-blobs">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+
+  <div class="page">
+    <script src="header.js"></script>
+
+    <div class="content-layout">
+
+      <!-- ── Sidebar gauche ── -->
+      <aside class="sidebar-left">
+        <div class="sidebar-title">Tournaments</div>
+        <div class="game-item open">
+          <div class="game-header" onclick="toggleGame(this)">
+            <div class="game-icon"><img src="img_M/logocs2.png" alt="CS2"/></div>
+            <span class="game-name">CS2</span><span class="game-chevron">▶</span>
+          </div>
+          <div class="tournament-list">
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">ESL Pro League S21</span><span class="t-live-dot"></span></a>
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">BLAST Premier Spring</span><span class="t-live-dot"></span></a>
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">IEM Cologne 2025</span><span class="t-count">3</span></a>
+          </div>
+        </div>
+        <div class="game-item">
+          <div class="game-header" onclick="toggleGame(this)">
+            <div class="game-icon"><img src="img_M/logo lol.png" alt="LoL"/></div>
+            <span class="game-name">League of Legends</span><span class="game-chevron">▶</span>
+          </div>
+          <div class="tournament-list">
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">LEC Spring Split</span><span class="t-live-dot"></span></a>
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">Worlds 2025</span><span class="t-count">8</span></a>
+          </div>
+        </div>
+        <div class="game-item">
+          <div class="game-header" onclick="toggleGame(this)">
+            <div class="game-icon"><img src="img_M/logo valo.png" alt="Valorant"/></div>
+            <span class="game-name">Valorant</span><span class="game-chevron">▶</span>
+          </div>
+          <div class="tournament-list">
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">VCT Americas</span><span class="t-live-dot"></span></a>
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">VCT EMEA</span><span class="t-count">5</span></a>
+          </div>
+        </div>
+        <div class="game-item">
+          <div class="game-header" onclick="toggleGame(this)">
+            <div class="game-icon"><img src="img_M/logo dota2.png" alt="Dota 2"/></div>
+            <span class="game-name">Dota 2</span><span class="game-chevron">▶</span>
+          </div>
+          <div class="tournament-list">
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">The International 2025</span><span class="t-live-dot"></span></a>
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">DreamLeague S25</span><span class="t-count">3</span></a>
+          </div>
+        </div>
+        <div class="game-item">
+          <div class="game-header" onclick="toggleGame(this)">
+            <div class="game-icon"><img src="img_M/logo rocket league.png" alt="Rocket League"/></div>
+            <span class="game-name">Rocket League</span><span class="game-chevron">▶</span>
+          </div>
+          <div class="tournament-list">
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">RLCS 2025 Majors</span><span class="t-count">4</span></a>
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">EU Regional</span><span class="t-live-dot"></span></a>
+          </div>
+        </div>
+        <div class="game-item">
+          <div class="game-header" onclick="toggleGame(this)">
+            <div class="game-icon"><img src="img_M/logo overwatch2.png" alt="Overwatch 2"/></div>
+            <span class="game-name">Overwatch 2</span><span class="game-chevron">▶</span>
+          </div>
+          <div class="tournament-list">
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">OWL Grand Finals</span><span class="t-count">2</span></a>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ── Main content ── -->
+      <main class="main-content">
+
+        <div class="page-title">Settings</div>
+
+        <!-- Tab bar -->
+        <nav class="tabs">
+          <button class="tab-btn active" data-tab="account">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="5.5" r="2.5"/><path d="M2.5 14c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/></svg>
+            Account
+          </button>
+          <button class="tab-btn" data-tab="security">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 2L3 4.5v4C3 11.5 5.5 14 8 15c2.5-1 5-3.5 5-6.5v-4L8 2z"/></svg>
+            Security
+          </button>
+          <button class="tab-btn" data-tab="connections">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="4" cy="8" r="2"/><circle cx="12" cy="4" r="2"/><circle cx="12" cy="12" r="2"/><path d="M6 7l4-2M6 9l4 2"/></svg>
+            Connections
+          </button>
+          <button class="tab-btn" data-tab="kyc">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="3" width="12" height="10" rx="2"/><path d="M5 7h6M5 10h4"/></svg>
+            KYC
+          </button>
+          <button class="tab-btn" data-tab="preferences">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 4h12M2 8h12M2 12h12"/><circle cx="5" cy="4" r="1.5" fill="currentColor" stroke="none"/><circle cx="9" cy="8" r="1.5" fill="currentColor" stroke="none"/><circle cx="6" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg>
+            Preferences
+          </button>
+        </nav>
+
+        <!-- ═══ TAB: Account ═══ -->
+        <div class="tab-panel active" id="tab-account">
+
+          <div class="s-card">
+            <div class="s-card-header">
+              <div>
+                <div class="s-card-title">Profile picture</div>
+                <div class="s-card-desc">Shown on your public profile and in the chat</div>
+              </div>
+            </div>
+            <div class="s-card-body">
+              <div class="avatar-editor">
+                <div class="avatar-large">GR</div>
+                <div class="avatar-actions">
+                  <button class="btn-outline">Upload image</button>
+                  <span class="avatar-hint">JPG or PNG, max 2 MB</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="s-card">
+            <div class="s-card-header">
+              <div>
+                <div class="s-card-title">Personal information</div>
+                <div class="s-card-desc">Update your display name and contact details</div>
+              </div>
+            </div>
+            <div class="s-card-body">
+              <div class="field-row">
+                <label class="field-label">Username</label>
+                <input class="field-input" type="text" value="GhostRaider_47"/>
+                <span class="field-hint">Visible to other players. Changing it costs 500 XP.</span>
+              </div>
+              <div class="field-row-inline">
+                <div class="field-row">
+                  <label class="field-label">Email address</label>
+                  <div class="field-with-badge">
+                    <input class="field-input" type="email" value="vlajeande1862@gmail.com"/>
+                    <span class="status-badge verified">✓ Verified</span>
+                  </div>
+                </div>
+                <div class="field-row">
+                  <label class="field-label">Phone number</label>
+                  <div class="field-with-badge">
+                    <input class="field-input" type="tel" placeholder="+ Add phone number"/>
+                    <span class="status-badge missing">Not set</span>
+                  </div>
+                </div>
+              </div>
+              <button class="btn-primary">Save changes</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ═══ TAB: Security ═══ -->
+        <div class="tab-panel" id="tab-security">
+
+          <div class="s-card">
+            <div class="s-card-header">
+              <div><div class="s-card-title">Change password</div></div>
+            </div>
+            <div class="s-card-body">
+              <div class="field-row">
+                <label class="field-label">Current password</label>
+                <input class="field-input" type="password" placeholder="••••••••"/>
+              </div>
+              <div class="field-row-inline">
+                <div class="field-row">
+                  <label class="field-label">New password</label>
+                  <input class="field-input" type="password" placeholder="••••••••"/>
+                </div>
+                <div class="field-row">
+                  <label class="field-label">Confirm new password</label>
+                  <input class="field-input" type="password" placeholder="••••••••"/>
+                </div>
+              </div>
+              <span class="field-hint">At least 8 characters, including a number and a special character.</span>
+              <button class="btn-primary">Update password</button>
+            </div>
+          </div>
+
+          <div class="s-card">
+            <div class="s-card-header">
+              <div>
+                <div class="s-card-title">Two-factor authentication</div>
+                <div class="s-card-desc">Add a second layer of security to your account</div>
+              </div>
+            </div>
+            <div class="s-card-body">
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-label">Authenticator app (TOTP)</div>
+                  <div class="toggle-desc">Use Google Authenticator, Authy or any TOTP app to generate login codes.</div>
+                </div>
+                <div class="toggle-switch" onclick="this.classList.toggle('on')"></div>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-label">SMS verification</div>
+                  <div class="toggle-desc">Receive a one-time code by text message when you sign in.</div>
+                </div>
+                <div class="toggle-switch" onclick="this.classList.toggle('on')"></div>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-label">Login notifications</div>
+                  <div class="toggle-desc">Get an email alert whenever a new device signs in to your account.</div>
+                </div>
+                <div class="toggle-switch on" onclick="this.classList.toggle('on')"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="s-card">
+            <div class="s-card-header">
+              <div>
+                <div class="s-card-title">Active sessions</div>
+                <div class="s-card-desc">Signed in on 2 devices</div>
+              </div>
+              <button class="btn-danger">Log out all devices</button>
+            </div>
+            <div class="s-card-body">
+              <div class="field-row">
+                <span class="field-label">Chrome · Windows 11 · Paris, France</span>
+                <span class="field-hint">Current session — last active just now</span>
+              </div>
+              <div class="field-row">
+                <span class="field-label">Safari · iPhone 15 Pro · Paris, France</span>
+                <span class="field-hint">Last active 2 hours ago</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ═══ TAB: Connections ═══ -->
+        <div class="tab-panel" id="tab-connections">
+
+          <div class="s-card">
+            <div class="s-card-header">
+              <div>
+                <div class="s-card-title">Linked accounts</div>
+                <div class="s-card-desc">Connect your gaming accounts for faster login and profile enrichment</div>
+              </div>
+            </div>
+
+            <div class="connection-row">
+              <div class="connection-icon" style="background:#1a1f2e;">
+                <svg viewBox="0 0 24 24" fill="#c6d4df"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15H9V8h2v9zm4 0h-2V8h2v9z"/><path d="M7.5 6.5C7.5 7.33 6.83 8 6 8s-1.5-.67-1.5-1.5S5.17 5 6 5s1.5.67 1.5 1.5zM19.5 6.5C19.5 7.33 18.83 8 18 8s-1.5-.67-1.5-1.5S17.17 5 18 5s1.5.67 1.5 1.5z"/></svg>
+              </div>
+              <div class="connection-info">
+                <div class="connection-name">Steam</div>
+                <div class="connection-status">Not connected — link to display your library and game stats</div>
+              </div>
+              <button class="btn-outline">Connect</button>
+            </div>
+
+            <div class="connection-row">
+              <div class="connection-icon" style="background:#1a1f2e;">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+              </div>
+              <div class="connection-info">
+                <div class="connection-name">Google</div>
+                <div class="connection-status" style="color:var(--green);">Connected as vlajeande1862@gmail.com</div>
+              </div>
+              <button class="btn-danger">Disconnect</button>
+            </div>
+
+            <div class="connection-row">
+              <div class="connection-icon" style="background:#000;">
+                <svg viewBox="0 0 24 24" fill="#fff"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              </div>
+              <div class="connection-info">
+                <div class="connection-name">X (Twitter)</div>
+                <div class="connection-status">Not connected</div>
+              </div>
+              <button class="btn-outline">Connect</button>
+            </div>
+
+            <div class="connection-row">
+              <div class="connection-icon" style="background:#5865F2;">
+                <svg viewBox="0 0 24 24" fill="#fff"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028 14.09 14.09 0 001.226-1.994.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
+              </div>
+              <div class="connection-info">
+                <div class="connection-name">Discord</div>
+                <div class="connection-status">Not connected</div>
+              </div>
+              <button class="btn-outline">Connect</button>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ═══ TAB: KYC ═══ -->
+        <div class="tab-panel" id="tab-kyc">
+
+          <div class="s-card">
+            <div class="s-card-header">
+              <div>
+                <div class="s-card-title">Identity verification</div>
+                <div class="s-card-desc">Required to withdraw funds and to comply with gambling regulations</div>
+              </div>
+              <span class="status-badge pending">In progress</span>
+            </div>
+
+            <div class="kyc-step">
+              <div class="kyc-step-num done">✓</div>
+              <div class="kyc-step-info">
+                <div class="kyc-step-title">Email verified</div>
+                <div class="kyc-step-desc">vlajeande1862@gmail.com — confirmed on Jan 14, 2025</div>
+              </div>
+            </div>
+
+            <div class="kyc-step">
+              <div class="kyc-step-num done">✓</div>
+              <div class="kyc-step-info">
+                <div class="kyc-step-title">Personal details</div>
+                <div class="kyc-step-desc">Name, date of birth and address on file.</div>
+              </div>
+            </div>
+
+            <div class="kyc-step">
+              <div class="kyc-step-num">3</div>
+              <div class="kyc-step-info">
+                <div class="kyc-step-title">Government-issued ID</div>
+                <div class="kyc-step-desc">Upload a passport, national ID card or driving licence. Both sides if applicable.</div>
+              </div>
+              <button class="btn-outline">Upload ID</button>
+            </div>
+
+            <div class="kyc-step">
+              <div class="kyc-step-num">4</div>
+              <div class="kyc-step-info">
+                <div class="kyc-step-title">Proof of address</div>
+                <div class="kyc-step-desc">A recent utility bill or bank statement (less than 3 months old).</div>
+              </div>
+              <button class="btn-outline" style="opacity:0.4;pointer-events:none;">Upload document</button>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ═══ TAB: Preferences ═══ -->
+        <div class="tab-panel" id="tab-preferences">
+
+          <div class="s-card">
+            <div class="s-card-header">
+              <div><div class="s-card-title">Display</div></div>
+            </div>
+            <div class="s-card-body">
+              <div class="field-row-inline">
+                <div class="field-row">
+                  <label class="field-label">Language</label>
+                  <select class="field-select">
+                    <option>English</option>
+                    <option>Français</option>
+                    <option>Español</option>
+                    <option>Deutsch</option>
+                    <option>Português</option>
+                  </select>
+                </div>
+                <div class="field-row">
+                  <label class="field-label">Timezone</label>
+                  <select class="field-select">
+                    <option>UTC+1 — Paris, Brussels</option>
+                    <option>UTC+0 — London, Lisbon</option>
+                    <option>UTC+2 — Athens, Cairo</option>
+                    <option>UTC-5 — New York</option>
+                    <option>UTC-8 — Los Angeles</option>
+                  </select>
+                </div>
+              </div>
+              <button class="btn-primary">Save</button>
+            </div>
+          </div>
+
+          <div class="s-card">
+            <div class="s-card-header">
+              <div>
+                <div class="s-card-title">Odds format</div>
+                <div class="s-card-desc">How odds are displayed across the platform</div>
+              </div>
+            </div>
+            <div class="s-card-body">
+              <div class="field-row">
+                <label class="field-label">Format</label>
+                <select class="field-select" id="oddsSelect" onchange="updateOddsPreview(this.value)">
+                  <option value="decimal">Decimal (European)</option>
+                  <option value="fractional">Fractional (UK)</option>
+                  <option value="american">American (Moneyline)</option>
+                </select>
+              </div>
+              <div class="field-row">
+                <label class="field-label">Preview</label>
+                <div class="odds-preview">
+                  <span class="odds-chip" id="op1">1.85</span>
+                  <span class="odds-chip" id="op2">3.20</span>
+                  <span class="odds-chip" id="op3">1.50</span>
+                </div>
+              </div>
+              <button class="btn-primary">Save</button>
+            </div>
+          </div>
+
+          <div class="s-card">
+            <div class="s-card-header">
+              <div><div class="s-card-title">Notifications</div></div>
+            </div>
+            <div class="s-card-body">
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-label">Match start alerts</div>
+                  <div class="toggle-desc">Get notified when a match you bet on is about to start.</div>
+                </div>
+                <div class="toggle-switch on" onclick="this.classList.toggle('on')"></div>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-label">Bet settlement</div>
+                  <div class="toggle-desc">Receive a notification when your bet is settled (win or loss).</div>
+                </div>
+                <div class="toggle-switch on" onclick="this.classList.toggle('on')"></div>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-label">Promotions &amp; bonuses</div>
+                  <div class="toggle-desc">Stay updated on new offers, free bets and seasonal events.</div>
+                </div>
+                <div class="toggle-switch" onclick="this.classList.toggle('on')"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+
+      <!-- ── Sidebar droite — Bet Builder ── -->
+      <aside class="sidebar-right">
+        <div class="bb-header">
+          <span class="bb-title">Bet Slip</span>
+          <span class="bb-count" id="bb-count">0</span>
+          <button class="bb-toggle" id="bbToggle" title="Collapse / Expand">&#10095;</button>
+        </div>
+        <div id="bb-bets-list"></div>
+        <div class="bb-divider"></div>
+        <div class="bb-combined">
+          <span class="bb-combined-label">Combined odds</span>
+          <span class="bb-combined-val" id="bb-combined-val">1.00</span>
+        </div>
+        <div class="bb-divider"></div>
+        <div class="bb-stake-row">
+          <span class="bb-stake-label">Stake (£)</span>
+          <input class="bb-stake-input" type="number" placeholder="0.00" value="10"/>
+        </div>
+        <div class="bb-quick-amounts">
+          <div class="bb-qa">+5</div>
+          <div class="bb-qa">+10</div>
+          <div class="bb-qa">+25</div>
+          <div class="bb-qa">+50</div>
+        </div>
+        <div class="bb-gains">
+          <span class="bb-gains-label">Potential winnings</span>
+          <span class="bb-gains-val" id="bbGains">£0.00</span>
+        </div>
+        <button class="bb-submit">Place bet</button>
+        <div class="bb-terms">Responsible gambling · 18+ · T&Cs apply</div>
+      </aside>
+
+    </div>
+  </div>
+
+  <script>if(sessionStorage.getItem('sb_access')!=='1'){window.location.replace('gate.html');}</script>
+  <script src="betslip.js"></script>
+  <script>
+    /* Tab switching */
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+        document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    /* Sidebar accordion */
+    function toggleGame(header) {
+      var item = header.parentElement;
+      var isOpen = item.classList.contains('open');
+      document.querySelectorAll('.game-item').forEach(function(el) { el.classList.remove('open'); });
+      if (!isOpen) item.classList.add('open');
+    }
+
+    /* Odds preview */
+    var ODDS = {
+      decimal:    ['1.85', '3.20', '1.50'],
+      fractional: ['17/20', '11/5', '1/2'],
+      american:   ['-118', '+220', '-200'],
+    };
+    function updateOddsPreview(fmt) {
+      var o = ODDS[fmt] || ODDS.decimal;
+      document.getElementById('op1').textContent = o[0];
+      document.getElementById('op2').textContent = o[1];
+      document.getElementById('op3').textContent = o[2];
+    }
+  </script>
+</body>
+</html>

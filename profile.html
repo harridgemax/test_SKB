@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SkillBet — Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple: #7c3aed;
+      --purple-light: #a855f7;
+        --surface: #13172e;
+      --border: rgba(139,92,246,0.18);
+      --border-hi: rgba(139,92,246,0.32);
+      --text: #c4c8e2;
+      --text-dim: rgba(196,200,226,0.55);
+      --text-faint: rgba(196,200,226,0.32);
+      --green: #4ade80;
+    }
+
+    html, body {
+      height: 100%; overflow: hidden;
+      font-family: 'Exo 2', sans-serif; color: #c4c8e2;
+      background:
+        radial-gradient(1200px 800px at 20% 10%, rgba(124,58,237,.26), transparent 60%),
+        radial-gradient(900px 600px at 40% 80%, rgba(236,72,153,.22), transparent 55%),
+        #070b1f;
+    }
+
+    .bg-blobs { position: fixed; inset: 0; pointer-events: none; z-index: 0; filter: blur(70px); opacity: .85; }
+    .blob {
+      position: absolute; width: 460px; height: 460px; border-radius: 999px;
+      background:
+        radial-gradient(circle at 35% 35%, rgba(124,58,237,.95), transparent 60%),
+        radial-gradient(circle at 65% 65%, rgba(236,72,153,.90), transparent 62%);
+      animation: floaty 5s ease-in-out infinite;
+    }
+    .b1 { top: -140px; left: -140px; }
+    .b2 { top: 12%; right: -180px; animation-delay: -1s; }
+    .b3 { bottom: -200px; left: 30%; animation-delay: -2s; }
+    @keyframes floaty {
+      0%,100% { transform: translate3d(0,0,0) scale(1); }
+      50%      { transform: translate3d(40px,-30px,0) scale(1.08); }
+    }
+
+    .page { position: relative; z-index: 1; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* ═══════════════════════════════════════════════
+       LAYOUT 3 COLONNES
+    ═══════════════════════════════════════════════ */
+    .content-layout {
+      display: flex;
+      flex: 1; min-height: 0;
+      align-items: flex-start;
+      overflow: hidden;
+      gap: 10px;
+    }
+
+    /* ── Sidebar gauche ── */
+    .sidebar-left {
+      width: 230px; flex-shrink: 0;
+      height: calc(100vh - 64px);
+      overflow-y: auto;
+      background: rgba(5,8,22,0.65);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      padding: 20px 0 40px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(168,85,247,0.3) transparent;
+      position: sticky; top: 0;
+    }
+    .sidebar-left::-webkit-scrollbar { width: 4px; }
+    .sidebar-left::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.3); border-radius: 4px; }
+
+    .sidebar-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      padding: 0 18px 12px;
+    }
+    .game-item { border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .game-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 18px; cursor: pointer; transition: background 0.2s; user-select: none;
+    }
+    .game-header:hover { background: rgba(255,255,255,0.04); }
+    .game-icon { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+    .game-icon img { width: 28px; height: 28px; object-fit: contain; display: block; }
+    .game-name { flex: 1; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.8); }
+    .game-chevron { font-size: 10px; color: rgba(255,255,255,0.3); transition: transform 0.25s; }
+    .game-item.open .game-chevron { transform: rotate(90deg); }
+    .tournament-list { display: none; padding: 2px 0 8px; }
+    .game-item.open .tournament-list { display: block; }
+    .tournament-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 7px 18px 7px 44px; cursor: pointer; transition: background 0.2s;
+      text-decoration: none; color: inherit;
+    }
+    .tournament-item:hover { background: rgba(255,255,255,0.03); }
+    .tournament-name { font-size: 11px; color: rgba(255,255,255,0.55); letter-spacing: 0.5px; }
+    .t-live-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #ef4444; box-shadow: 0 0 5px #ef4444;
+      animation: pulse-dot 1.2s ease-in-out infinite;
+    }
+    @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.35} }
+    .t-count { font-size: 10px; color: rgba(255,255,255,0.3); }
+
+    /* ── Main content (profil) ── */
+    .main-content {
+      flex: 1; min-width: 0;
+      height: 100%;
+      overflow-y: auto;
+      padding: 22px 28px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 14px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(168,85,247,0.2) transparent;
+    }
+    .main-content::-webkit-scrollbar { width: 4px; }
+    .main-content::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.3); border-radius: 4px; }
+
+    .section-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 38px; font-weight: 700;
+      color: #fff;
+      line-height: 1;
+    }
+    .section-rank {
+      font-size: 13px; font-weight: 600;
+      letter-spacing: 1.5px;
+      color: rgba(255,255,255,0.45);
+      margin-top: 6px;
+    }
+    .section-rank span {
+      color: #fde047;
+      font-weight: 700;
+    }
+
+    /* ── Sidebar droite — Bet Builder ── */
+    .sidebar-right {
+      width: 290px; flex-shrink: 0;
+      height: calc(100vh - 64px);
+      overflow-y: auto;
+      background: rgba(5,8,22,0.65);
+      border-left: 1px solid rgba(255,255,255,0.06);
+      padding: 20px 16px 40px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(168,85,247,0.3) transparent;
+      position: sticky; top: 0;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .sidebar-right::-webkit-scrollbar { width: 4px; }
+    .sidebar-right::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.3); border-radius: 4px; }
+    .sidebar-right.collapsed { width: 38px; min-width: 38px; padding: 14px 6px; overflow: hidden; }
+    .sidebar-right.collapsed > *:not(.bb-header) { display: none; }
+    .sidebar-right.collapsed .bb-title,
+    .sidebar-right.collapsed .bb-count { display: none; }
+
+    .bb-toggle {
+      margin-left: auto; background: none; border: none; cursor: pointer;
+      color: rgba(168,85,247,0.8); font-size: 18px; line-height: 1; padding: 2px 4px;
+      transition: transform 0.3s, color 0.2s; flex-shrink: 0;
+    }
+    .bb-toggle:hover { color: #a855f7; }
+    .sidebar-right.collapsed .bb-toggle { transform: scaleX(-1); }
+
+    .bb-header { display: flex; align-items: center; gap: 10px; }
+    .bb-title { font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; flex: 1; }
+    .bb-count { background: var(--purple); color: #fff; font-size: 10px; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+    .bb-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 32px 16px; background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.1); border-radius: 14px; text-align: center; }
+    .bb-empty-icon { font-size: 28px; opacity: 0.4; }
+    .bb-empty-text { font-size: 11px; color: rgba(255,255,255,0.35); letter-spacing: 0.5px; line-height: 1.5; }
+
+    .bb-bet { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 12px 14px; position: relative; }
+    .bb-bet-game { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--purple-light); margin-bottom: 4px; }
+    .bb-bet-match { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 6px; }
+    .bb-bet-pick { font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #fff; }
+    .bb-bet-odds { position: absolute; top: 12px; right: 14px; font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 800; color: #fff; background: #070b1f; border: 1px solid rgba(255,255,255,0.1); border-radius: 7px; padding: 3px 10px; }
+    .bb-bet-remove { position: absolute; bottom: 10px; right: 14px; font-size: 10px; color: rgba(255,255,255,0.75); cursor: pointer; letter-spacing: 1px; }
+    .bb-bet-remove:hover { color: #fff; }
+
+    .bb-divider { height: 1px; background: rgba(255,255,255,0.06); }
+
+    .bb-combined { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; }
+    .bb-combined-label { font-size: 11px; color: #fff; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; }
+    .bb-combined-val { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; color: #fff; background: #070b1f; border: 1px solid rgba(255,255,255,0.1); border-radius: 7px; padding: 3px 10px; }
+
+    .bb-stake-row { display: flex; flex-direction: column; gap: 6px; }
+    .bb-stake-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.4); }
+    .bb-stake-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 14px; color: #fff; font-family: 'Exo 2', sans-serif; font-size: 14px; font-weight: 600; outline: none; width: 100%; transition: border-color 0.2s; }
+    .bb-stake-input:focus { border-color: var(--purple-light); }
+
+    .bb-quick-amounts { display: flex; gap: 6px; }
+    .bb-qa { flex: 1; padding: 6px 0; text-align: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.6); cursor: pointer; transition: background 0.2s, color 0.2s; }
+    .bb-qa:hover { background: rgba(168,85,247,0.2); color: #fff; border-color: var(--purple-light); }
+
+    .bb-gains { display: flex; justify-content: space-between; align-items: center; background: rgba(168,85,247,0.08); border: 1px solid rgba(168,85,247,0.2); border-radius: 10px; padding: 10px 14px; }
+    .bb-gains-label { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #fff; }
+    .bb-gains-val { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: #fff; }
+
+    .bb-submit { width: 100%; padding: 12px; border: 1px solid rgba(255,255,255,0.35); border-radius: 12px; cursor: pointer; font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 1px; background: rgba(255,255,255,0.18); color: #fff; transition: background 0.2s, border-color 0.2s; position: relative; overflow: visible; }
+    .bb-submit:hover { background: rgba(255,255,255,0.24); border-color: rgba(255,255,255,0.55); }
+    .bb-terms { font-size: 9px; color: rgba(255,255,255,0.2); text-align: center; letter-spacing: 0.5px; line-height: 1.5; }
+
+    /* ═══════════════════════════════════════════════
+       PROFIL — CARD BASE
+    ═══════════════════════════════════════════════ */
+    .card {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+
+    /* ── BLOCK 1 : Header ── */
+    .header-top { display: flex; align-items: center; gap: 16px; }
+    .avatar {
+      width: 54px; height: 54px; border-radius: 50%; flex-shrink: 0;
+      background: var(--purple); border: 2px solid rgba(168,85,247,0.5);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Rajdhani', sans-serif; font-size: 19px; font-weight: 700;
+      position: relative;
+    }
+    .online-dot { position: absolute; bottom: 2px; right: 0; width: 12px; height: 12px; border-radius: 50%; background: #4ade80; border: 2px solid var(--surface); }
+    .header-info { flex: 1; min-width: 0; }
+    .username { font-family: 'Rajdhani', sans-serif; font-size: 24px; font-weight: 700; line-height: 1; color: #e8eaf6; }
+    .member-since { font-size: 10px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text-faint); margin-top: 7px; }
+    .rank-inline {
+      display: inline-flex; align-items: center; gap: 5px;
+      margin-top: 5px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 13px; font-weight: 700; letter-spacing: 1px;
+      color: #fde047;
+    }
+    .rank-inline::before {
+      content: '';
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #fde047;
+      box-shadow: 0 0 6px #fde047;
+    }
+
+    .xp-row { display: flex; align-items: center; gap: 12px; }
+    .xp-level { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-faint); white-space: nowrap; }
+    .xp-track { flex: 1; height: 5px; background: rgba(255,255,255,0.07); border-radius: 10px; overflow: hidden; }
+    .xp-fill { height: 100%; width: 68%; background: var(--purple); border-radius: 10px; }
+    .xp-remaining { font-size: 10px; font-weight: 700; color: var(--purple-light); white-space: nowrap; }
+
+    /* ── Profile Info card ── */
+    .card-section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 22px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .card-section-label {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--text-faint);
+    }
+    /* ── Boutons d'action principaux ── */
+    .btn-primary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 11px 22px; border-radius: 10px; cursor: pointer; border: none;
+      background: linear-gradient(135deg, #7c3aed 0%, #9333ea 60%, #a855f7 100%);
+      color: #fff;
+      font-family: 'Exo 2', sans-serif;
+      font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;
+      transition: box-shadow 0.2s, transform 0.12s, opacity 0.15s;
+      box-shadow: 0 4px 16px rgba(124,58,237,0.3);
+      position: relative; overflow: hidden;
+    }
+    .btn-primary::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .btn-primary:hover {
+      box-shadow: 0 6px 24px rgba(124,58,237,0.5);
+      transform: translateY(-1px);
+    }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+    .btn-cancel-inline {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 11px 18px; border-radius: 10px; cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+      color: rgba(196,200,226,0.55);
+      font-family: 'Exo 2', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+    .btn-cancel-inline:hover { border-color: rgba(255,255,255,0.2); color: #c4c8e2; background: rgba(255,255,255,0.07); }
+
+    /* ── Footer de card ── */
+    .card-footer {
+      display: flex; align-items: center; gap: 10px;
+      padding: 16px 22px;
+      border-top: 1px solid var(--border);
+    }
+    .card-footer-msg {
+      flex: 1; font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+      opacity: 0; transition: opacity 0.3s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .card-footer-msg.success { color: #4ade80; }
+    .card-footer-msg.visible { opacity: 1; }
+
+    /* ── Champs d'édition inline ── */
+    .prof-edit-block {
+      padding: 16px 22px;
+      border-top: 1px solid var(--border);
+      display: none; flex-direction: column; gap: 12px;
+    }
+    .prof-edit-block.visible { display: flex; }
+    .prof-edit-field { display: flex; flex-direction: column; gap: 5px; }
+    .prof-edit-label {
+      font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--text-faint);
+    }
+    .prof-input {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 9px; padding: 10px 14px;
+      color: #e8eaf6; font-family: 'Exo 2', sans-serif; font-size: 13px; font-weight: 500;
+      outline: none; width: 100%;
+      transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+    }
+    .prof-input:focus {
+      border-color: rgba(168,85,247,0.6);
+      background: rgba(139,92,246,0.06);
+      box-shadow: 0 0 0 3px rgba(139,92,246,0.1);
+    }
+
+    /* ── Toast notification ── */
+    #prof-toast {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
+      z-index: 9999;
+      background: #1a1f3a; border: 1px solid rgba(139,92,246,0.3);
+      border-radius: 12px; padding: 13px 22px;
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Exo 2', sans-serif; font-size: 12px; font-weight: 600;
+      color: #e8eaf6;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s, transform 0.25s;
+    }
+    #prof-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: all; }
+    #prof-toast .toast-icon { font-size: 16px; }
+    #prof-toast.success { border-color: rgba(74,222,128,0.35); }
+    #prof-toast.success .toast-icon::before { content: '✓'; color: #4ade80; }
+
+    .card-identity {
+      display: flex; align-items: center; gap: 16px;
+      padding: 20px 22px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .info-grid {
+      padding: 6px 22px 20px;
+      display: flex; flex-direction: column;
+    }
+    .info-row {
+      display: flex; align-items: center;
+      padding: 11px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-label {
+      width: 140px; flex-shrink: 0;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.5px;
+      color: var(--text-dim);
+    }
+    .info-value {
+      font-size: 13px; font-weight: 500;
+      color: #d6d9ef;
+    }
+
+    /* ── Card 1 : user id row ── */
+    .user-id-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 13px 22px;
+      border-top: 1px solid var(--border);
+    }
+    .user-id-label {
+      font-size: 11px; font-weight: 600; color: var(--text-dim);
+      flex-shrink: 0;
+    }
+    .user-id-value {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 14px; font-weight: 600; letter-spacing: 1px;
+      color: var(--text-faint);
+    }
+
+    /* ── Card 2 : Contact Info ── */
+    .contact-section {
+      padding: 20px 22px;
+    }
+    .contact-section + .contact-section {
+      border-top: 1px solid var(--border);
+    }
+    .contact-section-title {
+      font-size: 13px; font-weight: 700;
+      color: #d6d9ef;
+      margin-bottom: 10px;
+    }
+    .contact-value-row {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .contact-value {
+      font-size: 13px; font-weight: 500;
+      color: #d6d9ef;
+    }
+    .verified-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+      color: #4ade80;
+      background: rgba(74,222,128,0.08);
+      border: 1px solid rgba(74,222,128,0.25);
+      border-radius: 20px;
+      padding: 3px 10px;
+    }
+    .contact-desc {
+      font-size: 12px; font-weight: 400; line-height: 1.6;
+      color: var(--text-dim);
+      margin-bottom: 14px;
+    }
+    .btn-add-phone {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 18px; border-radius: 9px; cursor: pointer;
+      border: 1px solid var(--border-hi);
+      background: transparent;
+      color: var(--purple-light);
+      font-family: 'Exo 2', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.8px;
+      transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.12s, box-shadow 0.15s;
+    }
+    .btn-add-phone:hover { background: rgba(139,92,246,0.12); color: #fff; border-color: rgba(168,85,247,0.5); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(124,58,237,0.2); }
+    .btn-add-phone:active { transform: translateY(0); }
+
+    /* ── Card 3 : Financial Information ── */
+    .financial-balance {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 22px;
+      border-bottom: 1px solid var(--border);
+      gap: 24px;
+    }
+    .balance-label-sm { font-size: 10px; font-weight: 600; letter-spacing: 0.5px; color: var(--text-faint); margin-bottom: 6px; }
+    .balance-amount { font-family: 'Rajdhani', sans-serif; font-size: 40px; font-weight: 500; line-height: 1; color: #e8eaf6; }
+    .balance-gains { margin-top: 6px; font-size: 12px; font-weight: 600; color: #4ade80; }
+    .balance-actions { display: flex; gap: 10px; flex-shrink: 0; }
+    .btn-deposit { padding: 11px 24px; border: none; border-radius: 9px; background: linear-gradient(135deg, #7c3aed, #a855f7); color: #fff; font-family: 'Exo 2', sans-serif; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; transition: box-shadow 0.2s, transform 0.12s; white-space: nowrap; box-shadow: 0 3px 12px rgba(124,58,237,0.35); }
+    .btn-deposit:hover { box-shadow: 0 5px 20px rgba(124,58,237,0.55); transform: translateY(-1px); }
+    .btn-deposit:active { transform: translateY(0); }
+    .btn-withdraw { padding: 10px 22px; border: 1px solid var(--border-hi); border-radius: 9px; background: transparent; color: var(--purple-light); font-family: 'Exo 2', sans-serif; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; transition: border-color 0.15s, color 0.15s, background 0.15s, transform 0.12s; white-space: nowrap; }
+    .btn-withdraw:hover { border-color: var(--purple-light); color: #fff; background: rgba(139,92,246,0.1); transform: translateY(-1px); }
+    .btn-withdraw:active { transform: translateY(0); }
+
+    .wallet-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border-radius: 0 0 16px 16px;
+      overflow: hidden;
+    }
+    .wallet-cell {
+      background: var(--surface);
+      padding: 18px 22px 0;
+      display: flex; flex-direction: column;
+    }
+    .wallet-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .wallet-icon { width: 30px; height: 30px; border-radius: 7px; flex-shrink: 0; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.22); display: flex; align-items: center; justify-content: center; }
+    .wallet-icon svg { width: 15px; height: 15px; }
+    .wallet-label { font-size: 11px; font-weight: 600; color: var(--text-dim); }
+    .wallet-amount { font-family: 'Rajdhani', sans-serif; font-size: 26px; font-weight: 500; margin-bottom: 14px; color: #e8eaf6; }
+    .wallet-divider { height: 1px; background: var(--border); margin: 0 -22px; }
+    .wallet-action { padding: 10px 0 12px; font-size: 11px; font-weight: 600; color: var(--purple-light); cursor: pointer; transition: color 0.15s, letter-spacing 0.15s; display: inline-flex; align-items: center; gap: 4px; }
+    .wallet-action:hover { color: #fff; letter-spacing: 0.3px; }
+  </style>
+</head>
+<body>
+  <div class="bg-blobs">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+
+  <div class="page">
+    <script src="header.js"></script>
+
+    <div class="content-layout">
+
+      <!-- ══════════ SIDEBAR GAUCHE ══════════ -->
+      <aside class="sidebar-left">
+        <div class="sidebar-title">Tournaments</div>
+
+        <div class="game-item open">
+          <div class="game-header" onclick="toggleGame(this)">
+            <div class="game-icon"><img src="img_M/logocs2.png" alt="CS2"/></div>
+            <span class="game-name">CS2</span>
+            <span class="game-chevron">▶</span>
+          </div>
+          <div class="tournament-list">
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">ESL Pro League S21</span><span class="t-live-dot"></span></a>
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">BLAST Premier Spring</span><span class="t-live-dot"></span></a>
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">IEM Cologne 2025</span><span class="t-count">3</span></a>
+          </div>
+        </div>
+
+        <div class="game-item">
+          <div class="game-header" onclick="toggleGame(this)">
+            <div class="game-icon"><img src="img_M/logo lol.png" alt="LoL"/></div>
+            <span class="game-name">League of Legends</span>
+            <span class="game-chevron">▶</span>
+          </div>
+          <div class="tournament-list">
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">LEC Spring Split</span><span class="t-live-dot"></span></a>
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">Worlds 2025</span><span class="t-count">8</span></a>
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">LCS Summer</span><span class="t-count">4</span></a>
+          </div>
+        </div>
+
+        <div class="game-item">
+          <div class="game-header" onclick="toggleGame(this)">
+            <div class="game-icon"><img src="img_M/logo valo.png" alt="Valorant"/></div>
+            <span class="game-name">Valorant</span>
+            <span class="game-chevron">▶</span>
+          </div>
+          <div class="tournament-list">
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">VCT Americas</span><span class="t-live-dot"></span></a>
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">VCT EMEA</span><span class="t-count">5</span></a>
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">Champions 2025</span><span class="t-count">2</span></a>
+          </div>
+        </div>
+
+        <div class="game-item">
+          <div class="game-header" onclick="toggleGame(this)">
+            <div class="game-icon"><img src="img_M/logo dota2.png" alt="Dota 2"/></div>
+            <span class="game-name">Dota 2</span>
+            <span class="game-chevron">▶</span>
+          </div>
+          <div class="tournament-list">
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">The International 2025</span><span class="t-live-dot"></span></a>
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">ESL One Berlin</span><span class="t-count">6</span></a>
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">DreamLeague S25</span><span class="t-count">3</span></a>
+          </div>
+        </div>
+
+        <div class="game-item">
+          <div class="game-header" onclick="toggleGame(this)">
+            <div class="game-icon"><img src="img_M/logo rocket league.png" alt="Rocket League"/></div>
+            <span class="game-name">Rocket League</span>
+            <span class="game-chevron">▶</span>
+          </div>
+          <div class="tournament-list">
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">RLCS 2025 Majors</span><span class="t-count">4</span></a>
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">EU Regional</span><span class="t-live-dot"></span></a>
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">World Championship</span><span class="t-count">1</span></a>
+          </div>
+        </div>
+
+        <div class="game-item">
+          <div class="game-header" onclick="toggleGame(this)">
+            <div class="game-icon"><img src="img_M/logo overwatch2.png" alt="Overwatch 2"/></div>
+            <span class="game-name">Overwatch 2</span>
+            <span class="game-chevron">▶</span>
+          </div>
+          <div class="tournament-list">
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">OWL Grand Finals</span><span class="t-count">2</span></a>
+            <a class="tournament-item" href="bracket.html"><span class="tournament-name">Contenders EU</span><span class="t-count">5</span></a>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ══════════ CONTENU PRINCIPAL ══════════ -->
+      <main class="main-content">
+
+        <div class="section-title">Profile</div>
+
+        <!-- CARD 1 — Profile Info -->
+        <div class="card" id="card-profile">
+          <div class="card-section-header">
+            <span class="card-section-label">Profile Info</span>
+          </div>
+          <div class="card-identity">
+            <div class="avatar">GR<div class="online-dot"></div></div>
+            <div class="header-info">
+              <div class="username" id="display-username">GhostRaider_47</div>
+              <div class="rank-inline">Diamond III</div>
+              <div class="member-since">Member since Jan. 2025</div>
+            </div>
+          </div>
+          <div class="user-id-row">
+            <span class="user-id-label">User ID</span>
+            <span class="user-id-value">933358971966759</span>
+          </div>
+          <!-- Champs d'édition (cachés par défaut) -->
+          <div class="prof-edit-block" id="edit-profile-fields">
+            <div class="prof-edit-field">
+              <label class="prof-edit-label">Display name</label>
+              <input class="prof-input" id="input-username" type="text" value="GhostRaider_47" maxlength="32"/>
+            </div>
+            <div class="prof-edit-field">
+              <label class="prof-edit-label">Bio</label>
+              <input class="prof-input" id="input-bio" type="text" placeholder="Tell us about yourself…" maxlength="120"/>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn-primary" id="btn-edit-profile" onclick="toggleEditProfile()">
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 1.5l2 2L3 11H1V9L8.5 1.5z"/></svg>
+              Edit Profile
+            </button>
+            <button class="btn-cancel-inline" id="btn-cancel-profile" style="display:none" onclick="cancelEditProfile()">Cancel</button>
+            <span class="card-footer-msg success" id="msg-profile"></span>
+          </div>
+        </div>
+
+        <!-- CARD 2 — Contact Info -->
+        <div class="card" id="card-contact">
+          <div class="card-section-header">
+            <span class="card-section-label">Contact Info</span>
+          </div>
+          <div class="contact-section">
+            <div class="contact-section-title">E-mail</div>
+            <div class="contact-value-row">
+              <span class="contact-value" id="display-email">vlajeande1862@gmail.com</span>
+              <span class="verified-badge">✓ Verified</span>
+            </div>
+          </div>
+          <div class="contact-section">
+            <div class="contact-section-title">Phone Number</div>
+            <div class="contact-desc" id="phone-desc">Verify your phone number and you can use the phone as your second login method.</div>
+            <span class="contact-value" id="display-phone" style="display:none"></span>
+          </div>
+          <!-- Champs d'édition (cachés par défaut) -->
+          <div class="prof-edit-block" id="edit-contact-fields">
+            <div class="prof-edit-field">
+              <label class="prof-edit-label">Email address</label>
+              <input class="prof-input" id="input-email" type="email" value="vlajeande1862@gmail.com"/>
+            </div>
+            <div class="prof-edit-field">
+              <label class="prof-edit-label">Phone number</label>
+              <input class="prof-input" id="input-phone" type="tel" placeholder="+1 000 000 0000"/>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn-primary" id="btn-edit-contact" onclick="toggleEditContact()">
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 1.5l2 2L3 11H1V9L8.5 1.5z"/></svg>
+              Update Contact Info
+            </button>
+            <button class="btn-cancel-inline" id="btn-cancel-contact" style="display:none" onclick="cancelEditContact()">Cancel</button>
+            <span class="card-footer-msg success" id="msg-contact"></span>
+          </div>
+        </div>
+
+        <!-- CARD 3 — Financial Information -->
+        <div class="card">
+          <div class="card-section-header">
+            <span class="card-section-label">Financial Information</span>
+          </div>
+          <div class="financial-balance">
+            <div>
+              <div class="balance-label-sm">Available balance</div>
+              <div class="balance-amount">£1,247.50</div>
+              <div class="balance-gains">↑ Total earnings: +£387.20</div>
+            </div>
+            <div class="balance-actions">
+              <button class="btn-deposit">+ Deposit</button>
+              <button class="btn-withdraw">Withdraw</button>
+            </div>
+          </div>
+          <div class="wallet-grid">
+
+            <div class="wallet-cell">
+              <div class="wallet-top">
+                <div class="wallet-icon">
+                  <svg viewBox="0 0 15 15" fill="none" stroke="#a855f7" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="1" y="3" width="13" height="10" rx="2"/><path d="M1 7h13"/><circle cx="10.5" cy="9" r="1" fill="#a855f7" stroke="none"/>
+                  </svg>
+                </div>
+                <span class="wallet-label">Active funds</span>
+              </div>
+              <div class="wallet-amount">£0</div>
+              <div class="wallet-divider"></div>
+              <div class="wallet-action">Manage funds →</div>
+            </div>
+
+            <div class="wallet-cell">
+              <div class="wallet-top">
+                <div class="wallet-icon">
+                  <svg viewBox="0 0 15 15" fill="none" stroke="#a855f7" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7.5 2v8M4 7l3.5 3 3.5-3"/><path d="M2 13h11"/>
+                  </svg>
+                </div>
+                <span class="wallet-label">Last deposit</span>
+              </div>
+              <div class="wallet-amount">£0</div>
+              <div class="wallet-divider"></div>
+              <div class="wallet-action">Deposit history →</div>
+            </div>
+
+            <div class="wallet-cell">
+              <div class="wallet-top">
+                <div class="wallet-icon">
+                  <svg viewBox="0 0 15 15" fill="none" stroke="#a855f7" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7.5 13V5M4 8l3.5-3 3.5 3"/><path d="M2 2h11"/>
+                  </svg>
+                </div>
+                <span class="wallet-label">Last withdrawal</span>
+              </div>
+              <div class="wallet-amount">£0</div>
+              <div class="wallet-divider"></div>
+              <div class="wallet-action">Withdrawal history →</div>
+            </div>
+
+            <div class="wallet-cell">
+              <div class="wallet-top">
+                <div class="wallet-icon">
+                  <svg viewBox="0 0 15 15" fill="none" stroke="#a855f7" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="5" cy="5" r="2.2"/><circle cx="10.5" cy="5" r="2.2"/>
+                    <path d="M1 13c0-2 1.8-3.5 4-3.5"/><path d="M14 13c0-2-1.8-3.5-4-3.5"/><path d="M7 11h1"/>
+                  </svg>
+                </div>
+                <span class="wallet-label">Referral earnings</span>
+              </div>
+              <div class="wallet-amount">£0</div>
+              <div class="wallet-divider"></div>
+              <div class="wallet-action">Invite friends →</div>
+            </div>
+
+          </div>
+        </div>
+
+      </main>
+
+      <!-- ══════════ SIDEBAR DROITE — BET BUILDER ══════════ -->
+      <aside class="sidebar-right">
+
+        <div class="bb-header">
+          <span class="bb-title">Bet Slip</span>
+          <span class="bb-count" id="bb-count">0</span>
+          <button class="bb-toggle" id="bbToggle" title="Collapse / Expand">&#10095;</button>
+        </div>
+
+        <div id="bb-bets-list"></div>
+
+        <div class="bb-divider"></div>
+
+        <div class="bb-combined">
+          <span class="bb-combined-label">Combined odds</span>
+          <span class="bb-combined-val" id="bb-combined-val">1.00</span>
+        </div>
+
+        <div class="bb-divider"></div>
+
+        <div class="bb-stake-row">
+          <span class="bb-stake-label">Stake (£)</span>
+          <input class="bb-stake-input" type="number" placeholder="0.00" value="10"/>
+        </div>
+
+        <div class="bb-quick-amounts">
+          <div class="bb-qa">+5</div>
+          <div class="bb-qa">+10</div>
+          <div class="bb-qa">+25</div>
+          <div class="bb-qa">+50</div>
+        </div>
+
+        <div class="bb-gains">
+          <span class="bb-gains-label">Potential winnings</span>
+          <span class="bb-gains-val" id="bbGains">£30.50</span>
+        </div>
+
+        <button class="bb-submit">Place bet</button>
+
+        <div class="bb-terms">Responsible gambling · 18+ · T&Cs apply</div>
+
+      </aside>
+
+    </div><!-- /content-layout -->
+  </div><!-- /page -->
+
+  <!-- Toast notification -->
+  <div id="prof-toast"><span class="toast-icon"></span><span id="prof-toast-msg"></span></div>
+
+  <script>if(sessionStorage.getItem('sb_access')!=='1'){window.location.replace('gate.html');}</script>
+  <script src="betslip.js"></script>
+  <script>
+    /* ── Sidebar accordion ── */
+    function toggleGame(header) {
+      var item = header.parentElement;
+      var isOpen = item.classList.contains('open');
+      document.querySelectorAll('.game-item').forEach(function(el) { el.classList.remove('open'); });
+      if (!isOpen) item.classList.add('open');
+    }
+
+    /* ── Toast ── */
+    var toastTimer;
+    function showToast(msg, type) {
+      var toast = document.getElementById('prof-toast');
+      var msgEl = document.getElementById('prof-toast-msg');
+      toast.className = type || 'success';
+      msgEl.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function() { toast.classList.remove('show'); }, 3200);
+    }
+
+    /* ── Feedback inline dans le footer ── */
+    function showFooterMsg(id, text) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = text;
+      el.classList.add('visible');
+      setTimeout(function() { el.classList.remove('visible'); }, 3500);
+    }
+
+    /* ══════════════════════════════════════
+       CARD 1 — Profile Info
+    ══════════════════════════════════════ */
+    var profileEditing = false;
+
+    function toggleEditProfile() {
+      if (!profileEditing) {
+        enterEditProfile();
+      } else {
+        saveProfile();
+      }
+    }
+
+    function enterEditProfile() {
+      profileEditing = true;
+      document.getElementById('edit-profile-fields').classList.add('visible');
+      document.getElementById('btn-edit-profile').innerHTML =
+        '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg> Save changes';
+      document.getElementById('btn-cancel-profile').style.display = '';
+      document.getElementById('input-username').focus();
+    }
+
+    function cancelEditProfile() {
+      profileEditing = false;
+      document.getElementById('edit-profile-fields').classList.remove('visible');
+      document.getElementById('btn-edit-profile').innerHTML =
+        '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 1.5l2 2L3 11H1V9L8.5 1.5z"/></svg> Edit Profile';
+      document.getElementById('btn-cancel-profile').style.display = 'none';
+      /* Restore original values */
+      document.getElementById('input-username').value = document.getElementById('display-username').textContent;
+    }
+
+    function saveProfile() {
+      var newName = document.getElementById('input-username').value.trim();
+      if (!newName) { document.getElementById('input-username').focus(); return; }
+      /* Apply */
+      document.getElementById('display-username').textContent = newName;
+      /* Exit edit mode */
+      profileEditing = false;
+      document.getElementById('edit-profile-fields').classList.remove('visible');
+      document.getElementById('btn-edit-profile').innerHTML =
+        '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 1.5l2 2L3 11H1V9L8.5 1.5z"/></svg> Edit Profile';
+      document.getElementById('btn-cancel-profile').style.display = 'none';
+      /* Feedback */
+      showFooterMsg('msg-profile', '✓ Profile updated!');
+      showToast('Profile updated successfully', 'success');
+    }
+
+    /* ══════════════════════════════════════
+       CARD 2 — Contact Info
+    ══════════════════════════════════════ */
+    var contactEditing = false;
+
+    function toggleEditContact() {
+      if (!contactEditing) {
+        enterEditContact();
+      } else {
+        saveContact();
+      }
+    }
+
+    function enterEditContact() {
+      contactEditing = true;
+      document.getElementById('edit-contact-fields').classList.add('visible');
+      document.getElementById('btn-edit-contact').innerHTML =
+        '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg> Save changes';
+      document.getElementById('btn-cancel-contact').style.display = '';
+      document.getElementById('input-email').focus();
+    }
+
+    function cancelEditContact() {
+      contactEditing = false;
+      document.getElementById('edit-contact-fields').classList.remove('visible');
+      document.getElementById('btn-edit-contact').innerHTML =
+        '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 1.5l2 2L3 11H1V9L8.5 1.5z"/></svg> Update Contact Info';
+      document.getElementById('btn-cancel-contact').style.display = 'none';
+      document.getElementById('input-email').value = document.getElementById('display-email').textContent;
+      document.getElementById('input-phone').value = '';
+    }
+
+    function saveContact() {
+      var newEmail = document.getElementById('input-email').value.trim();
+      var newPhone = document.getElementById('input-phone').value.trim();
+      if (!newEmail || !newEmail.includes('@')) { document.getElementById('input-email').focus(); return; }
+      /* Apply email */
+      document.getElementById('display-email').textContent = newEmail;
+      /* Apply phone if filled */
+      if (newPhone) {
+        document.getElementById('phone-desc').style.display = 'none';
+        var phoneDisplay = document.getElementById('display-phone');
+        phoneDisplay.textContent = newPhone;
+        phoneDisplay.style.display = '';
+      }
+      /* Exit edit mode */
+      contactEditing = false;
+      document.getElementById('edit-contact-fields').classList.remove('visible');
+      document.getElementById('btn-edit-contact').innerHTML =
+        '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 1.5l2 2L3 11H1V9L8.5 1.5z"/></svg> Update Contact Info';
+      document.getElementById('btn-cancel-contact').style.display = 'none';
+      /* Feedback */
+      showFooterMsg('msg-contact', '✓ Contact info saved!');
+      showToast('Contact info updated successfully', 'success');
+    }
+  </script>
+</body>
+</html>
