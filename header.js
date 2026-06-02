@@ -17,7 +17,6 @@
     '  backdrop-filter:blur(14px);',
     '  border-bottom:1px solid rgba(255,255,255,0.05);',
     '  flex-shrink:0;',
-    '  position:relative;z-index:500;',
     '}',
     '.nav-logo{flex:1;text-decoration:none;}',
     '.nav-logo img{height:30px;mix-blend-mode:screen;display:block;}',
@@ -34,8 +33,6 @@
     '  text-transform:uppercase;text-decoration:none;',
     '}',
     '.nav-item img{height:28px;}',
-
-    /* ── Right section ── */
     '.nav-right{display:flex;align-items:center;gap:12px;flex:1;justify-content:flex-end;}',
 
     /* Balance pill */
@@ -71,8 +68,6 @@
     '  display:flex;align-items:center;justify-content:center;',
     "  font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;",
     '  color:#fff;user-select:none;transition:border-color 0.2s;',
-    '.nav-right{',
-    '  display:flex;align-items:center;gap:14px;flex:1;justify-content:flex-end;',
     '}',
     '.nav-avatar:hover{border-color:rgba(168,85,247,0.9);}',
     '.nav-online{',
@@ -80,18 +75,15 @@
     '  width:9px;height:9px;border-radius:50%;',
     '  background:#4ade80;border:2px solid rgba(5,8,22,0.9);',
     '}',
-
     '.nav-dropdown{',
     '  position:absolute;top:calc(100% + 12px);right:0;',
-    '  width:210px;',
-    '  background:#12152a;',
+    '  width:210px;background:#12152a;',
     '  border:1px solid rgba(139,92,246,0.22);',
     '  border-radius:12px;padding:6px;',
     '  display:none;z-index:2000;',
     '  box-shadow:0 12px 40px rgba(0,0,0,0.5);',
     '}',
     '.nav-dropdown.open{display:block;}',
-
     '.nav-dd-item{',
     '  display:flex;align-items:center;gap:10px;',
     '  padding:9px 12px;border-radius:8px;',
@@ -105,12 +97,15 @@
     '  width:28px;height:28px;border-radius:7px;flex-shrink:0;',
     '  background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.2);',
     '  display:flex;align-items:center;justify-content:center;',
-    '.btn-register:hover{background:rgba(255,255,255,0.13);border-color:rgba(255,255,255,0.4);}',
-    '.btn-login{',
-    '  background:rgba(255,255,255,0.15);',
-    '  border:1px solid rgba(255,255,255,0.35);border-radius:6px;',
     '}',
-    '.btn-login:hover{background:rgba(255,255,255,0.25);border-color:rgba(255,255,255,0.6);}',
+    '.nav-dd-icon svg{width:14px;height:14px;}',
+    '.nav-dd-sep{height:1px;background:rgba(139,92,246,0.15);margin:4px 0;}',
+    '.nav-dd-deposit .nav-dd-icon{background:rgba(124,58,237,0.18);border-color:rgba(124,58,237,0.35);}',
+    '.nav-dd-deposit{color:#a855f7;}',
+    '.nav-dd-deposit:hover{background:rgba(124,58,237,0.12);color:#c084fc;}',
+    '.nav-dd-logout .nav-dd-icon{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.2);}',
+    '.nav-dd-logout{color:rgba(239,68,68,0.65);}',
+    '.nav-dd-logout:hover{background:rgba(239,68,68,0.08);color:#ef4444;}',
 
     /* ── Phone preview button ── */
     '.skb-phone-btn{',
@@ -527,14 +522,6 @@
     '.skb-mob-match-card-row{',
     '  display:flex;align-items:center;justify-content:space-between;',
     '}',
-    '.nav-dd-icon svg{width:14px;height:14px;}',
-    '.nav-dd-sep{height:1px;background:rgba(139,92,246,0.15);margin:4px 0;}',
-    '.nav-dd-deposit .nav-dd-icon{background:rgba(124,58,237,0.18);border-color:rgba(124,58,237,0.35);}',
-    '.nav-dd-deposit{color:#a855f7;}',
-    '.nav-dd-deposit:hover{background:rgba(124,58,237,0.12);color:#c084fc;}',
-    '.nav-dd-logout .nav-dd-icon{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.2);}',
-    '.nav-dd-logout{color:rgba(239,68,68,0.65);}',
-    '.nav-dd-logout:hover{background:rgba(239,68,68,0.08);color:#ef4444;}',
     '.skb-mob-match-card-team{display:flex;align-items:center;gap:8px;}',
     '.skb-mob-match-card-team img{width:30px;height:30px;object-fit:contain;}',
     '.skb-mob-match-card-name{',
@@ -706,7 +693,7 @@
   styleEl.textContent = css;
   document.head.appendChild(styleEl);
 
-  /* ── SVG icons ────────────────────────────────────────────────── */
+  /* ── SVG icons ── */
   function icon(path) {
     return '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' + path + '</svg>';
   }
@@ -718,7 +705,6 @@
     logout:   icon('<path d="M10 3h3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-3"/><path d="M7 10l-3-2 3-2"/><path d="M4 8h8"/>'),
   };
 
-  /* ── HTML ─────────────────────────────────────────────────────── */
   /* ════════════════════════════════════════════
      NAV HTML
   ════════════════════════════════════════════ */
@@ -740,7 +726,17 @@
 
     '<div class="nav-right">',
 
-    /* Balance permanente */
+    /* Phone preview button */
+    '  <button class="skb-phone-btn" id="skb-phone-btn" title="Mobile preview">',
+    '    <svg width="17" height="17" viewBox="0 0 24 24" fill="none"',
+    '         stroke="currentColor" stroke-width="2.2"',
+    '         stroke-linecap="round" stroke-linejoin="round">',
+    '      <rect x="5" y="2" width="14" height="20" rx="2"/>',
+    '      <circle cx="12" cy="18" r="1" fill="currentColor" stroke="none"/>',
+    '    </svg>',
+    '  </button>',
+
+    /* Balance pill */
     '  <div class="nav-balance">',
     '    <div class="nav-balance-inner">',
     '      <span class="nav-balance-label">Balance</span>',
@@ -756,51 +752,54 @@
     '      <div class="nav-online"></div>',
     '    </div>',
     '    <div class="nav-dropdown" id="skbNavDropdown">',
-
     '      <a class="nav-dd-item" href="profile.html">',
     '        <span class="nav-dd-icon">' + icons.profile + '</span>My Profile',
     '      </a>',
-
     '      <a class="nav-dd-item" href="#">',
     '        <span class="nav-dd-icon">' + icons.locker + '</span>Locker',
     '      </a>',
-
     '      <a class="nav-dd-item" href="settings.html">',
     '        <span class="nav-dd-icon">' + icons.settings + '</span>Settings',
     '      </a>',
-
     '      <div class="nav-dd-sep"></div>',
-
     '      <a class="nav-dd-item nav-dd-deposit" href="#" onclick="event.preventDefault();closeWallet&&closeWallet();openWallet(\'deposit\')">',
     '        <span class="nav-dd-icon">' + icons.deposit + '</span>Deposit',
     '      </a>',
-
     '      <div class="nav-dd-sep"></div>',
-
     '      <a class="nav-dd-item nav-dd-logout" href="gate.html" onclick="sessionStorage.removeItem(\'sb_access\')">',
     '        <span class="nav-dd-icon">' + icons.logout + '</span>Log out',
     '      </a>',
-
     '    </div>',
     '  </div>',
 
-    '</div>',
-    /* phone icon button */
-    '  <button class="skb-phone-btn" id="skb-phone-btn" title="Mobile preview">',
-    '    <svg width="17" height="17" viewBox="0 0 24 24" fill="none"',
-    '         stroke="currentColor" stroke-width="2.2"',
-    '         stroke-linecap="round" stroke-linejoin="round">',
-    '      <rect x="5" y="2" width="14" height="20" rx="2"/>',
-    '      <circle cx="12" cy="18" r="1" fill="currentColor" stroke="none"/>',
-    '    </svg>',
-    '  </button>',
-    '  <div class="btn-nav btn-register"><span>REGISTER</span></div>',
-    '  <div class="btn-nav btn-login"><span>LOGIN</span></div>',
     '</div>'
   ].join('\n');
 
+  /* Insert right where the <script> tag sits */
   var s = document.currentScript;
   s.parentNode.insertBefore(nav, s);
+
+  /* ── Inject wallet.js once ── */
+  if (!document.getElementById('skb-wallet-script')) {
+    var ws = document.createElement('script');
+    ws.id = 'skb-wallet-script';
+    ws.src = (document.currentScript ? document.currentScript.src.replace('header.js', '') : '') + 'wallet.js';
+    document.head.appendChild(ws);
+  }
+
+  /* ── Toggle dropdown ── */
+  document.addEventListener('DOMContentLoaded', function () {
+    var avatar   = document.getElementById('skbNavAvatar');
+    var dropdown = document.getElementById('skbNavDropdown');
+    if (!avatar || !dropdown) return;
+    avatar.addEventListener('click', function (e) {
+      e.stopPropagation();
+      dropdown.classList.toggle('open');
+    });
+    document.addEventListener('click', function () {
+      dropdown.classList.remove('open');
+    });
+  });
 
   /* ════════════════════════════════════════════
      PHONE OVERLAY — injected once into <body>
@@ -1838,29 +1837,5 @@
   } else {
     mountOverlay();
   }
-
-  /* ── Inject wallet.js once ───────────────────────────────────── */
-  if (!document.getElementById('skb-wallet-script')) {
-    var ws = document.createElement('script');
-    ws.id = 'skb-wallet-script';
-    ws.src = (document.currentScript ? document.currentScript.src.replace('header.js','') : '') + 'wallet.js';
-    document.head.appendChild(ws);
-  }
-
-  /* ── Toggle dropdown ─────────────────────────────────────────── */
-  document.addEventListener('DOMContentLoaded', function () {
-    var avatar   = document.getElementById('skbNavAvatar');
-    var dropdown = document.getElementById('skbNavDropdown');
-    if (!avatar || !dropdown) return;
-
-    avatar.addEventListener('click', function (e) {
-      e.stopPropagation();
-      dropdown.classList.toggle('open');
-    });
-
-    document.addEventListener('click', function () {
-      dropdown.classList.remove('open');
-    });
-  });
 
 })();
