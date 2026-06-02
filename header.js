@@ -76,11 +76,11 @@
     '  background:#4ade80;border:2px solid rgba(5,8,22,0.9);',
     '}',
     '.nav-dropdown{',
-    '  position:absolute;top:calc(100% + 12px);right:0;',
+    '  position:fixed;',
     '  width:210px;background:#12152a;',
     '  border:1px solid rgba(139,92,246,0.22);',
     '  border-radius:12px;padding:6px;',
-    '  display:none;z-index:2000;',
+    '  display:none;z-index:99999;',
     '  box-shadow:0 12px 40px rgba(0,0,0,0.5);',
     '}',
     '.nav-dropdown.open{display:block;}',
@@ -792,8 +792,17 @@
     var avatar   = document.getElementById('skbNavAvatar');
     var dropdown = document.getElementById('skbNavDropdown');
     if (!avatar || !dropdown) return;
+    /* Move dropdown to <body> to escape overflow:hidden clipping on .page */
+    document.body.appendChild(dropdown);
+
     avatar.addEventListener('click', function (e) {
       e.stopPropagation();
+      if (!dropdown.classList.contains('open')) {
+        var rect = avatar.getBoundingClientRect();
+        dropdown.style.top   = (rect.bottom + 8) + 'px';
+        dropdown.style.right  = (window.innerWidth - rect.right) + 'px';
+        dropdown.style.left   = 'auto';
+      }
       dropdown.classList.toggle('open');
     });
     document.addEventListener('click', function () {
