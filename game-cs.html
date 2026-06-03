@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkillBet — Counter-Strike 2</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@400;500;600;700;800&display=swap');
+
+    :root {
+      --purple: #7c3aed;
+      --pink: #ec4899;
+      --purple-light: #a855f7;
+      --cs-orange: #f97316;
+      --cs-yellow: #facc15;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      font-family: 'Exo 2', sans-serif;
+      color: #fff;
+    }
+    body {
+      background:
+        radial-gradient(1200px 800px at 20% 10%, rgba(124,58,237,.26), transparent 60%),
+        radial-gradient(900px 600px at 40% 80%, rgba(236,72,153,.22), transparent 55%),
+        #070b1f;
+    }
+
+    /* ── Blobs ── */
+    .bg-blobs { position:fixed;inset:0;pointer-events:none;z-index:0;filter:blur(70px);opacity:.85; }
+    .blob { position:absolute;width:460px;height:460px;border-radius:999px;
+      background:radial-gradient(circle at 35% 35%,rgba(124,58,237,.95),transparent 60%),
+                 radial-gradient(circle at 65% 65%,rgba(236,72,153,.90),transparent 62%);
+      animation:floaty 5s ease-in-out infinite; }
+    .b1{top:-140px;left:-140px;} .b2{top:12%;right:-180px;animation-delay:-1s;} .b3{bottom:-200px;left:30%;animation-delay:-2s;}
+    @keyframes floaty { 0%,100%{transform:translate3d(0,0,0) scale(1);} 50%{transform:translate3d(40px,-30px,0) scale(1.08);} }
+
+    .page { position:relative;z-index:1;height:100vh;display:flex;flex-direction:column;overflow:hidden; }
+
+    /* ══ LAYOUT ══ */
+    .content-layout { display:flex;flex:1;align-items:flex-start;overflow:hidden;min-height:0; }
+    .main-content { flex:1;min-width:0;height:100%;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(168,85,247,0.2) transparent; }
+    .main-content::-webkit-scrollbar{width:4px;} .main-content::-webkit-scrollbar-thumb{background:rgba(168,85,247,0.3);border-radius:4px;}
+
+    /* ── Sidebar gauche — jeux ── */
+    .sidebar-left { width:210px;flex-shrink:0;height:calc(100vh - 64px);overflow-y:auto;background:rgba(5,8,22,0.65);border-right:1px solid rgba(255,255,255,0.06);padding:20px 0 40px;scrollbar-width:thin;scrollbar-color:rgba(168,85,247,0.3) transparent;position:sticky;top:0; }
+    .sidebar-left::-webkit-scrollbar { width:4px; }
+    .sidebar-left::-webkit-scrollbar-thumb { background:rgba(168,85,247,0.3);border-radius:4px; }
+    .sl-title { font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.3);padding:0 18px;margin-bottom:12px; }
+    .sl-game { display:flex;align-items:center;gap:10px;padding:10px 18px;cursor:pointer;border-left:2px solid transparent;transition:background 0.15s,border-color 0.15s;text-decoration:none; }
+    .sl-game:hover { background:rgba(168,85,247,0.1); }
+    .sl-game.active { border-left-color:#a855f7;background:rgba(168,85,247,0.15); }
+    .sl-game-icon { width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden; }
+    .sl-game-icon img { width:28px;height:28px;object-fit:contain;display:block; }
+    .sl-game-name { font-size:13px;font-weight:600;color:rgba(255,255,255,0.8); }
+    .sl-game.active .sl-game-name { color:#fff; }
+    .sl-divider { height:1px;background:rgba(255,255,255,0.06);margin:10px 18px; }
+
+    /* ── Sidebar droite — Bet Slip ── */
+    .sidebar-right { width:290px;flex-shrink:0;height:calc(100vh - 64px);overflow-y:auto;background:rgba(5,8,22,0.65);border-left:1px solid rgba(255,255,255,0.06);padding:20px 16px 40px;scrollbar-width:thin;scrollbar-color:rgba(168,85,247,0.3) transparent;position:sticky;top:0;display:flex;flex-direction:column;gap:14px; }
+    .sidebar-right::-webkit-scrollbar{width:4px;} .sidebar-right::-webkit-scrollbar-thumb{background:rgba(168,85,247,0.3);border-radius:4px;}
+    .sidebar-right.collapsed{width:38px;min-width:38px;padding:14px 6px;overflow:hidden;}
+    .sidebar-right.collapsed > *:not(.bb-header){display:none;}
+    .sidebar-right.collapsed .bb-title,.sidebar-right.collapsed .bb-count{display:none;}
+    .bb-toggle{margin-left:auto;background:none;border:none;cursor:pointer;color:rgba(168,85,247,0.8);font-size:18px;line-height:1;padding:2px 4px;transition:transform 0.3s,color 0.2s;flex-shrink:0;}
+    .bb-toggle:hover{color:#a855f7;}
+    .sidebar-right.collapsed .bb-toggle{transform:scaleX(-1);}
+    .bb-header{display:flex;align-items:center;gap:10px;}
+    .bb-title{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;letter-spacing:3px;text-transform:uppercase;flex:1;}
+    .bb-count{background:#7c3aed;color:#fff;font-size:10px;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+    .bb-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:32px 16px;background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.1);border-radius:14px;text-align:center;}
+    .bb-empty-icon{font-size:28px;opacity:0.4;}
+    .bb-empty-text{font-size:11px;color:rgba(255,255,255,0.35);letter-spacing:0.5px;line-height:1.5;}
+    .bb-bet{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:12px 14px;position:relative;}
+    .bb-bet-game{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#a855f7;margin-bottom:4px;}
+    .bb-bet-match{font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:6px;}
+    .bb-bet-pick{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;color:#fff;}
+    .bb-bet-odds{position:absolute;top:12px;right:14px;font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:800;color:#fff;background:#070b1f;border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:3px 10px;}
+    .bb-bet-remove{position:absolute;bottom:10px;right:14px;font-size:10px;color:rgba(255,255,255,0.75);cursor:pointer;letter-spacing:1px;}
+    .bb-bet-remove:hover{color:#fff;}
+    .bb-divider{height:1px;background:rgba(255,255,255,0.06);}
+    .bb-combined{display:flex;justify-content:space-between;align-items:center;padding:4px 0;}
+    .bb-combined-label{font-size:11px;color:#fff;letter-spacing:1px;text-transform:uppercase;font-weight:700;}
+    .bb-combined-val{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:#fff;background:#070b1f;border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:3px 10px;}
+    .bb-stake-row{display:flex;flex-direction:column;gap:6px;}
+    .bb-stake-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);}
+    .bb-stake-input{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 14px;color:#fff;font-family:'Exo 2',sans-serif;font-size:14px;font-weight:600;outline:none;width:100%;transition:border-color 0.2s;}
+    .bb-stake-input:focus{border-color:#a855f7;}
+    .bb-quick-amounts{display:flex;gap:6px;}
+    .bb-qa{flex:1;padding:6px 0;text-align:center;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:8px;font-size:11px;font-weight:700;color:rgba(255,255,255,0.6);cursor:pointer;transition:background 0.2s,color 0.2s;}
+    .bb-qa:hover{background:rgba(168,85,247,0.2);color:#fff;border-color:#a855f7;}
+    .bb-gains{display:flex;justify-content:space-between;align-items:center;background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.2);border-radius:10px;padding:10px 14px;}
+    .bb-gains-label{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#fff;}
+    .bb-gains-val{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:#fff;}
+    .bb-submit{width:100%;padding:12px;border:1px solid rgba(255,255,255,0.35);border-radius:12px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;letter-spacing:1px;background:rgba(255,255,255,0.18);color:#fff;transition:background 0.2s,border-color 0.2s;position:relative;overflow:visible;}
+    .bb-submit:hover{background:rgba(255,255,255,0.24);border-color:rgba(255,255,255,0.55);}
+    .bb-terms{font-size:9px;color:rgba(255,255,255,0.2);text-align:center;letter-spacing:0.5px;line-height:1.5;}
+
+    /* ══ CS2 BANNER ══ */
+    .cs-banner {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #060a14;
+    }
+    .cs-banner-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 700px 300px at 60% 50%, rgba(249,115,22,0.18), transparent 65%),
+        radial-gradient(ellipse 500px 400px at 20% 80%, rgba(124,58,237,0.20), transparent 60%),
+        linear-gradient(135deg, #080c1a 0%, #0e1528 50%, #060a14 100%);
+    }
+    /* animated scan lines */
+    .cs-banner-scan {
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent, transparent 2px,
+        rgba(249,115,22,0.018) 2px, rgba(249,115,22,0.018) 4px
+      );
+      pointer-events: none;
+    }
+    .cs-banner-logo {
+      position: absolute;
+      right: 80px; top: 50%;
+      transform: translateY(-50%);
+      width: 160px; height: 140px;
+      object-fit: contain;
+      opacity: 0.12;
+      filter: brightness(2);
+    }
+    .cs-banner-content {
+      position: relative; z-index: 2;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 48px;
+    }
+    .cs-banner-breadcrumb {
+      font-size: 11px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase;
+      color: rgba(255,255,255,0.35); margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .cs-banner-breadcrumb a { color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.15s; }
+    .cs-banner-breadcrumb a:hover { color: rgba(255,255,255,0.7); }
+    .cs-banner-breadcrumb-sep { opacity: 0.4; }
+    .cs-banner-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 42px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+      color: #fff; line-height: 1;
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 14px;
+    }
+    .cs-banner-title img { width: 48px; height: 48px; object-fit: contain; }
+    .cs-banner-pills { display: flex; gap: 10px; flex-wrap: wrap; }
+    .cs-pill {
+      display: flex; align-items: center; gap: 6px;
+      padding: 5px 12px; border-radius: 20px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+    }
+    .cs-pill-live {
+      background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.4); color: #f87171;
+    }
+    .cs-pill-live-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: #ef4444;
+      animation: pulse-dot 1.2s ease-in-out infinite;
+    }
+    .cs-pill-stat {
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.6);
+    }
+    .cs-pill-tn {
+      background: rgba(249,115,22,0.12); border: 1px solid rgba(249,115,22,0.3); color: #fb923c;
+    }
+
+    /* ══ CAROUSEL ══ */
+    .carousel-section {
+      padding: 32px 48px 0;
+      flex-shrink: 0;
+    }
+    .carousel-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .carousel-ttl {
+      font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700;
+      letter-spacing: 1px; color: #fff;
+    }
+    .carousel-ttl span {
+      font-size: 13px; font-weight: 600; letter-spacing: 0; color: rgba(255,255,255,0.35); margin-left: 10px;
+    }
+    .carousel-inner {
+      display: flex; align-items: center; gap: 16px; position: relative;
+    }
+    .carousel-arrow {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0; transition: background 0.15s;
+      z-index: 2;
+    }
+    .carousel-arrow:hover { background: rgba(255,255,255,0.14); }
+    .carousel-arrow img { height: 20px; display: block; }
+    .arrow-left img { transform: scaleX(-1); }
+    .carousel-track { overflow: hidden; flex: 1; min-width: 0; }
+    .main-track {
+      display: flex; gap: 16px;
+      transition: transform 0.7s cubic-bezier(0.4,0,0.2,1);
+      will-change: transform;
+    }
+    .match-slide {
+      min-width: 580px; max-width: 580px; height: 360px;
+      flex-shrink: 0; border-radius: 20px;
+      opacity: 0.5; filter: brightness(0.45) blur(1.5px);
+      transition: opacity 0.7s, filter 0.7s;
+      border: 1px solid rgba(255,255,255,0.08);
+      position: relative; overflow: hidden;
+    }
+    .match-slide.ms-active { opacity: 1; filter: none; border-color: rgba(255,255,255,0.15); cursor: pointer; }
+    .match-bg { position: absolute; inset: 0; }
+    .match-bg img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .match-bg.contain-bg { background: #060a18; display: flex; align-items: center; justify-content: center; }
+    .match-bg.contain-bg img { width: auto; height: 70%; object-fit: contain; opacity: 0.3; }
+    .slide-teams-overlay { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; }
+    .slide-event-label { text-align: center; padding: 14px 24px 0; font-family:'Rajdhani',sans-serif; font-size: 13px; font-weight: 700; color: #fff; letter-spacing: 1.2px; text-transform: uppercase; }
+    .slide-event-sub { text-align: center; padding: 3px 24px 0; font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.5); }
+    .slide-live-pill {
+      position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(239,68,68,0.18); border: 1px solid rgba(239,68,68,0.45);
+      border-radius: 999px; padding: 4px 12px;
+      font-size: 10px; font-weight: 700; letter-spacing: 2px; color: #f87171;
+    }
+    .live-red-dot { width: 7px; height: 7px; border-radius: 50%; background: #ef4444; animation: pulse-dot 1.2s ease-in-out infinite; }
+    .slide-upcoming-pill {
+      position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+      background: rgba(234,179,8,0.15); border: 1px solid rgba(234,179,8,0.4);
+      border-radius: 999px; padding: 4px 12px;
+      font-size: 10px; font-weight: 700; letter-spacing: 2px; color: #fde047; white-space: nowrap;
+    }
+    .slide-teams-top { flex: 1; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 60px 6px; }
+    .slide-team-col { display: flex; flex-direction: column; align-items: center; gap: 10px; flex-shrink: 0; }
+    .slide-team-col img { width: 86px; height: 86px; object-fit: contain; }
+    .slide-team-odd { font-family:'Rajdhani',sans-serif; font-size: 22px; font-weight: 800; color: #fff; background: #070b1f; border: 1px solid rgba(255,255,255,0.1); border-radius: 9px; padding: 5px 14px; cursor: pointer; transition: background 0.15s, border-color 0.15s; }
+    .slide-team-odd:hover { border-color: rgba(255,255,255,0.35); }
+    .slide-team-odd.bb-selected { background: #0f1530 !important; border-color: rgba(255,255,255,0.5) !important; }
+    .slide-graph-bar { background: linear-gradient(to bottom, transparent, #070b1f 38%); padding: 24px 24px 6px; }
+    .slide-graph-svg { width: 100%; height: 138px; display: block; overflow: visible; }
+    /* map score badge */
+    .slide-map-badge {
+      position: absolute; top: 46px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+    }
+    .slide-map-name { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.4); }
+    .slide-map-score { font-family:'Rajdhani',sans-serif; font-size: 28px; font-weight: 800; color: #fff; letter-spacing: 3px; text-shadow: 0 0 20px rgba(249,115,22,0.5); }
+
+    /* ══ ACTIVE TOURNAMENTS ══ */
+    .tn-section { padding: 32px 48px 0; }
+    .tn-section-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .tn-section-ttl { font-family:'Rajdhani',sans-serif; font-size: 22px; font-weight: 700; letter-spacing: 1px; color: #fff; }
+    .tn-section-link { font-size: 12px; color: rgba(168,85,247,0.8); text-decoration: none; letter-spacing: 0.3px; transition: color 0.15s; }
+    .tn-section-link:hover { color: #c084fc; }
+    .tn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .tn-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px;
+      cursor: pointer; transition: background 0.15s, border-color 0.15s; text-decoration: none;
+    }
+    .tn-card:hover { background: rgba(255,255,255,0.07); border-color: rgba(168,85,247,0.3); }
+    .tn-card.tn-live { border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.05); }
+    .tn-card-top { display: flex; align-items: center; justify-content: space-between; }
+    .tn-card-badge {
+      display: flex; align-items: center; gap: 5px; padding: 3px 9px;
+      border-radius: 999px; font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    }
+    .tn-badge-live { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.4); color: #f87171; }
+    .tn-badge-dot { width: 5px; height: 5px; border-radius: 50%; background: #ef4444; animation: pulse-dot 1.2s ease-in-out infinite; }
+    .tn-badge-soon { background: rgba(234,179,8,0.12); border: 1px solid rgba(234,179,8,0.35); color: #fde047; }
+    .tn-badge-upcoming { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.4); }
+    .tn-card-organizer { font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.28); }
+    .tn-card-logo { width: 38px; height: 38px; object-fit: contain; flex-shrink: 0; }
+    .tn-card-name { font-family:'Rajdhani',sans-serif; font-size: 16px; font-weight: 700; color: #fff; letter-spacing: 0.5px; line-height: 1.2; }
+    .tn-card-sub { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+    .tn-card-stats { display: flex; gap: 12px; }
+    .tn-stat { display: flex; flex-direction: column; gap: 2px; }
+    .tn-stat-val { font-family:'Rajdhani',sans-serif; font-size: 14px; font-weight: 800; color: #fff; }
+    .tn-stat-lbl { font-size: 9px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: rgba(255,255,255,0.3); }
+    .tn-card-progress { height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+    .tn-card-progress-bar { height: 100%; border-radius: 2px; }
+
+    /* ══ HOT MATCHES ══ */
+    .hm-section { padding: 32px 48px 0; }
+    .hm-section-hdr { display:flex;align-items:center;gap:12px;margin-bottom:16px; }
+    .hm-section-ttl { font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;letter-spacing:1px;color:#fff;flex:1; }
+    .hm-section-ttl span { font-size:13px;font-weight:600;letter-spacing:0;color:rgba(255,255,255,0.35);margin-left:10px; }
+    .hm-live-pill { display:flex;align-items:center;gap:5px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.35);color:#f87171;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;letter-spacing:0.5px; }
+    .hm-dot { width:6px;height:6px;border-radius:50%;background:#ef4444;animation:pulse-dot 1.2s infinite; }
+    .hm-cols-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:14px; }
+    .hm-col { background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:6px; }
+    .hm-col-hdr { display:flex;align-items:center;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:4px; }
+    .hm-col-name { font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.5px;color:rgba(255,255,255,0.7); }
+    .hm-col-badge { font-size:9px;font-weight:700;letter-spacing:0.5px;padding:2px 7px;border-radius:4px; }
+    .hm-col-badge.live { background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#f87171; }
+    .hm-col-badge.soon { background:rgba(234,179,8,0.12);border:1px solid rgba(234,179,8,0.3);color:#fde047; }
+    .hm-row { display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:9px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);cursor:pointer;transition:background 0.15s; }
+    .hm-row:hover { background:rgba(255,255,255,0.09);border-color:rgba(255,255,255,0.18); }
+    .hm-game { display:flex;align-items:center;justify-content:center;min-width:26px; }
+    .hm-game img { width:24px;height:24px;object-fit:contain;display:block; }
+    .hm-teams { flex:1;display:flex;flex-direction:column;gap:3px;overflow:hidden;min-width:0; }
+    .hm-team-row { display:flex;align-items:center;gap:5px; }
+    .hm-team { font-size:13px;font-weight:700;color:rgba(255,255,255,0.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2; }
+    .hm-team-logo { width:18px;height:18px;object-fit:contain;flex-shrink:0; }
+    .hm-score-part { font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:800;color:#f59e0b;min-width:14px;line-height:1.2; }
+    .hm-odds-col { display:flex;flex-direction:column;gap:3px;flex-shrink:0; }
+    .hm-odd-row { display:flex;align-items:center;gap:5px; }
+    .hm-odd { font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:800;padding:2px 8px;border-radius:6px;min-width:42px;text-align:center;cursor:pointer;background:#070b1f;color:#fff;border:1px solid rgba(255,255,255,0.1);transition:border-color 0.15s,background 0.15s; }
+    .hm-odd:hover { background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.25); }
+    .hm-odd.bb-selected { background:#0f1530!important;border-color:rgba(255,255,255,0.5)!important; }
+
+    /* ══ TOP PLAYERS ══ */
+    .tp-section { padding: 32px 48px 48px; }
+    .tp-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .tp-title { font-family:'Rajdhani',sans-serif; font-size: 22px; font-weight: 700; letter-spacing: 1px; color: #fff; }
+    .tp-game-tag {
+      display: flex; align-items: center; gap: 6px; padding: 5px 12px;
+      background: rgba(249,115,22,0.1); border: 1px solid rgba(249,115,22,0.25);
+      border-radius: 999px; font-size: 10px; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; color: #fb923c;
+    }
+    .tp-game-tag img { width: 16px; height: 16px; object-fit: contain; }
+    .tp-scroll {
+      display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px;
+      scrollbar-width: thin; scrollbar-color: rgba(168,85,247,0.4) transparent;
+      cursor: grab; touch-action: pan-x; -webkit-overflow-scrolling: touch;
+    }
+    .tp-scroll:active { cursor: grabbing; }
+    .tp-scroll::-webkit-scrollbar { height: 4px; }
+    .tp-scroll::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.4); border-radius: 4px; }
+    .tp-pc {
+      min-width: 148px; max-width: 148px; border-radius: 16px; overflow: hidden;
+      display: flex; flex-direction: column; position: relative;
+      border: 1px solid rgba(255,255,255,0.1); cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s; flex-shrink: 0;
+    }
+    .tp-pc:hover { transform: translateY(-6px); box-shadow: 0 14px 32px rgba(0,0,0,0.55); }
+    .tp-pc-bg { position: absolute; inset: 0; z-index: 0; }
+    .tp-pc-team-badge { position:absolute;top:9px;right:9px;z-index:2;font-size:9px;font-weight:900;font-family:'Rajdhani',sans-serif;padding:2px 8px;border-radius:20px;letter-spacing:0.5px; }
+    .tp-pc-body { position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;padding:22px 10px 12px;flex:1; }
+    .tp-pc-name { font-family:'Rajdhani',sans-serif;font-weight:800;font-size:18px;color:#fff;text-align:center;text-transform:uppercase;line-height:1.1;letter-spacing:0.5px;margin-bottom:12px; }
+    .tp-pc-avatar { width:86px;height:96px;margin-bottom:10px; }
+    .tp-pc-role { font-size:10px;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.7px; }
+    .tp-pc-footer { text-align:center;padding:10px 10px 12px;position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:6px; }
+    .tp-pc-footer-label { font-size:9px;font-weight:700;letter-spacing:0.4px;opacity:0.75;text-transform:uppercase; }
+    .tp-pc-odd { font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:900;padding:5px 20px;border-radius:8px;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.35);transition:background 0.15s,border-color 0.15s,transform 0.15s; }
+    .tp-pc:hover .tp-pc-odd { background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.6);transform:scale(1.06); }
+    /* rating bar under odd */
+    .tp-pc-rating { width: 100%; padding: 0 10px 10px; position: relative; z-index: 1; }
+    .tp-pc-rating-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    .tp-pc-rating-lbl { font-size: 8px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; color: rgba(255,255,255,0.3); }
+    .tp-pc-rating-val { font-family:'Rajdhani',sans-serif; font-size: 13px; font-weight: 800; color: #fff; }
+    .tp-pc-rating-bar { height: 3px; border-radius: 2px; background: rgba(255,255,255,0.1); overflow: hidden; }
+    .tp-pc-rating-fill { height: 100%; border-radius: 2px; }
+
+    /* ── Shared ── */
+    @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.5;transform:scale(1.4);} }
+
+  </style>
+</head>
+<body>
+  <div class="bg-blobs">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+
+  <div class="page">
+
+    <script src="header.js"></script>
+
+    <div class="content-layout">
+
+    <!-- ══ SIDEBAR GAUCHE — Jeux ══ -->
+    <aside class="sidebar-left">
+      <div class="sl-title">Nos Jeux</div>
+      <a class="sl-game active" href="game-cs.html">
+        <div class="sl-game-icon"><img src="img_M/logocs2.png" alt="CS2"/></div>
+        <span class="sl-game-name">Counter-Strike 2</span>
+      </a>
+      <a class="sl-game" href="#">
+        <div class="sl-game-icon"><img src="img_M/logo lol.png" alt="LoL"/></div>
+        <span class="sl-game-name">League of Legends</span>
+      </a>
+      <a class="sl-game" href="#">
+        <div class="sl-game-icon"><img src="img_M/logo valo.png" alt="Valorant"/></div>
+        <span class="sl-game-name">Valorant</span>
+      </a>
+      <a class="sl-game" href="#">
+        <div class="sl-game-icon"><img src="img_M/logo dota2.png" alt="Dota 2"/></div>
+        <span class="sl-game-name">Dota 2</span>
+      </a>
+      <a class="sl-game" href="#">
+        <div class="sl-game-icon"><img src="img_M/logo rocket league.png" alt="Rocket League"/></div>
+        <span class="sl-game-name">Rocket League</span>
+      </a>
+      <a class="sl-game" href="#">
+        <div class="sl-game-icon"><img src="img_M/logo overwatch2.png" alt="Overwatch 2"/></div>
+        <span class="sl-game-name">Overwatch 2</span>
+      </a>
+      <div class="sl-divider"></div>
+      <a class="sl-game" href="#">
+        <div class="sl-game-icon"><img src="img_M/logo ea fc.png" alt="EA FC"/></div>
+        <span class="sl-game-name">FIFA / EA FC</span>
+      </a>
+      <a class="sl-game" href="#">
+        <div class="sl-game-icon"><img src="img_M/logo nba 2K.png" alt="NBA 2K"/></div>
+        <span class="sl-game-name">NBA 2K</span>
+      </a>
+      <a class="sl-game" href="#">
+        <div class="sl-game-icon"><img src="img_M/logo heartstone.png" alt="Hearthstone"/></div>
+        <span class="sl-game-name">Hearthstone</span>
+      </a>
+      <a class="sl-game" href="#">
+        <div class="sl-game-icon"><img src="img_M/logo starcraft 2.png" alt="Starcraft II"/></div>
+        <span class="sl-game-name">Starcraft II</span>
+      </a>
+      <a class="sl-game" href="#">
+        <div class="sl-game-icon"><img src="img_M/logo streetfighter6.png" alt="Street Fighter 6"/></div>
+        <span class="sl-game-name">Street Fighter 6</span>
+      </a>
+      <a class="sl-game" href="#">
+        <div class="sl-game-icon"><img src="img_M/logo fortnite.png" alt="Fortnite"/></div>
+        <span class="sl-game-name">Fortnite</span>
+      </a>
+    </aside>
+
+    <!-- ══ CONTENU PRINCIPAL ══ -->
+    <div class="main-content">
+
+      <!-- ── CS2 BANNER ── -->
+      <div class="cs-banner">
+        <div class="cs-banner-bg"></div>
+        <div class="cs-banner-scan"></div>
+        <img class="cs-banner-logo" src="img_M/Counter_Strike_2_Logo.png" alt="CS2"/>
+        <div class="cs-banner-content">
+          <div class="cs-banner-breadcrumb">
+            <a href="index.html">Home</a>
+            <span class="cs-banner-breadcrumb-sep">›</span>
+            <span>Counter-Strike 2</span>
+          </div>
+          <div class="cs-banner-title">
+            <img src="img_M/logocs2.png" alt="CS2"/>
+            Counter-Strike 2
+          </div>
+          <div class="cs-banner-pills">
+            <div class="cs-pill cs-pill-live"><span class="cs-pill-live-dot"></span>14 LIVE</div>
+            <div class="cs-pill cs-pill-stat">28 UPCOMING</div>
+            <div class="cs-pill cs-pill-tn">3 TOURNAMENTS ACTIVE</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── MATCH CAROUSEL ── -->
+      <div class="carousel-section">
+        <div class="carousel-header">
+          <div class="carousel-ttl">Featured Matches <span>CS2 · Live & Upcoming</span></div>
+        </div>
+        <div class="carousel-inner">
+          <div class="carousel-arrow arrow-left"><img src="img_M/arrow.png" alt="←"/></div>
+          <div class="carousel-track">
+            <div class="main-track" id="mainTrack">
+
+              <!-- Slide 1 — Vitality vs NaVi — LIVE -->
+              <div class="match-slide" data-game="CS2" data-match="Vitality vs NaVi">
+                <div class="match-bg contain-bg">
+                  <img src="img_M/Counter_Strike_2_Logo.png" alt="CS2"/>
+                </div>
+                <!-- orange tint overlay for CS -->
+                <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(249,115,22,0.12),rgba(124,58,237,0.12));z-index:1;"></div>
+                <div class="slide-teams-overlay">
+                  <div class="slide-live-pill"><span class="live-red-dot"></span>LIVE</div>
+                  <div class="slide-event-label" style="padding-top:52px;">ESL Pro League S21 · Quarterfinals</div>
+                  <div class="slide-map-badge">
+                    <span class="slide-map-name">Inferno</span>
+                    <span class="slide-map-score">9 — 7</span>
+                  </div>
+                  <div class="slide-teams-top">
+                    <div class="slide-team-col">
+                      <img src="img_M/logovita.png" alt="Vitality"/>
+                      <div class="slide-team-odd" data-pick="Vitality à gagner" data-odds="1.75">1.75</div>
+                    </div>
+                    <div class="slide-team-col">
+                      <img src="img_M/NAVI_Logo_2020.png" alt="NaVi"/>
+                      <div class="slide-team-odd" data-pick="NaVi à gagner" data-odds="2.05">2.05</div>
+                    </div>
+                  </div>
+                  <div class="slide-graph-bar">
+                    <svg class="slide-graph-svg" viewBox="0 0 500 130" preserveAspectRatio="xMidYMid meet">
+                      <defs>
+                        <linearGradient id="gvita" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stop-color="#facc15" stop-opacity="0"/>
+                          <stop offset="100%" stop-color="#facc15" stop-opacity="0.25"/>
+                        </linearGradient>
+                        <linearGradient id="gnavi" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stop-color="#60a5fa" stop-opacity="0.18"/>
+                          <stop offset="100%" stop-color="#60a5fa" stop-opacity="0"/>
+                        </linearGradient>
+                        <filter id="glow-v"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                        <filter id="glow-n"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                      </defs>
+                      <line x1="38" y1="10" x2="430" y2="10" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+                      <line x1="38" y1="42" x2="430" y2="42" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+                      <line x1="38" y1="74" x2="430" y2="74" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="4,3"/>
+                      <line x1="38" y1="106" x2="430" y2="106" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+                      <text x="30" y="78" text-anchor="end" fill="rgba(255,255,255,0.3)" font-size="9" font-family="'Exo 2',sans-serif">50%</text>
+                      <text x="38"  y="118" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-size="8" font-family="'Exo 2',sans-serif">R1</text>
+                      <text x="125" y="118" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-size="8" font-family="'Exo 2',sans-serif">R5</text>
+                      <text x="212" y="118" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-size="8" font-family="'Exo 2',sans-serif">R10</text>
+                      <text x="300" y="118" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-size="8" font-family="'Exo 2',sans-serif">R15</text>
+                      <text x="387" y="118" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-size="8" font-family="'Exo 2',sans-serif">R20</text>
+                      <text x="430" y="118" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="8" font-family="'Exo 2',sans-serif">Live</text>
+                      <path d="M38,74 82,70 125,78 169,64 212,82 256,60 300,54 343,62 387,57 430,60 L430,10 L38,10 Z" fill="url(#gvita)"/>
+                      <path d="M38,74 82,78 125,70 169,84 212,66 256,88 300,94 343,86 387,91 430,88 L430,106 L38,106 Z" fill="url(#gnavi)"/>
+                      <polyline points="38,74 82,70 125,78 169,64 212,82 256,60 300,54 343,62 387,57 430,60" fill="none" stroke="#facc15" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" filter="url(#glow-v)"/>
+                      <polyline points="38,74 82,78 125,70 169,84 212,66 256,88 300,94 343,86 387,91 430,88" fill="none" stroke="#60a5fa" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" filter="url(#glow-n)"/>
+                      <circle cx="430" cy="60" r="4" fill="#facc15"/>
+                      <circle cx="430" cy="88" r="4" fill="#60a5fa"/>
+                      <text x="436" y="64"  fill="#facc15" font-size="12" font-weight="700" font-family="'Exo 2',sans-serif">Vitality 57%</text>
+                      <text x="436" y="92"  fill="#60a5fa" font-size="12" font-weight="700" font-family="'Exo 2',sans-serif">NaVi 43%</text>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slide 2 — FaZe vs G2 — LIVE -->
+              <div class="match-slide" data-game="CS2" data-match="FaZe vs G2">
+                <div class="match-bg contain-bg">
+                  <img src="img_M/Counter_Strike_2_Logo.png" alt="CS2"/>
+                </div>
+                <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(249,115,22,0.08));z-index:1;"></div>
+                <div class="slide-teams-overlay">
+                  <div class="slide-live-pill"><span class="live-red-dot"></span>LIVE</div>
+                  <div class="slide-event-label" style="padding-top:52px;">ESL Pro League S21 · Quarterfinals</div>
+                  <div class="slide-map-badge">
+                    <span class="slide-map-name">Dust2</span>
+                    <span class="slide-map-score">11 — 8</span>
+                  </div>
+                  <div class="slide-teams-top">
+                    <div class="slide-team-col">
+                      <img src="img_M/fut.webp" alt="FaZe"/>
+                      <div class="slide-team-odd" data-pick="FaZe à gagner" data-odds="1.60">1.60</div>
+                    </div>
+                    <div class="slide-team-col">
+                      <img src="img_M/G2.webp" alt="G2"/>
+                      <div class="slide-team-odd" data-pick="G2 à gagner" data-odds="2.35">2.35</div>
+                    </div>
+                  </div>
+                  <div class="slide-graph-bar">
+                    <svg class="slide-graph-svg" viewBox="0 0 500 130" preserveAspectRatio="xMidYMid meet">
+                      <defs>
+                        <linearGradient id="gfaze" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stop-color="#a855f7" stop-opacity="0.25"/>
+                          <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
+                        </linearGradient>
+                        <linearGradient id="gg2" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stop-color="#f87171" stop-opacity="0"/>
+                          <stop offset="100%" stop-color="#f87171" stop-opacity="0.18"/>
+                        </linearGradient>
+                      </defs>
+                      <line x1="38" y1="74" x2="430" y2="74" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="4,3"/>
+                      <text x="30" y="78" text-anchor="end" fill="rgba(255,255,255,0.3)" font-size="9" font-family="'Exo 2',sans-serif">50%</text>
+                      <text x="38"  y="118" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-size="8" font-family="'Exo 2',sans-serif">R1</text>
+                      <text x="212" y="118" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-size="8" font-family="'Exo 2',sans-serif">R10</text>
+                      <text x="387" y="118" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-size="8" font-family="'Exo 2',sans-serif">R20</text>
+                      <text x="430" y="118" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="8" font-family="'Exo 2',sans-serif">Live</text>
+                      <path d="M38,74 82,68 125,62 169,58 212,52 256,48 300,44 343,40 387,37 430,35 L430,10 L38,10 Z" fill="url(#gfaze)"/>
+                      <path d="M38,74 82,80 125,86 169,90 212,96 256,100 300,104 343,108 387,111 430,113 L430,106 L38,106 Z" fill="url(#gg2)"/>
+                      <polyline points="38,74 82,68 125,62 169,58 212,52 256,48 300,44 343,40 387,37 430,35" fill="none" stroke="#a855f7" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+                      <polyline points="38,74 82,80 125,86 169,90 212,96 256,100 300,104 343,108 387,111 430,113" fill="none" stroke="#f87171" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+                      <circle cx="430" cy="35"  r="4" fill="#a855f7"/>
+                      <circle cx="430" cy="113" r="4" fill="#f87171"/>
+                      <text x="436" y="39"  fill="#a855f7" font-size="12" font-weight="700" font-family="'Exo 2',sans-serif">FaZe 68%</text>
+                      <text x="436" y="117" fill="#f87171" font-size="12" font-weight="700" font-family="'Exo 2',sans-serif">G2 32%</text>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slide 3 — MOUZ vs Astralis — UPCOMING -->
+              <div class="match-slide" data-game="CS2" data-match="MOUZ vs Astralis">
+                <div class="match-bg contain-bg">
+                  <img src="img_M/Counter_Strike_2_Logo.png" alt="CS2"/>
+                </div>
+                <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(6,10,24,0.6),rgba(6,10,24,0.3));z-index:1;"></div>
+                <div class="slide-teams-overlay">
+                  <div class="slide-upcoming-pill">UPCOMING · In 2h 30min</div>
+                  <div class="slide-event-label" style="padding-top:50px;">BLAST Premier Spring · Semifinals</div>
+                  <div class="slide-event-sub">BO3 · Semifinals</div>
+                  <div class="slide-teams-top">
+                    <div class="slide-team-col">
+                      <img src="img_M/mouz.svg" alt="MOUZ"/>
+                      <div class="slide-team-odd" data-pick="MOUZ à gagner" data-odds="1.90">1.90</div>
+                    </div>
+                    <div class="slide-team-col">
+                      <img src="img_M/astralis.svg" alt="Astralis"/>
+                      <div class="slide-team-odd" data-pick="Astralis à gagner" data-odds="1.90">1.90</div>
+                    </div>
+                  </div>
+                  <div class="slide-graph-bar" style="background:linear-gradient(to bottom, transparent, rgba(7,11,31,0.95) 38%);">
+                    <div style="padding:12px 24px 8px;display:flex;align-items:center;justify-content:center;gap:32px;">
+                      <div style="text-align:center;">
+                        <div style="font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:800;color:#a855f7;">50%</div>
+                        <div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:2px;">MOUZ win probability</div>
+                      </div>
+                      <div style="width:1px;height:40px;background:rgba(255,255,255,0.1);"></div>
+                      <div style="text-align:center;">
+                        <div style="font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:800;color:#94a3b8;">50%</div>
+                        <div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:2px;">Astralis win probability</div>
+                      </div>
+                    </div>
+                    <div style="margin:0 24px;height:4px;border-radius:2px;overflow:hidden;background:rgba(255,255,255,0.08);">
+                      <div style="height:100%;width:50%;background:linear-gradient(90deg,#7c3aed,#a855f7);border-radius:2px;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slide 4 — Spirit vs Heroic — UPCOMING -->
+              <div class="match-slide" data-game="CS2" data-match="Spirit vs Heroic">
+                <div class="match-bg contain-bg">
+                  <img src="img_M/Counter_Strike_2_Logo.png" alt="CS2"/>
+                </div>
+                <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(6,10,24,0.6),rgba(6,10,24,0.3));z-index:1;"></div>
+                <div class="slide-teams-overlay">
+                  <div class="slide-upcoming-pill">UPCOMING · Tomorrow 18:00</div>
+                  <div class="slide-event-label" style="padding-top:50px;">IEM Cologne 2025 · Group Stage</div>
+                  <div class="slide-event-sub">BO3 · Group Stage</div>
+                  <div class="slide-teams-top">
+                    <div class="slide-team-col">
+                      <img src="img_M/spirit.png" alt="Spirit" style="filter:invert(1);"/>
+                      <div class="slide-team-odd" data-pick="Spirit à gagner" data-odds="1.55">1.55</div>
+                    </div>
+                    <div class="slide-team-col">
+                      <img src="img_M/aurora.webp" alt="Heroic"/>
+                      <div class="slide-team-odd" data-pick="Heroic à gagner" data-odds="2.45">2.45</div>
+                    </div>
+                  </div>
+                  <div class="slide-graph-bar" style="background:linear-gradient(to bottom, transparent, rgba(7,11,31,0.95) 38%);">
+                    <div style="padding:12px 24px 8px;display:flex;align-items:center;justify-content:center;gap:32px;">
+                      <div style="text-align:center;">
+                        <div style="font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:800;color:#3882f6;">62%</div>
+                        <div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:2px;">Spirit win probability</div>
+                      </div>
+                      <div style="width:1px;height:40px;background:rgba(255,255,255,0.1);"></div>
+                      <div style="text-align:center;">
+                        <div style="font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:800;color:#94a3b8;">38%</div>
+                        <div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:2px;">Heroic win probability</div>
+                      </div>
+                    </div>
+                    <div style="margin:0 24px;height:4px;border-radius:2px;overflow:hidden;background:rgba(255,255,255,0.08);">
+                      <div style="height:100%;width:62%;background:linear-gradient(90deg,#1d4ed8,#3882f6);border-radius:2px;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /main-track -->
+          </div><!-- /carousel-track -->
+          <div class="carousel-arrow arrow-right"><img src="img_M/arrow.png" alt="→"/></div>
+        </div>
+      </div>
+
+      <!-- ── ACTIVE TOURNAMENTS ── -->
+      <div class="tn-section">
+        <div class="tn-section-hdr">
+          <div class="tn-section-ttl">Active Tournaments</div>
+        </div>
+        <div class="tn-grid">
+
+          <!-- ESL Pro League S21 -->
+          <a class="tn-card" href="bracket.html">
+            <div class="tn-card-top">
+              <div class="tn-card-badge tn-badge-live"><span class="tn-badge-dot"></span>LIVE</div>
+              <span class="tn-card-organizer">ESL / FACEIT</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <img class="tn-card-logo" src="img_M/logocs2.png" alt="CS2"/>
+              <div>
+                <div class="tn-card-name">ESL Pro League</div>
+                <div class="tn-card-sub">Season 21 · Playoffs</div>
+              </div>
+            </div>
+            <div class="tn-card-stats">
+              <div class="tn-stat"><span class="tn-stat-val">$1M</span><span class="tn-stat-lbl">Prize</span></div>
+              <div class="tn-stat"><span class="tn-stat-val">24</span><span class="tn-stat-lbl">Teams</span></div>
+              <div class="tn-stat"><span class="tn-stat-val">6</span><span class="tn-stat-lbl">Live</span></div>
+            </div>
+            <div class="tn-card-progress">
+              <div class="tn-card-progress-bar" style="width:72%;background:rgba(255,255,255,0.75);"></div>
+            </div>
+          </a>
+
+          <!-- BLAST Premier Spring -->
+          <a class="tn-card" href="bracket.html">
+            <div class="tn-card-top">
+              <div class="tn-card-badge tn-badge-live"><span class="tn-badge-dot"></span>LIVE</div>
+              <span class="tn-card-organizer">BLAST</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <img class="tn-card-logo" src="img_M/logocs2.png" alt="CS2"/>
+              <div>
+                <div class="tn-card-name">BLAST Premier</div>
+                <div class="tn-card-sub">Spring 2025 · Groups</div>
+              </div>
+            </div>
+            <div class="tn-card-stats">
+              <div class="tn-stat"><span class="tn-stat-val">$425K</span><span class="tn-stat-lbl">Prize</span></div>
+              <div class="tn-stat"><span class="tn-stat-val">16</span><span class="tn-stat-lbl">Teams</span></div>
+              <div class="tn-stat"><span class="tn-stat-val">4</span><span class="tn-stat-lbl">Live</span></div>
+            </div>
+            <div class="tn-card-progress">
+              <div class="tn-card-progress-bar" style="width:45%;background:rgba(255,255,255,0.75);"></div>
+            </div>
+          </a>
+
+          <!-- IEM Cologne 2025 -->
+          <a class="tn-card" href="bracket.html">
+            <div class="tn-card-top">
+              <div class="tn-card-badge tn-badge-soon">STARTING SOON</div>
+              <span class="tn-card-organizer">ESL</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <img class="tn-card-logo" src="img_M/logocs2.png" alt="CS2"/>
+              <div>
+                <div class="tn-card-name">IEM Cologne</div>
+                <div class="tn-card-sub">2025 · Qualifiers</div>
+              </div>
+            </div>
+            <div class="tn-card-stats">
+              <div class="tn-stat"><span class="tn-stat-val">$250K</span><span class="tn-stat-lbl">Prize</span></div>
+              <div class="tn-stat"><span class="tn-stat-val">16</span><span class="tn-stat-lbl">Teams</span></div>
+              <div class="tn-stat"><span class="tn-stat-val">3</span><span class="tn-stat-lbl">Upcoming</span></div>
+            </div>
+            <div class="tn-card-progress">
+              <div class="tn-card-progress-bar" style="width:12%;background:rgba(255,255,255,0.75);"></div>
+            </div>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- ── HOT MATCHES ── -->
+      <div class="hm-section">
+        <div class="hm-section-hdr">
+          <div class="hm-section-ttl">Hot Matches <span>CS2 · Live &amp; Upcoming</span></div>
+          <span class="hm-live-pill"><span class="hm-dot"></span>14 LIVE</span>
+        </div>
+        <div class="hm-cols-grid">
+
+          <!-- Colonne 1 — ESL Pro League S21 -->
+          <div class="hm-col">
+            <div class="hm-col-hdr">
+              <span class="hm-col-name">ESL Pro League S21</span>
+              <span class="hm-col-badge live">LIVE</span>
+            </div>
+            <div class="hm-row" data-href="match.html">
+              <span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span>
+              <span class="hm-teams">
+                <span class="hm-team-row"><span class="hm-team">Vitality</span><img class="hm-team-logo" src="img_M/logovita.png" alt="Vitality"/></span>
+                <span class="hm-team-row"><span class="hm-team">NaVi</span><img class="hm-team-logo" src="img_M/NAVI_Logo_2020.png" alt="NaVi"/></span>
+              </span>
+              <span class="hm-odds-col">
+                <span class="hm-odd-row"><span class="hm-score-part">9</span><span class="hm-odd" data-pick="Vitality à gagner" data-odds="1.75" data-match="Vitality vs NaVi">1.75</span></span>
+                <span class="hm-odd-row"><span class="hm-score-part">7</span><span class="hm-odd" data-pick="NaVi à gagner" data-odds="2.05" data-match="Vitality vs NaVi">2.05</span></span>
+              </span>
+            </div>
+            <div class="hm-row" data-href="match.html">
+              <span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span>
+              <span class="hm-teams">
+                <span class="hm-team-row"><span class="hm-team">FaZe</span></span>
+                <span class="hm-team-row"><span class="hm-team">G2</span></span>
+              </span>
+              <span class="hm-odds-col">
+                <span class="hm-odd-row"><span class="hm-score-part">11</span><span class="hm-odd" data-pick="FaZe à gagner" data-odds="1.60" data-match="FaZe vs G2">1.60</span></span>
+                <span class="hm-odd-row"><span class="hm-score-part">8</span><span class="hm-odd" data-pick="G2 à gagner" data-odds="2.35" data-match="FaZe vs G2">2.35</span></span>
+              </span>
+            </div>
+            <div class="hm-row" data-href="match.html">
+              <span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span>
+              <span class="hm-teams">
+                <span class="hm-team-row"><span class="hm-team">Heroic</span></span>
+                <span class="hm-team-row"><span class="hm-team">Cloud9</span></span>
+              </span>
+              <span class="hm-odds-col">
+                <span class="hm-odd-row"><span class="hm-score-part">8</span><span class="hm-odd" data-pick="Heroic à gagner" data-odds="2.80" data-match="Heroic vs Cloud9">2.80</span></span>
+                <span class="hm-odd-row"><span class="hm-score-part">11</span><span class="hm-odd" data-pick="Cloud9 à gagner" data-odds="1.48" data-match="Heroic vs Cloud9">1.48</span></span>
+              </span>
+            </div>
+            <div class="hm-row" data-href="match.html">
+              <span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span>
+              <span class="hm-teams">
+                <span class="hm-team-row"><span class="hm-team">Spirit</span></span>
+                <span class="hm-team-row"><span class="hm-team">Astralis</span></span>
+              </span>
+              <span class="hm-odds-col">
+                <span class="hm-odd-row"><span class="hm-score-part">12</span><span class="hm-odd" data-pick="Spirit à gagner" data-odds="1.55" data-match="Spirit vs Astralis">1.55</span></span>
+                <span class="hm-odd-row"><span class="hm-score-part">10</span><span class="hm-odd" data-pick="Astralis à gagner" data-odds="2.45" data-match="Spirit vs Astralis">2.45</span></span>
+              </span>
+            </div>
+            <div class="hm-row" data-href="match.html">
+              <span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span>
+              <span class="hm-teams">
+                <span class="hm-team-row"><span class="hm-team">MOUZ</span></span>
+                <span class="hm-team-row"><span class="hm-team">Complexity</span></span>
+              </span>
+              <span class="hm-odds-col">
+                <span class="hm-odd-row"><span class="hm-score-part">5</span><span class="hm-odd" data-pick="MOUZ à gagner" data-odds="1.90" data-match="MOUZ vs Complexity">1.90</span></span>
+                <span class="hm-odd-row"><span class="hm-score-part">3</span><span class="hm-odd" data-pick="Complexity à gagner" data-odds="1.90" data-match="MOUZ vs Complexity">1.90</span></span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Colonne 2 — BLAST Premier Spring -->
+          <div class="hm-col">
+            <div class="hm-col-hdr">
+              <span class="hm-col-name">BLAST Premier Spring</span>
+              <span class="hm-col-badge live">LIVE</span>
+            </div>
+            <div class="hm-row" data-href="match.html">
+              <span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span>
+              <span class="hm-teams">
+                <span class="hm-team-row"><span class="hm-team">NaVi</span><img class="hm-team-logo" src="img_M/NAVI_Logo_2020.png" alt="NaVi"/></span>
+                <span class="hm-team-row"><span class="hm-team">G2</span></span>
+              </span>
+              <span class="hm-odds-col">
+                <span class="hm-odd-row"><span class="hm-score-part">7</span><span class="hm-odd" data-pick="NaVi à gagner" data-odds="1.85" data-match="NaVi vs G2">1.85</span></span>
+                <span class="hm-odd-row"><span class="hm-score-part">9</span><span class="hm-odd" data-pick="G2 à gagner" data-odds="1.95" data-match="NaVi vs G2">1.95</span></span>
+              </span>
+            </div>
+            <div class="hm-row" data-href="match.html">
+              <span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span>
+              <span class="hm-teams">
+                <span class="hm-team-row"><span class="hm-team">Vitality</span><img class="hm-team-logo" src="img_M/logovita.png" alt="Vitality"/></span>
+                <span class="hm-team-row"><span class="hm-team">Heroic</span></span>
+              </span>
+              <span class="hm-odds-col">
+                <span class="hm-odd-row"><span class="hm-score-part">13</span><span class="hm-odd" data-pick="Vitality à gagner" data-odds="1.45" data-match="Vitality vs Heroic">1.45</span></span>
+                <span class="hm-odd-row"><span class="hm-score-part">11</span><span class="hm-odd" data-pick="Heroic à gagner" data-odds="2.70" data-match="Vitality vs Heroic">2.70</span></span>
+              </span>
+            </div>
+            <div class="hm-row" data-href="match.html">
+              <span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span>
+              <span class="hm-teams">
+                <span class="hm-team-row"><span class="hm-team">MOUZ</span></span>
+                <span class="hm-team-row"><span class="hm-team">Astralis</span></span>
+              </span>
+              <span class="hm-odds-col">
+                <span class="hm-odd-row"><span class="hm-score-part">6</span><span class="hm-odd" data-pick="MOUZ à gagner" data-odds="1.90" data-match="MOUZ vs Astralis">1.90</span></span>
+                <span class="hm-odd-row"><span class="hm-score-part">6</span><span class="hm-odd" data-pick="Astralis à gagner" data-odds="1.90" data-match="MOUZ vs Astralis">1.90</span></span>
+              </span>
+            </div>
+            <div class="hm-row" data-href="match.html">
+              <span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span>
+              <span class="hm-teams">
+                <span class="hm-team-row"><span class="hm-team">Cloud9</span></span>
+                <span class="hm-team-row"><span class="hm-team">9z</span></span>
+              </span>
+              <span class="hm-odds-col">
+                <span class="hm-odd-row"><span class="hm-score-part">10</span><span class="hm-odd" data-pick="Cloud9 à gagner" data-odds="1.70" data-match="Cloud9 vs 9z">1.70</span></span>
+                <span class="hm-odd-row"><span class="hm-score-part">8</span><span class="hm-odd" data-pick="9z à gagner" data-odds="2.20" data-match="Cloud9 vs 9z">2.20</span></span>
+              </span>
+            </div>
+            <div class="hm-row" data-href="match.html">
+              <span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span>
+              <span class="hm-teams">
+                <span class="hm-team-row"><span class="hm-team">FaZe</span></span>
+                <span class="hm-team-row"><span class="hm-team">Spirit</span></span>
+              </span>
+              <span class="hm-odds-col">
+                <span class="hm-odd-row"><span class="hm-score-part">14</span><span class="hm-odd" data-pick="FaZe à gagner" data-odds="1.72" data-match="FaZe vs Spirit">1.72</span></span>
+                <span class="hm-odd-row"><span class="hm-score-part">12</span><span class="hm-odd" data-pick="Spirit à gagner" data-odds="2.10" data-match="FaZe vs Spirit">2.10</span></span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Colonne 3 — IEM Cologne 2025 -->
+          <div class="hm-col">
+            <div class="hm-col-hdr">
+              <span class="hm-col-name">IEM Cologne 2025</span>
+              <span class="hm-col-badge soon">SOON</span>
+            </div>
+            <div class="hm-row" data-href="match.html">
+              <span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span>
+              <span class="hm-teams">
+                <span class="hm-team-row"><span class="hm-team">Spirit</span></span>
+                <span class="hm-team-row"><span class="hm-team">Heroic</span></span>
+              </span>
+              <span class="hm-odds-col">
+                <span class="hm-odd-row"><span class="hm-score-part">—</span><span class="hm-odd" data-pick="Spirit à gagner" data-odds="1.55" data-match="Spirit vs Heroic">1.55</span></span>
+                <span class="hm-odd-row"><span class="hm-score-part">—</span><span class="hm-odd" data-pick="Heroic à gagner" data-odds="2.45" data-match="Spirit vs Heroic">2.45</span></span>
+              </span>
+            </div>
+            <div class="hm-row" data-href="match.html">
+              <span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span>
+              <span class="hm-teams">
+                <span class="hm-team-row"><span class="hm-team">Vitality</span><img class="hm-team-logo" src="img_M/logovita.png" alt="Vitality"/></span>
+                <span class="hm-team-row"><span class="hm-team">Astralis</span></span>
+              </span>
+              <span class="hm-odds-col">
+                <span class="hm-odd-row"><span class="hm-score-part">—</span><span class="hm-odd" data-pick="Vitality à gagner" data-odds="1.60" data-match="Vitality vs Astralis">1.60</span></span>
+                <span class="hm-odd-row"><span class="hm-score-part">—</span><span class="hm-odd" data-pick="Astralis à gagner" data-odds="2.35" data-match="Vitality vs Astralis">2.35</span></span>
+              </span>
+            </div>
+            <div class="hm-row" data-href="match.html">
+              <span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span>
+              <span class="hm-teams">
+                <span class="hm-team-row"><span class="hm-team">FaZe</span></span>
+                <span class="hm-team-row"><span class="hm-team">NaVi</span><img class="hm-team-logo" src="img_M/NAVI_Logo_2020.png" alt="NaVi"/></span>
+              </span>
+              <span class="hm-odds-col">
+                <span class="hm-odd-row"><span class="hm-score-part">—</span><span class="hm-odd" data-pick="FaZe à gagner" data-odds="1.65" data-match="FaZe vs NaVi">1.65</span></span>
+                <span class="hm-odd-row"><span class="hm-score-part">—</span><span class="hm-odd" data-pick="NaVi à gagner" data-odds="2.20" data-match="FaZe vs NaVi">2.20</span></span>
+              </span>
+            </div>
+            <div class="hm-row" data-href="match.html">
+              <span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span>
+              <span class="hm-teams">
+                <span class="hm-team-row"><span class="hm-team">G2</span></span>
+                <span class="hm-team-row"><span class="hm-team">MOUZ</span></span>
+              </span>
+              <span class="hm-odds-col">
+                <span class="hm-odd-row"><span class="hm-score-part">—</span><span class="hm-odd" data-pick="G2 à gagner" data-odds="1.80" data-match="G2 vs MOUZ">1.80</span></span>
+                <span class="hm-odd-row"><span class="hm-score-part">—</span><span class="hm-odd" data-pick="MOUZ à gagner" data-odds="2.00" data-match="G2 vs MOUZ">2.00</span></span>
+              </span>
+            </div>
+            <div class="hm-row" data-href="match.html">
+              <span class="hm-game"><img src="img_M/logocs2.png" alt="CS2"/></span>
+              <span class="hm-teams">
+                <span class="hm-team-row"><span class="hm-team">Cloud9</span></span>
+                <span class="hm-team-row"><span class="hm-team">Complexity</span></span>
+              </span>
+              <span class="hm-odds-col">
+                <span class="hm-odd-row"><span class="hm-score-part">—</span><span class="hm-odd" data-pick="Cloud9 à gagner" data-odds="1.55" data-match="Cloud9 vs Complexity">1.55</span></span>
+                <span class="hm-odd-row"><span class="hm-score-part">—</span><span class="hm-odd" data-pick="Complexity à gagner" data-odds="2.50" data-match="Cloud9 vs Complexity">2.50</span></span>
+              </span>
+            </div>
+          </div>
+
+        </div><!-- /hm-cols-grid -->
+      </div><!-- /hm-section -->
+
+      <!-- ── TOP CS2 PLAYERS ── -->
+      <div class="tp-section">
+        <div class="tp-hdr">
+          <div class="tp-title">Top Players</div>
+          <div class="tp-game-tag"><img src="img_M/logocs2.png" alt="CS2"/>Counter-Strike 2</div>
+        </div>
+
+        <div class="tp-scroll" id="tpScroll">
+
+          <!-- ZywOo -->
+          <div class="tp-pc">
+            <div class="tp-pc-bg" style="background:linear-gradient(175deg,#1a1400,#2a2000,#3a2e00);"></div>
+            <div class="tp-pc-team-badge" style="background:rgba(250,204,21,0.2);border:1px solid rgba(250,204,21,0.5);color:#facc15;">Vitality</div>
+            <div class="tp-pc-body">
+              <div class="tp-pc-name">ZywOo</div>
+              <svg class="tp-pc-avatar" viewBox="0 0 80 88" fill="none">
+                <path d="M22 22 C22 17 27 14 32 13 L40 11 L48 13 C53 14 58 17 58 22 L63 42 L54 44 L54 76 L26 76 L26 44 L17 42 Z" fill="#facc15" stroke="#d4a000" stroke-width="1.5"/>
+                <path d="M26 13 L26 76 M54 13 L54 76" stroke="#111" stroke-width="4" opacity="0.4"/>
+                <text x="40" y="60" text-anchor="middle" fill="#111" font-size="9" font-weight="900" font-family="Arial">VITALITY</text>
+                <path d="M22 22 L17 42 L26 44 L26 30 Z" fill="#facc15" stroke="#d4a000" stroke-width="1"/>
+                <path d="M58 22 L63 42 L54 44 L54 30 Z" fill="#facc15" stroke="#d4a000" stroke-width="1"/>
+              </svg>
+              <div class="tp-pc-role">Star Rifler</div>
+            </div>
+            <div class="tp-pc-footer" style="background:linear-gradient(90deg,#d4a000,#facc15);color:#111;">
+              <div class="tp-pc-footer-label">Best Perf.</div>
+              <div class="tp-pc-odd">1.70</div>
+            </div>
+            <div class="tp-pc-rating">
+              <div class="tp-pc-rating-row"><span class="tp-pc-rating-lbl">Rating</span><span class="tp-pc-rating-val">1.38</span></div>
+              <div class="tp-pc-rating-bar"><div class="tp-pc-rating-fill" style="width:96%;background:linear-gradient(90deg,#d4a000,#facc15);"></div></div>
+            </div>
+          </div>
+
+          <!-- s1mple -->
+          <div class="tp-pc">
+            <div class="tp-pc-bg" style="background:linear-gradient(175deg,#09090f,#0f0c1e,#1a1040);"></div>
+            <div class="tp-pc-team-badge" style="background:rgba(245,197,24,0.2);border:1px solid rgba(245,197,24,0.5);color:#f5c518;">NaVi</div>
+            <div class="tp-pc-body">
+              <div class="tp-pc-name">s1mple</div>
+              <svg class="tp-pc-avatar" viewBox="0 0 80 88" fill="none">
+                <path d="M22 22 C22 17 27 14 32 13 L40 11 L48 13 C53 14 58 17 58 22 L63 42 L54 44 L54 76 L26 76 L26 44 L17 42 Z" fill="#0a0a0a" stroke="#f5c518" stroke-width="1.5"/>
+                <path d="M36 13 L36 76 M44 13 L44 76" stroke="#f5c518" stroke-width="3" opacity="0.7"/>
+                <text x="40" y="60" text-anchor="middle" fill="#f5c518" font-size="11" font-weight="900" font-family="Arial">NaVi</text>
+                <path d="M22 22 L17 42 L26 44 L26 30 Z" fill="#111" stroke="#f5c518" stroke-width="1"/>
+                <path d="M58 22 L63 42 L54 44 L54 30 Z" fill="#111" stroke="#f5c518" stroke-width="1"/>
+              </svg>
+              <div class="tp-pc-role">AWPer</div>
+            </div>
+            <div class="tp-pc-footer" style="background:linear-gradient(90deg,#b8960a,#f5c518);color:#111;">
+              <div class="tp-pc-footer-label">Best Perf.</div>
+              <div class="tp-pc-odd">2.20</div>
+            </div>
+            <div class="tp-pc-rating">
+              <div class="tp-pc-rating-row"><span class="tp-pc-rating-lbl">Rating</span><span class="tp-pc-rating-val">1.33</span></div>
+              <div class="tp-pc-rating-bar"><div class="tp-pc-rating-fill" style="width:90%;background:linear-gradient(90deg,#b8960a,#f5c518);"></div></div>
+            </div>
+          </div>
+
+          <!-- NiKo -->
+          <div class="tp-pc">
+            <div class="tp-pc-bg" style="background:linear-gradient(175deg,#0e0e0e,#1a1a1a,#252525);"></div>
+            <div class="tp-pc-team-badge" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.35);color:#fff;">G2</div>
+            <div class="tp-pc-body">
+              <div class="tp-pc-name">NiKo</div>
+              <svg class="tp-pc-avatar" viewBox="0 0 80 88" fill="none">
+                <path d="M22 22 C22 17 27 14 32 13 L40 11 L48 13 C53 14 58 17 58 22 L63 42 L54 44 L54 76 L26 76 L26 44 L17 42 Z" fill="#1a1a1a" stroke="#e53935" stroke-width="1.5"/>
+                <path d="M22 22 L58 55" stroke="#e53935" stroke-width="7" opacity="0.5" stroke-linecap="round"/>
+                <text x="40" y="60" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-family="Arial">G2</text>
+                <path d="M22 22 L17 42 L26 44 L26 30 Z" fill="#1a1a1a" stroke="#e53935" stroke-width="1"/>
+                <path d="M58 22 L63 42 L54 44 L54 30 Z" fill="#1a1a1a" stroke="#e53935" stroke-width="1"/>
+              </svg>
+              <div class="tp-pc-role">Rifler / Entry</div>
+            </div>
+            <div class="tp-pc-footer" style="background:linear-gradient(90deg,#111,#333);color:#fff;">
+              <div class="tp-pc-footer-label">Best Perf.</div>
+              <div class="tp-pc-odd">2.80</div>
+            </div>
+            <div class="tp-pc-rating">
+              <div class="tp-pc-rating-row"><span class="tp-pc-rating-lbl">Rating</span><span class="tp-pc-rating-val">1.29</span></div>
+              <div class="tp-pc-rating-bar"><div class="tp-pc-rating-fill" style="width:85%;background:linear-gradient(90deg,#7f1d1d,#ef4444);"></div></div>
+            </div>
+          </div>
+
+          <!-- device -->
+          <div class="tp-pc">
+            <div class="tp-pc-bg" style="background:linear-gradient(175deg,#0a0a12,#12121e,#1a1a2e);"></div>
+            <div class="tp-pc-team-badge" style="background:rgba(168,85,247,0.2);border:1px solid rgba(168,85,247,0.4);color:#c084fc;">Astralis</div>
+            <div class="tp-pc-body">
+              <div class="tp-pc-name">device</div>
+              <svg class="tp-pc-avatar" viewBox="0 0 80 88" fill="none">
+                <path d="M22 22 C22 17 27 14 32 13 L40 11 L48 13 C53 14 58 17 58 22 L63 42 L54 44 L54 76 L26 76 L26 44 L17 42 Z" fill="#0d0d1a" stroke="#a855f7" stroke-width="1.5"/>
+                <path d="M26 40 L54 40 L54 60 L26 60 Z" fill="#a855f7" opacity="0.15"/>
+                <text x="40" y="58" text-anchor="middle" fill="#c084fc" font-size="9" font-weight="900" font-family="Arial">ASTRALIS</text>
+                <path d="M22 22 L17 42 L26 44 L26 30 Z" fill="#0d0d1a" stroke="#a855f7" stroke-width="1"/>
+                <path d="M58 22 L63 42 L54 44 L54 30 Z" fill="#0d0d1a" stroke="#a855f7" stroke-width="1"/>
+              </svg>
+              <div class="tp-pc-role">AWPer</div>
+            </div>
+            <div class="tp-pc-footer" style="background:linear-gradient(90deg,#5b21b6,#a855f7);color:#fff;">
+              <div class="tp-pc-footer-label">Best Perf.</div>
+              <div class="tp-pc-odd">1.95</div>
+            </div>
+            <div class="tp-pc-rating">
+              <div class="tp-pc-rating-row"><span class="tp-pc-rating-lbl">Rating</span><span class="tp-pc-rating-val">1.24</span></div>
+              <div class="tp-pc-rating-bar"><div class="tp-pc-rating-fill" style="width:78%;background:linear-gradient(90deg,#5b21b6,#a855f7);"></div></div>
+            </div>
+          </div>
+
+          <!-- sh1ro -->
+          <div class="tp-pc">
+            <div class="tp-pc-bg" style="background:linear-gradient(175deg,#061018,#0a1828,#0e2030);"></div>
+            <div class="tp-pc-team-badge" style="background:rgba(56,130,246,0.2);border:1px solid rgba(56,130,246,0.4);color:#60a5fa;">Cloud9</div>
+            <div class="tp-pc-body">
+              <div class="tp-pc-name">sh1ro</div>
+              <svg class="tp-pc-avatar" viewBox="0 0 80 88" fill="none">
+                <path d="M22 22 C22 17 27 14 32 13 L40 11 L48 13 C53 14 58 17 58 22 L63 42 L54 44 L54 76 L26 76 L26 44 L17 42 Z" fill="#071828" stroke="#38bdf8" stroke-width="1.5"/>
+                <path d="M22 30 L58 30" stroke="#38bdf8" stroke-width="2" opacity="0.5"/>
+                <path d="M22 50 L58 50" stroke="#38bdf8" stroke-width="2" opacity="0.5"/>
+                <text x="40" y="70" text-anchor="middle" fill="#7dd3fc" font-size="8" font-weight="900" font-family="Arial">CLOUD9</text>
+                <path d="M22 22 L17 42 L26 44 L26 30 Z" fill="#071828" stroke="#38bdf8" stroke-width="1"/>
+                <path d="M58 22 L63 42 L54 44 L54 30 Z" fill="#071828" stroke="#38bdf8" stroke-width="1"/>
+              </svg>
+              <div class="tp-pc-role">AWPer</div>
+            </div>
+            <div class="tp-pc-footer" style="background:linear-gradient(90deg,#075985,#38bdf8);color:#fff;">
+              <div class="tp-pc-footer-label">Best Perf.</div>
+              <div class="tp-pc-odd">3.10</div>
+            </div>
+            <div class="tp-pc-rating">
+              <div class="tp-pc-rating-row"><span class="tp-pc-rating-lbl">Rating</span><span class="tp-pc-rating-val">1.22</span></div>
+              <div class="tp-pc-rating-bar"><div class="tp-pc-rating-fill" style="width:75%;background:linear-gradient(90deg,#075985,#38bdf8);"></div></div>
+            </div>
+          </div>
+
+          <!-- broky -->
+          <div class="tp-pc">
+            <div class="tp-pc-bg" style="background:linear-gradient(175deg,#100a06,#1e1208,#2a1a0a);"></div>
+            <div class="tp-pc-team-badge" style="background:rgba(249,115,22,0.2);border:1px solid rgba(249,115,22,0.4);color:#fb923c;">FaZe</div>
+            <div class="tp-pc-body">
+              <div class="tp-pc-name">broky</div>
+              <svg class="tp-pc-avatar" viewBox="0 0 80 88" fill="none">
+                <path d="M22 22 C22 17 27 14 32 13 L40 11 L48 13 C53 14 58 17 58 22 L63 42 L54 44 L54 76 L26 76 L26 44 L17 42 Z" fill="#1a1008" stroke="#f97316" stroke-width="1.5"/>
+                <path d="M26 13 L26 76" stroke="#f97316" stroke-width="4" opacity="0.4" stroke-linecap="round"/>
+                <path d="M54 13 L54 76" stroke="#f97316" stroke-width="4" opacity="0.4" stroke-linecap="round"/>
+                <text x="40" y="58" text-anchor="middle" fill="#fb923c" font-size="9" font-weight="900" font-family="Arial">FAZE</text>
+                <path d="M22 22 L17 42 L26 44 L26 30 Z" fill="#1a1008" stroke="#f97316" stroke-width="1"/>
+                <path d="M58 22 L63 42 L54 44 L54 30 Z" fill="#1a1008" stroke="#f97316" stroke-width="1"/>
+              </svg>
+              <div class="tp-pc-role">AWPer</div>
+            </div>
+            <div class="tp-pc-footer" style="background:linear-gradient(90deg,#c2410c,#f97316);color:#fff;">
+              <div class="tp-pc-footer-label">Best Perf.</div>
+              <div class="tp-pc-odd">2.55</div>
+            </div>
+            <div class="tp-pc-rating">
+              <div class="tp-pc-rating-row"><span class="tp-pc-rating-lbl">Rating</span><span class="tp-pc-rating-val">1.20</span></div>
+              <div class="tp-pc-rating-bar"><div class="tp-pc-rating-fill" style="width:72%;background:linear-gradient(90deg,#c2410c,#f97316);"></div></div>
+            </div>
+          </div>
+
+          <!-- Spinx -->
+          <div class="tp-pc">
+            <div class="tp-pc-bg" style="background:linear-gradient(175deg,#1a1400,#2a2000,#3a2e00);"></div>
+            <div class="tp-pc-team-badge" style="background:rgba(250,204,21,0.15);border:1px solid rgba(250,204,21,0.4);color:#fde047;">Vitality</div>
+            <div class="tp-pc-body">
+              <div class="tp-pc-name">Spinx</div>
+              <svg class="tp-pc-avatar" viewBox="0 0 80 88" fill="none">
+                <path d="M22 22 C22 17 27 14 32 13 L40 11 L48 13 C53 14 58 17 58 22 L63 42 L54 44 L54 76 L26 76 L26 44 L17 42 Z" fill="#222200" stroke="#eab308" stroke-width="1.5"/>
+                <path d="M22 40 L58 40" stroke="#eab308" stroke-width="2" opacity="0.4"/>
+                <path d="M22 55 L58 55" stroke="#eab308" stroke-width="2" opacity="0.4"/>
+                <text x="40" y="70" text-anchor="middle" fill="#fde047" font-size="8" font-weight="900" font-family="Arial">VITALITY</text>
+                <path d="M22 22 L17 42 L26 44 L26 30 Z" fill="#222200" stroke="#eab308" stroke-width="1"/>
+                <path d="M58 22 L63 42 L54 44 L54 30 Z" fill="#222200" stroke="#eab308" stroke-width="1"/>
+              </svg>
+              <div class="tp-pc-role">Rifler</div>
+            </div>
+            <div class="tp-pc-footer" style="background:linear-gradient(90deg,#a16207,#eab308);color:#111;">
+              <div class="tp-pc-footer-label">Best Perf.</div>
+              <div class="tp-pc-odd">3.40</div>
+            </div>
+            <div class="tp-pc-rating">
+              <div class="tp-pc-rating-row"><span class="tp-pc-rating-lbl">Rating</span><span class="tp-pc-rating-val">1.18</span></div>
+              <div class="tp-pc-rating-bar"><div class="tp-pc-rating-fill" style="width:68%;background:linear-gradient(90deg,#a16207,#eab308);"></div></div>
+            </div>
+          </div>
+
+          <!-- electroNic -->
+          <div class="tp-pc">
+            <div class="tp-pc-bg" style="background:linear-gradient(175deg,#09090f,#0f0c1e,#1a1040);"></div>
+            <div class="tp-pc-team-badge" style="background:rgba(245,197,24,0.15);border:1px solid rgba(245,197,24,0.4);color:#fbbf24;">NaVi</div>
+            <div class="tp-pc-body">
+              <div class="tp-pc-name">electro<br>Nic</div>
+              <svg class="tp-pc-avatar" viewBox="0 0 80 88" fill="none">
+                <path d="M22 22 C22 17 27 14 32 13 L40 11 L48 13 C53 14 58 17 58 22 L63 42 L54 44 L54 76 L26 76 L26 44 L17 42 Z" fill="#0a080a" stroke="#f5c518" stroke-width="1.5"/>
+                <path d="M30 30 L50 30 L50 50 L30 50 Z" fill="#f5c518" opacity="0.1"/>
+                <text x="40" y="58" text-anchor="middle" fill="#f5c518" font-size="11" font-weight="900" font-family="Arial">NaVi</text>
+                <path d="M22 22 L17 42 L26 44 L26 30 Z" fill="#111" stroke="#f5c518" stroke-width="1"/>
+                <path d="M58 22 L63 42 L54 44 L54 30 Z" fill="#111" stroke="#f5c518" stroke-width="1"/>
+              </svg>
+              <div class="tp-pc-role">Support</div>
+            </div>
+            <div class="tp-pc-footer" style="background:linear-gradient(90deg,#92400e,#fbbf24);color:#111;">
+              <div class="tp-pc-footer-label">Best Perf.</div>
+              <div class="tp-pc-odd">4.20</div>
+            </div>
+            <div class="tp-pc-rating">
+              <div class="tp-pc-rating-row"><span class="tp-pc-rating-lbl">Rating</span><span class="tp-pc-rating-val">1.15</span></div>
+              <div class="tp-pc-rating-bar"><div class="tp-pc-rating-fill" style="width:63%;background:linear-gradient(90deg,#92400e,#fbbf24);"></div></div>
+            </div>
+          </div>
+
+        </div><!-- /tp-scroll -->
+      </div>
+
+    </div><!-- /main-content -->
+
+    <!-- ══ SIDEBAR DROITE — BET SLIP ══ -->
+    <aside class="sidebar-right">
+
+      <div class="bb-header">
+        <span class="bb-title">Bet Slip</span>
+        <span class="bb-count" id="bb-count">0</span>
+        <button class="bb-toggle" id="bbToggle" title="Réduire / Agrandir">&#10095;</button>
+      </div>
+
+      <!-- Paris injectés par betslip.js -->
+      <div id="bb-bets-list"></div>
+
+      <div class="bb-divider"></div>
+
+      <!-- Cote combinée -->
+      <div class="bb-combined">
+        <span class="bb-combined-label">Combined odds</span>
+        <span class="bb-combined-val" id="bb-combined-val">1.00</span>
+      </div>
+
+      <div class="bb-divider"></div>
+
+      <!-- Mise -->
+      <div class="bb-stake-row">
+        <span class="bb-stake-label">Stake (£)</span>
+        <input class="bb-stake-input" type="number" placeholder="0.00" value="10"/>
+      </div>
+
+      <!-- Montants rapides -->
+      <div class="bb-quick-amounts">
+        <div class="bb-qa">+5</div>
+        <div class="bb-qa">+10</div>
+        <div class="bb-qa">+25</div>
+        <div class="bb-qa">+50</div>
+      </div>
+
+      <!-- Gains potentiels -->
+      <div class="bb-gains">
+        <span class="bb-gains-label">Potential winnings</span>
+        <span class="bb-gains-val" id="bbGains">£0.00</span>
+      </div>
+
+      <!-- Bouton parier -->
+      <button class="bb-submit">Place bet</button>
+
+      <div class="bb-terms">Responsible gambling · 18+ · T&amp;Cs apply</div>
+
+    </aside>
+
+    </div><!-- /content-layout -->
+  </div><!-- /page -->
+
+  <script>
+    // ── Match carousel ──
+    (function () {
+      const track    = document.getElementById('mainTrack');
+      const viewport = document.querySelector('.carousel-track');
+      if (!track || !viewport) return;
+      const orig  = Array.from(track.querySelectorAll('.match-slide'));
+      const total = orig.length;
+      const GAP   = 16;
+      let current = 0;
+      let timer;
+
+      // Clone for seamless loop
+      orig.forEach(function(s) { track.appendChild(s.cloneNode(true)); });
+      const all = Array.from(track.querySelectorAll('.match-slide'));
+
+      function SLIDE_W() { return all[0] ? all[0].getBoundingClientRect().width : 580; }
+
+      function calcOffset(idx) {
+        const sw = SLIDE_W();
+        return (viewport.offsetWidth - sw) / 2 - idx * (sw + GAP);
+      }
+
+      function setActive(idx) {
+        all.forEach(function(s, i) { s.classList.toggle('ms-active', i === idx); });
+      }
+
+      function goTo(idx) {
+        current = idx;
+        track.style.transition = 'transform 0.7s cubic-bezier(0.4,0,0.2,1)';
+        track.style.transform  = 'translateX(' + calcOffset(idx) + 'px)';
+        setActive(idx);
+      }
+
+      track.addEventListener('transitionend', function() {
+        if (current >= total) {
+          track.style.transition = 'none';
+          current -= total;
+          track.style.transform  = 'translateX(' + calcOffset(current) + 'px)';
+          track.offsetHeight;
+          setActive(current);
+        }
+        if (current < 0) {
+          track.style.transition = 'none';
+          current += total;
+          track.style.transform  = 'translateX(' + calcOffset(current) + 'px)';
+          track.offsetHeight;
+          setActive(current);
+        }
+      });
+
+      function startAuto() {
+        clearInterval(timer);
+        timer = setInterval(function() { goTo(current + 1); }, 8000);
+      }
+
+      document.querySelector('.arrow-left').addEventListener('click', function() {
+        goTo(current - 1 < 0 ? total - 1 : current - 1); startAuto();
+      });
+      document.querySelector('.arrow-right').addEventListener('click', function() {
+        goTo(current + 1); startAuto();
+      });
+
+      // Click on active slide → open match page
+      track.addEventListener('click', function(e) {
+        var slide = e.target.closest('.match-slide');
+        if (slide && slide.classList.contains('ms-active')) {
+          var href = slide.getAttribute('data-href');
+          if (href) window.location.href = href;
+        }
+      });
+
+      goTo(0);
+      startAuto();
+    })();
+
+    // ── Top players drag-scroll ──
+    (function () {
+      var el = document.getElementById('tpScroll');
+      if (!el) return;
+      var startX, startScroll, dragging = false;
+      el.addEventListener('mousedown', function(e) {
+        dragging = true; startX = e.pageX; startScroll = el.scrollLeft;
+        el.style.userSelect = 'none'; e.preventDefault();
+      });
+      document.addEventListener('mousemove', function(e) {
+        if (!dragging) return;
+        el.scrollLeft = startScroll - (e.pageX - startX);
+      });
+      document.addEventListener('mouseup', function() {
+        if (!dragging) return;
+        dragging = false; el.style.userSelect = '';
+      });
+    })();
+
+    // ── Hot Matches : cotes → addBet(), ligne → match.html ──
+    document.querySelectorAll('.hm-odd').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var row   = btn.closest('.hm-row');
+        var match = btn.getAttribute('data-match') || 'CS2 Match';
+        var pick  = btn.getAttribute('data-pick')  || 'Team to win';
+        var odds  = parseFloat(btn.getAttribute('data-odds') || '1');
+        // toggle visuel dans la même ligne
+        var rowOdds = row ? row.querySelectorAll('.hm-odd') : [];
+        rowOdds.forEach(function(b) { b.classList.remove('bb-selected'); });
+        btn.classList.add('bb-selected');
+        if (typeof window.addBet === 'function') window.addBet('Counter-Strike 2', match, pick, odds);
+      });
+    });
+    document.querySelectorAll('.hm-row').forEach(function(row) {
+      row.addEventListener('click', function(e) {
+        if (e.target.closest('.hm-odd')) return;
+        var href = row.getAttribute('data-href');
+        if (href) window.location.href = href;
+      });
+    });
+
+    // ── Betslip : délégation sur le carousel → addBet() de betslip.js ──
+    // Délégation sur le track entier pour couvrir aussi les slides clonées
+    document.getElementById('mainTrack').addEventListener('click', function(e) {
+      var btn = e.target.closest('.slide-team-odd');
+      if (!btn) return;
+      e.stopPropagation();
+      var slide = btn.closest('.match-slide');
+      var match = slide ? slide.getAttribute('data-match') : 'CS2 Match';
+      var pick  = btn.getAttribute('data-pick') || 'Team to win';
+      var odds  = parseFloat(btn.getAttribute('data-odds') || '1');
+      // Feedback visuel : désélectionne les autres cotes du slide, sélectionne celle-ci
+      var allOdds = slide ? Array.from(slide.querySelectorAll('.slide-team-odd')) : [];
+      allOdds.forEach(function(b) { b.classList.remove('bb-selected'); });
+      btn.classList.add('bb-selected');
+      // Ajout au bet slip (betslip.js gère les doublons et le rendu)
+      if (typeof window.addBet === 'function') {
+        window.addBet('Counter-Strike 2', match, pick, odds);
+      }
+    });
+  </script>
+
+  <script src="betslip.js"></script>
+</body>
+</html>
