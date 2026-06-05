@@ -166,12 +166,6 @@
       });
     });
 
-    /* Toggle sidebar */
-    var toggle = document.getElementById('bbToggle');
-    if (toggle) toggle.addEventListener('click', function () {
-      document.querySelector('.sidebar-right').classList.toggle('collapsed');
-    });
-
     /* Soumettre le pari */
     var submit = document.querySelector('.bb-submit');
     if (submit) submit.addEventListener('click', function () {

@@ -982,9 +982,9 @@
     '  <a class="nav-item" href="my-bets.html">',
     '    <img src="img_M/bets.png" alt="My Bets"/>MY BETS',
     '  </a>',
-    '  <div class="nav-item">',
+    '  <a class="nav-item" href="teams.html">',
     '    <img src="img_M/teams.png" alt="Teams"/>TEAMS',
-    '  </div>',
+    '  </a>',
     '</div>',
 
     '<div class="nav-right">',

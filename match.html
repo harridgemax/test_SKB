@@ -601,60 +601,7 @@
     <div class="content-layout">
 
       <!-- ══ SIDEBAR GAUCHE — Jeux ══ -->
-      <aside class="sidebar-left">
-        <div class="sl-title">Nos Jeux</div>
-        <a class="sl-game active" href="#">
-          <div class="sl-game-icon"><img src="img_M/logocs2.png" alt="CS2"/></div>
-          <span class="sl-game-name">Counter-Strike 2</span>
-        </a>
-        <a class="sl-game" href="#">
-          <div class="sl-game-icon"><img src="img_M/logo lol.png" alt="LoL"/></div>
-          <span class="sl-game-name">League of Legends</span>
-        </a>
-        <a class="sl-game" href="#">
-          <div class="sl-game-icon"><img src="img_M/logo valo.png" alt="Valorant"/></div>
-          <span class="sl-game-name">Valorant</span>
-        </a>
-        <a class="sl-game" href="#">
-          <div class="sl-game-icon"><img src="img_M/logo dota2.png" alt="Dota 2"/></div>
-          <span class="sl-game-name">Dota 2</span>
-        </a>
-        <a class="sl-game" href="#">
-          <div class="sl-game-icon"><img src="img_M/logo rocket league.png" alt="Rocket League"/></div>
-          <span class="sl-game-name">Rocket League</span>
-        </a>
-        <a class="sl-game" href="#">
-          <div class="sl-game-icon"><img src="img_M/logo overwatch2.png" alt="Overwatch 2"/></div>
-          <span class="sl-game-name">Overwatch 2</span>
-        </a>
-        <div class="sl-divider"></div>
-        <a class="sl-game" href="#">
-          <div class="sl-game-icon"><img src="img_M/logo ea fc.png" alt="EA FC"/></div>
-          <span class="sl-game-name">FIFA / EA FC</span>
-        </a>
-        <a class="sl-game" href="#">
-          <div class="sl-game-icon"><img src="img_M/logo nba 2K.png" alt="NBA 2K"/></div>
-          <span class="sl-game-name">NBA 2K</span>
-        </a>
-        <a class="sl-game" href="#">
-          <div class="sl-game-icon"><img src="img_M/logo heartstone.png" alt="Hearthstone"/></div>
-          <span class="sl-game-name">Hearthstone</span>
-        </a>
-        <a class="sl-game" href="#">
-          <div class="sl-game-icon"><img src="img_M/logo starcraft 2.png" alt="Starcraft II"/></div>
-          <span class="sl-game-name">Starcraft II</span>
-        </a>
-        <a class="sl-game" href="#">
-          <div class="sl-game-icon"><img src="img_M/logo streetfighter6.png" alt="Street Fighter 6"/></div>
-          <span class="sl-game-name">Street Fighter 6</span>
-        </a>
-        <a class="sl-game" href="#">
-          <div class="sl-game-icon"><img src="img_M/logo fortnite.png" alt="Fortnite"/></div>
-          <span class="sl-game-name">Fortnite</span>
-        </a>
-      </aside>
-
-      <!-- ══ MAIN CONTENT ══ -->
+    <script src="sidebar-left.js"></script>
       <div class="main-content">
 
         <!-- Match header -->
@@ -2000,43 +1947,7 @@
       </div><!-- /main-content -->
 
       <!-- ══ SIDEBAR DROITE — BET BUILDER ══ -->
-      <aside class="sidebar-right">
-        <div class="bb-header">
-          <span class="bb-title">Bet Slip</span>
-          <span class="bb-count" id="bb-count">0</span>
-          <button class="bb-toggle" id="bbToggle">&#10095;</button>
-        </div>
-
-        <!-- Paris ajoutés (injectés par betslip.js) -->
-        <div id="bb-bets-list"></div>
-
-        <div class="bb-divider"></div>
-        <div class="bb-combined">
-          <span class="bb-combined-label">Combined odds</span>
-          <span class="bb-combined-val" id="bb-combined-val">1.00</span>
-        </div>
-        <div class="bb-divider"></div>
-
-        <div class="bb-stake-row">
-          <span class="bb-stake-label">Stake (£)</span>
-          <input class="bb-stake-input" type="number" value="10" id="bbStake"/>
-        </div>
-
-        <div class="bb-quick-amounts">
-          <div class="bb-qa">+5</div>
-          <div class="bb-qa">+10</div>
-          <div class="bb-qa">+25</div>
-          <div class="bb-qa">+50</div>
-        </div>
-
-        <div class="bb-gains">
-          <span class="bb-gains-label">Potential winnings</span>
-          <span class="bb-gains-val" id="bbGains">£15.50</span>
-        </div>
-
-        <button class="bb-submit">Place bet</button>
-        <div class="bb-terms">Responsible gambling · 18+ · T&Cs apply</div>
-      </aside>
+    <script src="sidebar-right.js"></script>
 
     </div><!-- /content-layout -->
   </div>
@@ -2130,7 +2041,7 @@
       });
     });
   </script>
-  <script src="betslip.js"></script>
+
 </body>
 </html>
 

@@ -381,53 +381,7 @@
 
     <div class="content-layout">
 
-      <!-- ── SIDEBAR GAUCHE ── -->
-      <aside class="sidebar-left">
-        <div class="sl-title">Statut</div>
-
-        <div class="sl-item active" onclick="filterSidebar('all', this)">
-          <div class="sl-item-left">📋&nbsp; Tous les paris</div>
-          <span class="sl-badge">8</span>
-        </div>
-        <div class="sl-item" onclick="filterSidebar('live', this)">
-          <div class="sl-item-left">🔴&nbsp; En cours</div>
-          <span class="sl-badge live">2</span>
-        </div>
-        <div class="sl-item" onclick="filterSidebar('won', this)">
-          <div class="sl-item-left">✅&nbsp; Gagnés</div>
-          <span class="sl-badge green">4</span>
-        </div>
-        <div class="sl-item" onclick="filterSidebar('lost', this)">
-          <div class="sl-item-left">❌&nbsp; Perdus</div>
-          <span class="sl-badge" style="background:rgba(248,113,113,0.18);color:#f87171;">2</span>
-        </div>
-
-        <div class="sl-divider"></div>
-        <div class="sl-title">Jeux</div>
-
-        <a class="sl-game" href="#" onclick="return false">
-          <div class="sl-game-icon"><img src="img_M/logocs2.png" alt="CS2"/></div>
-          <span class="sl-game-name">Counter-Strike 2</span>
-        </a>
-        <a class="sl-game" href="#" onclick="return false">
-          <div class="sl-game-icon"><img src="img_M/logo lol.png" alt="LoL"/></div>
-          <span class="sl-game-name">League of Legends</span>
-        </a>
-        <a class="sl-game" href="#" onclick="return false">
-          <div class="sl-game-icon"><img src="img_M/logo valo.png" alt="Valorant"/></div>
-          <span class="sl-game-name">Valorant</span>
-        </a>
-        <a class="sl-game" href="#" onclick="return false">
-          <div class="sl-game-icon"><img src="img_M/logo dota2.png" alt="Dota 2"/></div>
-          <span class="sl-game-name">Dota 2</span>
-        </a>
-        <a class="sl-game" href="#" onclick="return false">
-          <div class="sl-game-icon"><img src="img_M/logo rocket league.png" alt="RL"/></div>
-          <span class="sl-game-name">Rocket League</span>
-        </a>
-      </aside>
-
-      <!-- ── MAIN CONTENT ── -->
+          <script src="sidebar-left.js"></script>
       <main class="main-content">
 
         <div class="page-header">
@@ -658,6 +612,9 @@
 
         </div><!-- /bet-list -->
       </main>
+
+    <script src="sidebar-right.js"></script>
+
     </div>
   </div>
 

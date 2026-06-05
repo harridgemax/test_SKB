@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SkillBet — Karmine Corp</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --purple: #7c3aed; --purple-light: #a855f7; --pink: #ec4899; --kc: #00b4ff; }
+
+    html, body {
+      height: 100%; overflow: hidden;
+      font-family: 'Exo 2', sans-serif; color: #c4c8e2;
+      background:
+        radial-gradient(1200px 800px at 20% 10%, rgba(124,58,237,.26), transparent 60%),
+        radial-gradient(900px 600px at 40% 80%, rgba(236,72,153,.22), transparent 55%),
+        #070b1f;
+    }
+
+    .bg-blobs { position: fixed; inset: 0; pointer-events: none; z-index: 0; filter: blur(70px); opacity: .85; }
+    .blob {
+      position: absolute; width: 460px; height: 460px; border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, rgba(124,58,237,.95), transparent 60%),
+                  radial-gradient(circle at 65% 65%, rgba(236,72,153,.90), transparent 62%);
+      animation: floaty 5s ease-in-out infinite;
+    }
+    .b1{top:-140px;left:-140px} .b2{top:12%;right:-180px;animation-delay:-1s} .b3{bottom:-200px;left:30%;animation-delay:-2s}
+    @keyframes floaty{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(40px,-30px,0) scale(1.08)}}
+
+    .page { position: relative; z-index: 1; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* ── scroll ── */
+    .main-content {
+      flex: 1; min-width: 0; height: 100%;
+      overflow-y: auto; overflow-x: hidden;
+      scrollbar-width: thin; scrollbar-color: rgba(168,85,247,0.2) transparent;
+    }
+    .main-content::-webkit-scrollbar { width: 4px; }
+    .main-content::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.3); border-radius: 4px; }
+    .inner { padding: 0 32px 56px; }
+
+    /* ── back ── */
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 8px; padding: 20px 0 0;
+      font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+      color: rgba(255,255,255,0.32); background: none; border: none;
+      text-decoration: none; cursor: pointer; transition: color 0.15s;
+    }
+    .back-btn svg { width: 13px; height: 13px; transition: transform 0.15s; }
+    .back-btn:hover { color: rgba(255,255,255,0.72); }
+    .back-btn:hover svg { transform: translateX(-3px); }
+
+    /* ── team header ── */
+    .team-header {
+      display: flex; align-items: center; gap: 16px;
+      padding: 20px 0 22px;
+      border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 22px;
+    }
+    .th-logo {
+      width: 54px; height: 54px; flex-shrink: 0;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(0,180,255,0.2);
+      border-radius: 13px; display: flex; align-items: center; justify-content: center;
+    }
+    .th-logo img { width: 42px; height: 42px; object-fit: contain; }
+    .th-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 24px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      color: #fff; line-height: 1;
+    }
+    .th-meta { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+    .th-game { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.38); }
+    .th-game img { width: 13px; height: 13px; object-fit: contain; opacity: 0.65; }
+    .th-meta-sep { color: rgba(255,255,255,0.15); font-size: 11px; }
+    .th-region { font-size: 10px; color: rgba(255,255,255,0.28); }
+
+    /* ── sections ── */
+    .section { margin-top: 32px; }
+    .section-lbl {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 18px; font-weight: 700; letter-spacing: 1px;
+      color: #fff; margin-bottom: 12px;
+    }
+    .section-lbl-count { color: rgba(255,255,255,0.2); font-size: 9px; font-weight: 700; }
+    .section-lbl::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
+
+    /* ── roster ── */
+    .roster-section-lbl {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 16px; font-weight: 700; letter-spacing: 1px;
+      color: #fff; padding-bottom: 10px;
+    }
+    .roster-list { display: flex; flex-direction: column; gap: 4px; }
+    .player-row {
+      display: flex; align-items: center; gap: 14px; padding: 10px 16px;
+      background: rgba(13,17,40,0.6); border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 10px; transition: background 0.15s, border-color 0.15s;
+    }
+    .player-row:hover { background: rgba(19,23,46,0.9); border-color: rgba(0,180,255,0.2); }
+    .pr-avatar {
+      width: 32px; height: 32px; flex-shrink: 0; border-radius: 8px;
+      background: linear-gradient(135deg, rgba(0,180,255,0.18), rgba(124,58,237,0.18));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.45);
+    }
+    .pr-nick { font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; color: #fff; min-width: 110px; }
+    .pr-fullname { font-size: 11px; color: rgba(255,255,255,0.3); flex: 1; }
+    .pr-role { font-size: 9px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; padding: 3px 9px; border-radius: 5px; flex-shrink: 0; }
+    .pr-flag { font-size: 18px; flex-shrink: 0; margin-right: 2px; }
+
+    /* ── upcoming cards ── */
+    .um-list { display: flex; flex-wrap: wrap; gap: 10px; }
+    .um-card {
+      flex: 1 1 300px; max-width: 480px;
+      background: rgba(13,17,40,0.82); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px; padding: 16px 18px; cursor: pointer;
+      transition: border-color 0.18s, background 0.18s;
+    }
+    .um-card:hover { border-color: rgba(124,58,237,0.38); background: rgba(19,23,46,0.9); }
+    .um-date { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.28); margin-bottom: 5px; }
+    .um-date.soon { color: #f97316; }
+    .um-event-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+
+    .um-event-link {
+      font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.65);
+      transition: color 0.14s; flex: 1; min-width: 0;
+    }
+    .um-event-link:hover { color: #fff; }
+
+    .um-bet-btn {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+      color: #c084fc; background: rgba(124,58,237,0.12);
+      border: 1px solid rgba(168,85,247,0.3); border-radius: 7px;
+      padding: 5px 12px; cursor: pointer; flex-shrink: 0; white-space: nowrap;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .um-bet-btn:hover { background: rgba(124,58,237,0.24); border-color: rgba(168,85,247,0.6); color: #d8b4fe; }
+    .um-soon-badge {
+      font-size: 8px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase;
+      color: #f97316; background: rgba(249,115,22,0.12); border: 1px solid rgba(249,115,22,0.28);
+      border-radius: 4px; padding: 2px 7px; flex-shrink: 0;
+    }
+    .um-sep { height: 1px; background: rgba(255,255,255,0.06); margin-bottom: 10px; }
+    .um-team-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 7px 10px; margin: 2px -10px;
+      border-radius: 8px; cursor: pointer; transition: background 0.14s;
+    }
+    .um-team-row:hover { background: rgba(124,58,237,0.1); }
+    .um-team-left { display: flex; align-items: center; gap: 9px; }
+    .um-short { font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.65); min-width: 28px; }
+    .um-logo { width: 26px; height: 26px; object-fit: contain; flex-shrink: 0; }
+    .um-logo-init {
+      width: 26px; height: 26px; flex-shrink: 0; border-radius: 6px;
+      background: rgba(255,255,255,0.07);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Rajdhani', sans-serif; font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.35);
+    }
+    .um-odd {
+      font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 800;
+      padding: 7px 18px; border-radius: 9px;
+      border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.5);
+      display: inline-flex; align-items: center; gap: 5px;
+      pointer-events: none; transition: all 0.15s;
+    }
+    .um-team-row.kc-row .um-odd { color: #c084fc; border-color: rgba(168,85,247,0.3); }
+    .um-team-row.selected .um-odd { background: rgba(124,58,237,0.22); border-color: rgba(168,85,247,0.55); color: #c084fc; }
+    .no-upcoming { padding: 40px 0; text-align: center; color: rgba(255,255,255,0.25); font-size: 13px; }
+
+    /* ── matches played accordion ── */
+    .mp-list { display: flex; flex-direction: column; gap: 5px; }
+
+    .mp-row {
+      background: rgba(13,17,40,0.72);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 13px; overflow: hidden;
+    }
+
+    .mp-header {
+      display: flex; align-items: center; gap: 14px;
+      padding: 11px 18px; cursor: pointer;
+      transition: background 0.14s;
+    }
+    .mp-header:hover { background: rgba(255,255,255,0.02); }
+    .mp-row.open .mp-header { background: rgba(255,255,255,0.025); border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+    .mp-date { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.3); flex-shrink: 0; min-width: 150px; }
+
+    .mp-tourn { display: flex; align-items: center; gap: 7px; flex: 1; min-width: 0; }
+    .mp-tourn-name { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.55); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mp-tourn-tier {
+      font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.35);
+      background: rgba(255,255,255,0.07); border-radius: 4px; padding: 2px 7px; flex-shrink: 0;
+    }
+
+    .mp-opp { display: flex; align-items: center; gap: 7px; flex: 1; min-width: 0; }
+    .mp-opp img { width: 22px; height: 22px; object-fit: contain; flex-shrink: 0; }
+    .mp-opp-init {
+      width: 22px; height: 22px; flex-shrink: 0; border-radius: 4px;
+      background: rgba(255,255,255,0.07);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Rajdhani', sans-serif; font-size: 8px; font-weight: 700; color: rgba(255,255,255,0.35);
+    }
+    .mp-opp-name { font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* score + format pill */
+    .mp-score-wrap { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .mp-score { font-family: 'Rajdhani', sans-serif; font-size: 19px; font-weight: 800; line-height: 1; }
+    .mp-score.win  { color: #4ade80; }
+    .mp-score.loss { color: #ef4444; }
+    .mp-format-pill {
+      font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px;
+      color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 5px; padding: 2px 7px; flex-shrink: 0;
+    }
+
+    /* odds at match time */
+    .mp-odds { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+    .mp-odd-ref {
+      font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 800;
+      padding: 2px 8px; border-radius: 5px;
+      border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.38);
+    }
+    .mp-odd-ref.kc { color: #c084fc; border-color: rgba(168,85,247,0.25); background: rgba(124,58,237,0.08); }
+
+    .mp-chevron { width: 14px; height: 14px; flex-shrink: 0; color: rgba(255,255,255,0.22); transition: transform 0.22s; }
+    .mp-row.open .mp-chevron { transform: rotate(180deg); }
+
+    /* accordion body */
+    .mp-accordion { display: none; padding: 16px 18px 8px; }
+    .mp-row.open .mp-accordion { display: block; }
+
+    .mp-games { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+
+    /* symmetric full-width game row */
+    .mp-game { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .mp-game:last-child { border-bottom: none; }
+    .mp-game-prefix { display: flex; align-items: center; gap: 7px; flex-shrink: 0; width: 48px; }
+    .mp-game-num { font-size: 10px; color: rgba(255,255,255,0.2); }
+    .mp-game-wl { font-size: 11px; font-weight: 800; }
+    .mp-game-wl.w { color: #4ade80; }
+    .mp-game-wl.l { color: #ef4444; }
+
+    .mp-side     { display: flex; align-items: center; gap: 3px; flex: 1; justify-content: flex-end; }
+    .mp-side.opp { justify-content: flex-start; }
+    .mp-group-sep {
+      width: 1px; height: 22px; background: rgba(255,255,255,0.1);
+      flex-shrink: 0; margin: 0 5px;
+    }
+
+    .mp-champ {
+      width: 32px; height: 32px; border-radius: 6px; overflow: hidden; flex-shrink: 0;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 7px; font-weight: 700; color: rgba(255,255,255,0.4);
+      text-align: center; line-height: 1;
+    }
+    .mp-champ img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .mp-champ.kc  { border-color: rgba(0,180,255,0.35); box-shadow: inset 0 0 0 1px rgba(0,180,255,0.12); }
+    .mp-champ.ban { border-color: rgba(239,68,68,0.4);  box-shadow: inset 0 0 0 1px rgba(239,68,68,0.1); }
+
+    .mp-vs { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.18); flex-shrink: 0; padding: 0 10px; }
+
+    /* column header */
+    .mp-col-header {
+      display: flex; align-items: center; gap: 10px;
+      padding-bottom: 14px; margin-bottom: 6px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .mp-col-prefix  { width: 48px; flex-shrink: 0; }
+    .mp-col-half     { display: flex; align-items: center; flex: 1; justify-content: flex-end; }
+    .mp-col-half.opp { justify-content: flex-start; }
+    .mp-col-lbl {
+      width: 172px; text-align: center; flex-shrink: 0;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 15px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      color: #fff;
+    }
+    .mp-col-lbl.dim { color: rgba(255,255,255,0.38); }
+    .mp-col-gsep  { width: 11px; flex-shrink: 0; }
+    .mp-col-vs-ph {
+      padding: 0 10px; flex-shrink: 0;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 1px;
+      color: rgba(255,255,255,0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-blobs">
+    <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+  </div>
+
+  <div class="page">
+    <script src="header.js"></script>
+    <div class="content-layout">
+      <script src="sidebar-left.js"></script>
+
+      <main class="main-content">
+        <div class="inner">
+
+          <a class="back-btn" href="teams.html">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3L5 8l5 5"/></svg>
+            Teams
+          </a>
+
+          <!-- Header -->
+          <div class="team-header">
+            <div class="th-logo"><img src="img_M/logoKC.png" alt="Karmine Corp"/></div>
+            <div>
+              <div class="th-name">Karmine Corp</div>
+              <div class="th-meta">
+                <div class="th-game"><img src="img_M/logo lol.png" alt=""/> League of Legends</div>
+                <span class="th-meta-sep">·</span>
+                <div class="th-game"><img src="img_M/logocs2.png" alt=""/> CS2</div>
+                <span class="th-meta-sep">·</span>
+                <span class="th-region">Europe</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Roster -->
+          <div class="section">
+            <div class="section-lbl">Roster</div>
+            <div class="roster-section-lbl">Player Roster</div>
+            <div class="roster-list">
+              <div class="player-row">
+                <span class="pr-flag">🇰🇷</span><div class="pr-nick">Canna</div><div class="pr-fullname">Kim Chang-dong</div>
+                <span class="pr-role" style="background:rgba(251,146,60,0.16);color:#fdba74;border:1px solid rgba(253,186,116,0.2)">Top</span>
+              </div>
+              <div class="player-row">
+                <span class="pr-flag">🇰🇷</span><div class="pr-nick">Closer</div><div class="pr-fullname">Kim Jun-hyeok</div>
+                <span class="pr-role" style="background:rgba(74,222,128,0.13);color:#86efac;border:1px solid rgba(134,239,172,0.2)">Jungle</span>
+              </div>
+              <div class="player-row">
+                <span class="pr-flag">🇫🇷</span><div class="pr-nick">Daglas</div><div class="pr-fullname">Kévin Ghanbari</div>
+                <span class="pr-role" style="background:rgba(168,85,247,0.16);color:#d8b4fe;border:1px solid rgba(216,180,254,0.2)">Mid</span>
+              </div>
+              <div class="player-row">
+                <span class="pr-flag">🇸🇪</span><div class="pr-nick">Rekkles</div><div class="pr-fullname">Martin Larsson</div>
+                <span class="pr-role" style="background:rgba(59,130,246,0.13);color:#93c5fd;border:1px solid rgba(147,197,253,0.2)">Bot</span>
+              </div>
+              <div class="player-row">
+                <span class="pr-flag">🇧🇬</span><div class="pr-nick">Hylissang</div><div class="pr-fullname">Zdravets Iliev</div>
+                <span class="pr-role" style="background:rgba(74,222,128,0.13);color:#86efac;border:1px solid rgba(134,239,172,0.2)">Support</span>
+              </div>
+            </div>
+            <div class="roster-section-lbl" style="padding-top:20px">Coaches</div>
+            <div class="roster-list">
+              <div class="player-row">
+                <span class="pr-flag">🌐</span><div class="pr-nick">TBD</div><div class="pr-fullname">Head Coach</div>
+                <span class="pr-role" style="background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.1)">Coach</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Upcoming -->
+          <div class="section">
+            <div class="section-lbl">Upcoming Matches <span class="section-lbl-count" id="upcoming-count"></span></div>
+            <div class="um-list" id="upcoming-list"></div>
+          </div>
+
+          <!-- Matches Played -->
+          <div class="section">
+            <div class="section-lbl">Matches Played</div>
+            <div class="mp-list" id="mp-list"></div>
+          </div>
+
+        </div>
+      </main>
+
+      <script src="sidebar-right.js"></script>
+    </div>
+  </div>
+
+  <script>if(sessionStorage.getItem('sb_access')!=='1'){window.location.replace('gate.html');}</script>
+  <script>
+  /* ════════════════════════════════════════
+     SHARED
+  ════════════════════════════════════════ */
+  var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var KC = { name: 'Karmine Corp', short: 'KC', logo: 'img_M/logoKC.png', game: 'lol' };
+
+  function fmtDate(iso, tz) {
+    var d = new Date(iso);
+    return MONTHS[d.getMonth()] + ' ' + d.getDate() + ' · ' +
+      String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0') + ' ' + tz;
+  }
+  function isSoon(iso) { var d = new Date(iso) - Date.now(); return d > 0 && d < 86400000; }
+
+  /* ════════════════════════════════════════
+     UPCOMING DATA + RENDER
+  ════════════════════════════════════════ */
+  var UPCOMING = [
+    { id:'worlds-final', dateISO:'2026-06-09T18:00:00', tz:'CEST', event:'Worlds 2025 · Final',    eventPage:'bracket.html', matchPage:'match2.html', opp:{name:'T1',        short:'T1',  logo:'img_M/logoT1.png'}, kcOdds:2.30, oppOdds:1.65 },
+    { id:'lec-summer',   dateISO:'2026-06-21T16:00:00', tz:'CEST', event:'LEC Summer Split',        eventPage:'bracket.html', matchPage:'match2.html', opp:{name:'G2 Esports', short:'G2',  logo:'img_M/G2.webp'},    kcOdds:1.75, oppOdds:2.05 },
+  ];
+
+  var betsAdded = {};
+  var CHECK = '<svg style="flex-shrink:0" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 5l2.5 2.5 4.5-4"/></svg>';
+
+  function toggleBet(e, matchId, side, pick, odds, row) {
+    e.stopPropagation();
+    var key = matchId + '-' + side;
+    if (betsAdded[key]) return;
+    var m = UPCOMING.filter(function(x){ return x.id === matchId; })[0];
+    if (window.addBet) window.addBet(KC.game, KC.name + ' vs ' + m.opp.name, pick, odds);
+    betsAdded[key] = true;
+    row.classList.add('selected');
+    row.querySelector('.um-odd').innerHTML = odds.toFixed(2) + ' ' + CHECK;
+  }
+
+  function teamLogo(logo, fallback, cls) {
+    return logo
+      ? '<img class="' + cls + '" src="' + logo + '" alt="" onerror="this.style.display=\'none\'">'
+      : '<div class="' + cls + '-init">' + fallback + '</div>';
+  }
+
+  function buildUpcomingCard(m) {
+    var soon  = isSoon(m.dateISO);
+    var badge = soon ? '<span class="um-soon-badge">Bientôt</span>' : '';
+    return [
+      '<div class="um-card" onclick="window.location.href=\'' + m.matchPage + '\'">',
+      '  <div class="um-date' + (soon ? ' soon' : '') + '">' + fmtDate(m.dateISO, m.tz) + '</div>',
+      '  <div class="um-event-row">',
+      '    <span class="um-event-link" onclick="event.stopPropagation();window.location.href=\'' + m.eventPage + '\'">' + m.event + badge + '</span>',
+      '    <button class="um-bet-btn" onclick="event.stopPropagation();window.location.href=\'' + m.matchPage + '\'">Bet on the match</button>',
+      '  </div>',
+      '  <div class="um-sep"></div>',
+      '  <div class="um-team-row kc-row" onclick="toggleBet(event,\'' + m.id + '\',\'kc\',\'' + KC.name + '\',' + m.kcOdds + ',this)">',
+      '    <div class="um-team-left"><span class="um-short">' + KC.short + '</span>' + teamLogo(KC.logo, KC.short, 'um-logo') + '</div>',
+      '    <span class="um-odd">' + m.kcOdds.toFixed(2) + '</span>',
+      '  </div>',
+      '  <div class="um-team-row" onclick="toggleBet(event,\'' + m.id + '\',\'opp\',\'' + m.opp.name + '\',' + m.oppOdds + ',this)">',
+      '    <div class="um-team-left"><span class="um-short">' + m.opp.short + '</span>' + teamLogo(m.opp.logo, m.opp.short, 'um-logo') + '</div>',
+      '    <span class="um-odd">' + m.oppOdds.toFixed(2) + '</span>',
+      '  </div>',
+      '</div>'
+    ].join('');
+  }
+
+  function renderUpcoming() {
+    var sorted = UPCOMING.slice().sort(function(a,b){ return new Date(a.dateISO)-new Date(b.dateISO); });
+    document.getElementById('upcoming-count').textContent = '(' + sorted.length + ')';
+    document.getElementById('upcoming-list').innerHTML = sorted.length
+      ? sorted.map(buildUpcomingCard).join('')
+      : '<div class="no-upcoming">Aucun match programmé</div>';
+  }
+
+  /* ════════════════════════════════════════
+     MATCHES PLAYED DATA + RENDER
+  ════════════════════════════════════════ */
+  var CHAMP_ICONS = {
+    'Anivia':     'img_M/PersoLol/Champion_icon_Anivia.png',
+    'Annie':      'img_M/PersoLol/Champion_icon_Annie.png',
+    'Ashe':       'img_M/PersoLol/Champion_icon_Ashe.png',
+    'Azir':       'img_M/PersoLol/Champion_icon_Azir.png',
+    'Bard':       'img_M/PersoLol/Champion_icon_Bard.png',
+    'Cassiopeia': 'img_M/PersoLol/Champion_icon_Cassiopeia.png',
+    'Jarvan IV':  'img_M/PersoLol/Champion_icon_Jarvan_IV.png',
+    'Jayce':      'img_M/PersoLol/Champion_icon_Jayce.png',
+    'Mel':        'img_M/PersoLol/Champion_icon_Mel.png',
+    'Nautilus':   'img_M/PersoLol/Champion_icon_Nautilus.png',
+    'Olaf':       'img_M/PersoLol/Champion_icon_Olaf.png',
+    'Orianna':    'img_M/PersoLol/Champion_icon_Orianna.png',
+    'Ryze':       'img_M/PersoLol/Champion_icon_Ryze.png',
+    'Seraphine':  'img_M/PersoLol/Champion_icon_Seraphine.png',
+    'Shen':       'img_M/PersoLol/Champion_icon_Shen.png',
+    'Taliyah':    'img_M/PersoLol/Champion_icon_Taliyah.png',
+    'Varus':      'img_M/PersoLol/Champion_icon_Varus_2018.png',
+    'Vayne':      'img_M/PersoLol/Champion_icon_Vayne.png',
+    'Vi':         'img_M/PersoLol/Champion_icon_Vi.png',
+    'Gnar':       'img_M/PersoLol/Gnar.png',
+  };
+
+  var TIER_NAMES = {
+    'SF':'Semifinale', 'QF':'Quart de finale', 'PO':'Playoffs',
+    'W6':'Week 6', 'W5':'Week 5', 'Final':'Finale', 'GF':'Grande Finale',
+  };
+
+  var MATCHES_PLAYED = [
+    {
+      id:'worlds-sf', date:'2026-05-20', time:'18:00', tz:'CEST',
+      tournament:{name:'Worlds 2025', tier:'SF'}, opp:{name:'Team Vitality', short:'Vita', logo:'img_M/logovita.png'},
+      score:'3:1', format:'Bo5', win:true,
+      games:[
+        {win:true,  kc:['Azir','Ashe','Nautilus','Gnar','Vi'],      kcBans:['Ryze','Anivia','Seraphine','Annie','Varus'],    opp:['Orianna','Vayne','Bard','Jayce','Olaf'],      oppBans:['Shen','Mel','Taliyah','Cassiopeia','Vayne']},
+        {win:true,  kc:['Jayce','Olaf','Mel','Varus','Bard'],        kcBans:['Shen','Mel','Ryze','Annie','Cassiopeia'],      opp:['Gnar','Vi','Cassiopeia','Ashe','Nautilus'],    oppBans:['Anivia','Seraphine','Taliyah','Vayne','Varus']},
+        {win:false, kc:['Orianna','Vayne','Nautilus','Shen','Olaf'], kcBans:['Taliyah','Seraphine','Ryze','Anivia','Annie'], opp:['Azir','Ashe','Bard','Jayce','Vi'],             oppBans:['Vayne','Shen','Mel','Cassiopeia','Varus']},
+        {win:true,  kc:['Azir','Vayne','Nautilus','Gnar','Vi'],      kcBans:['Ryze','Shen','Mel','Annie','Anivia'],          opp:['Taliyah','Ashe','Bard','Jayce','Olaf'],        oppBans:['Seraphine','Taliyah','Cassiopeia','Vayne','Varus']},
+      ]
+    },
+    {
+      id:'worlds-qf', date:'2026-05-10', time:'17:00', tz:'CEST',
+      tournament:{name:'Worlds 2025', tier:'QF'}, opp:{name:'T1', short:'T1', logo:'img_M/logoT1.png'},
+      score:'2:3', format:'Bo5', win:false,
+      games:[
+        {win:true,  kc:['Orianna','Ashe','Nautilus','Gnar','Vi'],    kcBans:['Ryze','Anivia','Seraphine','Annie','Varus'],    opp:['Azir','Vayne','Bard','Jayce','Olaf'],      oppBans:['Shen','Mel','Taliyah','Cassiopeia','Vayne']},
+        {win:true,  kc:['Jayce','Olaf','Taliyah','Varus','Bard'],    kcBans:['Shen','Taliyah','Ryze','Annie','Cassiopeia'],  opp:['Gnar','Vi','Mel','Ashe','Nautilus'],       oppBans:['Anivia','Seraphine','Vayne','Varus','Mel']},
+        {win:false, kc:['Azir','Vayne','Bard','Gnar','Vi'],          kcBans:['Ryze','Mel','Seraphine','Shen','Varus'],       opp:['Orianna','Ashe','Nautilus','Jayce','Olaf'], oppBans:['Anivia','Annie','Taliyah','Cassiopeia','Vayne']},
+        {win:false, kc:['Taliyah','Ashe','Nautilus','Gnar','Olaf'],  kcBans:['Taliyah','Anivia','Ryze','Annie','Cassiopeia'],opp:['Azir','Vayne','Bard','Jayce','Vi'],         oppBans:['Shen','Mel','Seraphine','Varus','Vayne']},
+        {win:false, kc:['Orianna','Varus','Bard','Jayce','Vi'],      kcBans:['Ryze','Shen','Cassiopeia','Annie','Anivia'],   opp:['Azir','Ashe','Nautilus','Gnar','Olaf'],    oppBans:['Seraphine','Mel','Taliyah','Vayne','Varus']},
+      ]
+    },
+    {
+      id:'lec-po', date:'2026-05-05', time:'16:00', tz:'CEST',
+      tournament:{name:'LEC Spring', tier:'PO'}, opp:{name:'KOI', short:'KOI', logo:null},
+      score:'2:0', format:'Bo3', win:true,
+      games:[
+        {win:true, kc:['Jayce','Vi','Cassiopeia','Ashe','Bard'],  kcBans:['Ryze','Mel','Taliyah','Seraphine','Anivia'], opp:['Gnar','Olaf','Orianna','Vayne','Nautilus'], oppBans:['Shen','Varus','Cassiopeia','Annie','Vayne']},
+        {win:true, kc:['Azir','Vayne','Nautilus','Shen','Olaf'], kcBans:['Ryze','Anivia','Seraphine','Annie','Varus'], opp:['Orianna','Ashe','Bard','Jayce','Vi'],       oppBans:['Shen','Mel','Taliyah','Cassiopeia','Vayne']},
+      ]
+    },
+    {
+      id:'lec-w6', date:'2026-04-28', time:'19:00', tz:'CEST',
+      tournament:{name:'LEC Spring', tier:'W6'}, opp:{name:'G2 Esports', short:'G2', logo:'img_M/G2.webp'},
+      score:'1:2', format:'Bo3', win:false,
+      games:[
+        {win:true,  kc:['Azir','Ashe','Nautilus','Gnar','Vi'],        kcBans:['Ryze','Mel','Cassiopeia','Annie','Varus'],     opp:['Orianna','Vayne','Bard','Jayce','Olaf'],  oppBans:['Shen','Anivia','Seraphine','Taliyah','Vayne']},
+        {win:false, kc:['Jayce','Olaf','Orianna','Vayne','Bard'],     kcBans:['Taliyah','Anivia','Seraphine','Annie','Varus'], opp:['Azir','Ashe','Nautilus','Shen','Vi'],     oppBans:['Ryze','Mel','Cassiopeia','Vayne','Varus']},
+        {win:false, kc:['Taliyah','Varus','Nautilus','Jayce','Olaf'], kcBans:['Ryze','Shen','Seraphine','Mel','Anivia'],      opp:['Orianna','Ashe','Bard','Gnar','Vi'],      oppBans:['Annie','Taliyah','Cassiopeia','Vayne','Varus']},
+      ]
+    },
+  ];
+
+  function buildChamp(name, isKc, isBan) {
+    var icon = CHAMP_ICONS[name];
+    var inner = icon
+      ? '<img src="' + icon + '" alt="' + name + '">'
+      : name.split(' ')[0].slice(0,3).toUpperCase();
+    var cls = 'mp-champ' + (isKc ? ' kc' : '') + (isBan ? ' ban' : '');
+    return '<div class="' + cls + '" title="' + name + '">' + inner + '</div>';
+  }
+
+  function buildGameRow(g, num) {
+    var wl = g.win ? 'w' : 'l';
+    var kcPicks  = g.kc.map(function(c){     return buildChamp(c, true,  false); }).join('');
+    var kcBans   = g.kcBans.map(function(c){ return buildChamp(c, false, true);  }).join('');
+    var oppPicks = g.opp.map(function(c){    return buildChamp(c, false, false); }).join('');
+    var oppBans  = g.oppBans.map(function(c){return buildChamp(c, false, true);  }).join('');
+    return '<div class="mp-game">' +
+      '<div class="mp-game-prefix"><span class="mp-game-wl ' + wl + '">' + (g.win ? 'W' : 'L') + '</span></div>' +
+      '<div class="mp-side">' + kcPicks + '<div class="mp-group-sep"></div>' + kcBans + '</div>' +
+      '<span class="mp-vs">vs</span>' +
+      '<div class="mp-side opp">' + oppBans + '<div class="mp-group-sep"></div>' + oppPicks + '</div>' +
+      '</div>';
+  }
+
+  function buildMatchRow(m) {
+    var scoreClass  = m.win ? 'win' : 'loss';
+    var tierDisplay = TIER_NAMES[m.tournament.tier] || m.tournament.tier;
+    var d = new Date(m.date);
+    var dateStr = MONTHS[d.getMonth()] + ' ' + d.getDate() + ' · ' + m.time + ' ' + m.tz;
+
+    var oppLogo = m.opp.logo
+      ? '<img src="' + m.opp.logo + '" alt="" onerror="this.style.display=\'none\'">'
+      : '<div class="mp-opp-init">' + m.opp.short + '</div>';
+
+    var gamesHtml = m.games.map(function(g, i){ return buildGameRow(g, i+1); }).join('');
+    var CHEVRON = '<svg class="mp-chevron" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 4.5l5 5 5-5"/></svg>';
+
+    return [
+      '<div class="mp-row" id="mprow-' + m.id + '">',
+      '  <div class="mp-header" onclick="toggleMatch(\'' + m.id + '\')">',
+      '    <span class="mp-date">' + dateStr + '</span>',
+      '    <div class="mp-tourn"><span class="mp-tourn-name">' + m.tournament.name + '</span><span class="mp-tourn-tier">' + tierDisplay + '</span></div>',
+      '    <div class="mp-opp">' + oppLogo + '<span class="mp-opp-name">' + m.opp.name + '</span></div>',
+      '    <div class="mp-score-wrap"><span class="mp-score ' + scoreClass + '">' + m.score + '</span></div>',
+      '    ' + CHEVRON,
+      '  </div>',
+      '  <div class="mp-accordion">',
+      '    <div class="mp-col-header">',
+      '      <div class="mp-col-prefix"></div>',
+      '      <div class="mp-col-half"><span class="mp-col-lbl">Picks</span><div class="mp-col-gsep"></div><span class="mp-col-lbl dim">Bans</span></div>',
+      '      <span class="mp-col-vs-ph">vs</span>', /* visible separator */
+      '      <div class="mp-col-half opp"><span class="mp-col-lbl dim">vs. Bans</span><div class="mp-col-gsep"></div><span class="mp-col-lbl">vs. Picks</span></div>',
+      '    </div>',
+      '    <div class="mp-games">' + gamesHtml + '</div>',
+      '  </div>',
+      '</div>'
+    ].join('');
+  }
+
+  function renderMatchesPlayed() {
+    var sorted = MATCHES_PLAYED.slice().sort(function(a,b){ return new Date(b.date)-new Date(a.date); });
+    document.getElementById('mp-list').innerHTML = sorted.map(buildMatchRow).join('');
+  }
+
+  /* ════════════════════════════════════════
+     TOGGLES
+  ════════════════════════════════════════ */
+  function toggleMatch(id) { document.getElementById('mprow-' + id).classList.toggle('open'); }
+
+  function toggleBans(id) {
+    document.getElementById('bans-' + id).classList.toggle('open');
+    document.getElementById('bansbtn-' + id).classList.toggle('open');
+  }
+
+  /* ════════════════════════════════════════
+     INIT
+  ════════════════════════════════════════ */
+  renderUpcoming();
+  renderMatchesPlayed();
+  </script>
+</body>
+</html>

@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SkillBet — Teams</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple: #7c3aed; --purple-light: #a855f7; --pink: #ec4899;
+    }
+
+    html, body {
+      height: 100%; overflow: hidden;
+      font-family: 'Exo 2', sans-serif; color: #c4c8e2;
+      background:
+        radial-gradient(1200px 800px at 20% 10%, rgba(124,58,237,.26), transparent 60%),
+        radial-gradient(900px 600px at 40% 80%, rgba(236,72,153,.22), transparent 55%),
+        #070b1f;
+    }
+
+    .bg-blobs { position: fixed; inset: 0; pointer-events: none; z-index: 0; filter: blur(70px); opacity: .85; }
+    .blob {
+      position: absolute; width: 460px; height: 460px; border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, rgba(124,58,237,.95), transparent 60%),
+                  radial-gradient(circle at 65% 65%, rgba(236,72,153,.90), transparent 62%);
+      animation: floaty 5s ease-in-out infinite;
+    }
+    .b1{top:-140px;left:-140px} .b2{top:12%;right:-180px;animation-delay:-1s} .b3{bottom:-200px;left:30%;animation-delay:-2s}
+    @keyframes floaty{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(40px,-30px,0) scale(1.08)}}
+
+    .page { position: relative; z-index: 1; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* ══════════════ HEADER STICKY INTERNE ══════════════ */
+    .teams-header {
+      flex-shrink: 0;
+      padding: 20px 28px 0;
+      background: rgba(7,11,31,0.55);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      z-index: 5;
+    }
+
+    .th-title-row {
+      display: flex; align-items: baseline; gap: 12px;
+      margin-bottom: 14px;
+    }
+    .th-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 26px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      color: #fff;
+    }
+    .th-count {
+      font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.3);
+    }
+    .th-count strong { color: #c084fc; }
+
+    /* Search */
+    .th-search {
+      position: relative; margin-bottom: 14px;
+    }
+    .th-search-icon {
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      color: rgba(255,255,255,0.3); pointer-events: none;
+    }
+    .th-search-icon svg { width: 14px; height: 14px; display: block; }
+    .th-search input {
+      width: 100%; padding: 9px 12px 9px 36px;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 10px; color: #e8eaf6;
+      font-family: 'Exo 2', sans-serif; font-size: 12px; font-weight: 500;
+      outline: none; transition: border-color 0.18s, background 0.18s;
+    }
+    .th-search input::placeholder { color: rgba(255,255,255,0.28); }
+    .th-search input:focus { border-color: rgba(168,85,247,0.5); background: rgba(255,255,255,0.07); }
+
+    /* Filter + sort row */
+    .th-filter-row {
+      display: flex; align-items: center; gap: 8px;
+      padding-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .game-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 7px 16px; border-radius: 30px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.03);
+      color: rgba(255,255,255,0.4);
+      font-family: 'Exo 2', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.7px; text-transform: uppercase;
+      cursor: pointer; transition: all 0.18s; white-space: nowrap;
+    }
+    .game-pill img { width: 20px; height: 20px; object-fit: contain; opacity: 0.5; transition: opacity 0.18s, transform 0.18s; }
+    .game-pill-count {
+      font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 10px;
+      background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.3);
+      transition: background 0.18s, color 0.18s;
+    }
+    .game-pill:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.18); }
+    .game-pill:hover img { opacity: 0.8; transform: scale(1.08); }
+    .game-pill.active img { opacity: 1; transform: scale(1.05); }
+
+    /* Active — CS2 orange */
+    .game-pill[data-game="cs2"].active {
+      background: rgba(249,115,22,0.1); border-color: rgba(249,115,22,0.55); color: #fb923c;
+      box-shadow: 0 0 0 1px rgba(249,115,22,0.15), 0 2px 14px rgba(249,115,22,0.1);
+    }
+    .game-pill[data-game="cs2"].active .game-pill-count { background: rgba(249,115,22,0.2); color: #fb923c; }
+
+    /* Active — LoL gold */
+    .game-pill[data-game="lol"].active {
+      background: rgba(200,168,75,0.1); border-color: rgba(200,168,75,0.55); color: #fbbf24;
+      box-shadow: 0 0 0 1px rgba(200,168,75,0.15), 0 2px 14px rgba(200,168,75,0.1);
+    }
+    .game-pill[data-game="lol"].active .game-pill-count { background: rgba(200,168,75,0.2); color: #fbbf24; }
+
+    /* Active — Valorant rouge */
+    .game-pill[data-game="valo"].active {
+      background: rgba(255,70,85,0.1); border-color: rgba(255,70,85,0.55); color: #f87171;
+      box-shadow: 0 0 0 1px rgba(255,70,85,0.15), 0 2px 14px rgba(255,70,85,0.1);
+    }
+    .game-pill[data-game="valo"].active .game-pill-count { background: rgba(255,70,85,0.2); color: #f87171; }
+
+    /* Active — Rocket League bleu */
+    .game-pill[data-game="rl"].active {
+      background: rgba(0,178,255,0.1); border-color: rgba(0,178,255,0.55); color: #38bdf8;
+      box-shadow: 0 0 0 1px rgba(0,178,255,0.15), 0 2px 14px rgba(0,178,255,0.1);
+    }
+    .game-pill[data-game="rl"].active .game-pill-count { background: rgba(0,178,255,0.2); color: #38bdf8; }
+
+    /* Sort */
+    .th-sort {
+      margin-left: auto; display: flex; align-items: center; gap: 8px;
+    }
+    .th-sort label {
+      font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+      color: rgba(255,255,255,0.28); white-space: nowrap;
+    }
+    .th-sort select {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 8px; padding: 5px 10px;
+      color: rgba(255,255,255,0.65);
+      font-family: 'Exo 2', sans-serif; font-size: 11px; font-weight: 600;
+      cursor: pointer; outline: none;
+    }
+    .th-sort select option { background: #13172e; }
+
+    /* ══════════════ SCROLLABLE GRID AREA ══════════════ */
+    .teams-scroll {
+      flex: 1; min-height: 0;
+      overflow-y: auto; overflow-x: hidden;
+      padding: 22px 28px 48px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(168,85,247,0.2) transparent;
+    }
+    .teams-scroll::-webkit-scrollbar { width: 4px; }
+    .teams-scroll::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.3); border-radius: 4px; }
+
+    /* ══════════════ TEAMS GRID ══════════════ */
+    .teams-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .empty-state {
+      grid-column: 1/-1; text-align: center; padding: 60px 20px;
+      color: rgba(255,255,255,0.25); font-size: 14px;
+    }
+
+    /* ══════════════ TEAM CARD ══════════════ */
+    .team-card {
+      background: rgba(13,17,40,0.85);
+      border: 1px solid rgba(139,92,246,0.13);
+      border-radius: 18px; overflow: hidden;
+      cursor: pointer;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 28px 20px 22px;
+      gap: 0;
+      transition: transform 0.22s, border-color 0.22s, box-shadow 0.22s;
+      position: relative;
+    }
+    .team-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(139,92,246,0.42);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.4), 0 0 0 1px rgba(139,92,246,0.15);
+    }
+
+    /* Next match indicator dot — top right */
+    .tc-match-dot {
+      position: absolute; top: 12px; right: 12px;
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #a855f7; box-shadow: 0 0 6px rgba(168,85,247,0.7);
+    }
+
+    /* Logo */
+    .tc-logo {
+      width: 80px; height: 80px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 18px; margin-bottom: 14px;
+      flex-shrink: 0;
+    }
+    .tc-logo img { width: 62px; height: 62px; object-fit: contain; }
+    .tc-logo-init {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 22px; font-weight: 700;
+    }
+
+    /* Name */
+    .tc-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 16px; font-weight: 700; letter-spacing: 0.5px;
+      color: #fff; text-align: center; line-height: 1.2;
+    }
+
+    /* Game badge */
+    .tc-game {
+      display: inline-flex; align-items: center; gap: 4px;
+      margin-top: 5px;
+      font-size: 9px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+    .tc-game img { width: 11px; height: 11px; object-fit: contain; opacity: 0.6; }
+
+    /* Rank */
+    .tc-rank {
+      margin-top: 8px;
+      font-size: 9px; font-weight: 700; color: rgba(168,85,247,0.7);
+      background: rgba(124,58,237,0.11); border: 1px solid rgba(124,58,237,0.2);
+      border-radius: 4px; padding: 2px 7px; letter-spacing: 0.5px;
+    }
+
+    /* ══════════════ DETAIL VIEW ══════════════ */
+    #view-detail { display: none; flex-direction: column; flex: 1; min-height: 0; }
+
+    .detail-scroll {
+      flex: 1; min-height: 0;
+      overflow-y: auto; overflow-x: hidden;
+      padding: 0 28px 48px;
+      scrollbar-width: thin; scrollbar-color: rgba(168,85,247,0.2) transparent;
+    }
+    .detail-scroll::-webkit-scrollbar { width: 4px; }
+    .detail-scroll::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.3); border-radius: 4px; }
+
+    /* Back button */
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 22px 0 18px;
+      font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+      color: rgba(255,255,255,0.35); cursor: pointer; background: none; border: none;
+      transition: color 0.15s;
+    }
+    .back-btn svg { width: 13px; height: 13px; transition: transform 0.15s; }
+    .back-btn:hover { color: rgba(255,255,255,0.7); }
+    .back-btn:hover svg { transform: translateX(-3px); }
+
+    /* Team hero */
+    .team-hero {
+      display: flex; align-items: flex-start; gap: 26px;
+      padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 0;
+    }
+    .hero-logo {
+      width: 90px; height: 90px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+    }
+    .hero-logo img { width: 70px; height: 70px; object-fit: contain; }
+    .hero-logo-init { font-family: 'Rajdhani', sans-serif; font-size: 26px; font-weight: 700; }
+    .hero-info { flex: 1; }
+    .hero-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 32px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      color: #fff; line-height: 1;
+    }
+    .hero-sub { display: flex; align-items: center; gap: 10px; margin-top: 7px; flex-wrap: wrap; }
+    .hero-game { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.38); }
+    .hero-game img { width: 15px; height: 15px; object-fit: contain; }
+    .hero-rank { font-size: 10px; font-weight: 700; color: #c084fc; background: rgba(124,58,237,0.14); border: 1px solid rgba(124,58,237,0.28); border-radius: 5px; padding: 2px 8px; }
+    .hero-region { font-size: 10px; color: rgba(255,255,255,0.3); }
+    .hero-stats { display: flex; gap: 20px; margin-top: 14px; flex-wrap: wrap; }
+    .hs { display: flex; flex-direction: column; gap: 2px; }
+    .hs-val { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: #fff; line-height: 1; }
+    .hs-val.green { color: #4ade80; }
+    .hs-val.red { color: #ef4444; }
+    .hs-val.purple { color: #c084fc; }
+    .hs-lbl { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.3); }
+
+    /* Tabs */
+    .detail-tabs { display: flex; gap: 2px; border-bottom: 1px solid rgba(255,255,255,0.07); margin-top: 22px; }
+    .dtab { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: rgba(255,255,255,0.35); padding: 9px 16px; cursor: pointer; border: none; background: none; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s; }
+    .dtab:hover { color: rgba(255,255,255,0.65); }
+    .dtab.active { color: #c084fc; border-bottom-color: var(--purple); }
+
+    .tab-panel { display: none; padding-top: 20px; }
+    .tab-panel.active { display: block; }
+
+    /* ── Roster ── */
+    .roster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 11px; }
+    .player-card { background: rgba(13,17,40,0.85); border: 1px solid rgba(139,92,246,0.12); border-radius: 13px; overflow: hidden; transition: transform 0.2s, border-color 0.2s; }
+    .player-card:hover { transform: translateY(-3px); border-color: rgba(139,92,246,0.3); }
+    .pc-top { height: 100px; position: relative; background: linear-gradient(135deg, rgba(124,58,237,0.2), rgba(236,72,153,0.1)); display: flex; align-items: center; justify-content: center; }
+    .pc-initial { font-family: 'Rajdhani', sans-serif; font-size: 40px; font-weight: 700; color: rgba(255,255,255,0.1); }
+    .pc-role { position: absolute; top: 7px; right: 7px; font-size: 8px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; }
+    .pc-body { padding: 10px 12px 12px; }
+    .pc-nick { font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; color: #fff; }
+    .pc-name { font-size: 9px; color: rgba(255,255,255,0.36); margin-top: 1px; line-height: 1.3; }
+    .pc-flag { font-size: 14px; margin-top: 6px; }
+
+    /* ── Match lists ── */
+    .match-list { display: flex; flex-direction: column; gap: 8px; }
+    .ml-row { display: flex; align-items: center; gap: 12px; background: rgba(13,17,40,0.8); border: 1px solid rgba(139,92,246,0.1); border-radius: 12px; padding: 12px 15px; transition: background 0.15s, border-color 0.15s; }
+    .ml-row.clickable { cursor: pointer; }
+    .ml-row.clickable:hover { background: rgba(19,23,46,0.95); border-color: rgba(139,92,246,0.28); }
+    .ml-event { font-size: 9px; color: rgba(255,255,255,0.3); width: 130px; flex-shrink: 0; line-height: 1.35; }
+    .ml-teams { display: flex; align-items: center; gap: 10px; flex: 1; }
+    .ml-team { display: flex; align-items: center; gap: 6px; }
+    .ml-team img { width: 22px; height: 22px; object-fit: contain; }
+    .ml-team-init { width: 22px; height: 22px; border-radius: 5px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-family: 'Rajdhani', sans-serif; font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.4); }
+    .ml-tname { font-size: 12px; font-weight: 700; color: #fff; }
+    .ml-vs { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.2); }
+    .ml-date { font-size: 9px; color: rgba(255,255,255,0.3); flex-shrink: 0; text-align: right; min-width: 50px; }
+    .ml-odds { display: flex; gap: 5px; flex-shrink: 0; }
+    .ml-odd { font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 800; color: #fff; background: rgba(7,11,31,0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 3px 8px; cursor: pointer; transition: border-color 0.15s; }
+    .ml-odd:hover { border-color: rgba(168,85,247,0.5); }
+    .ml-score { font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.5); flex-shrink: 0; }
+    .ml-result { flex-shrink: 0; font-size: 10px; font-weight: 700; letter-spacing: 0.4px; padding: 3px 8px; border-radius: 5px; }
+    .ml-result.win  { background: rgba(74,222,128,0.12); color: #4ade80; border: 1px solid rgba(74,222,128,0.2); }
+    .ml-result.loss { background: rgba(239,68,68,0.1);  color: #ef4444; border: 1px solid rgba(239,68,68,0.16); }
+
+    /* ── Stats ── */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 11px; margin-bottom: 22px; }
+    .stat-box { background: rgba(13,17,40,0.85); border: 1px solid rgba(139,92,246,0.12); border-radius: 13px; padding: 16px 18px; }
+    .stat-box-val { font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700; color: #fff; line-height: 1; }
+    .stat-box-val.green { color: #4ade80; } .stat-box-val.purple { color: #c084fc; }
+    .stat-box-lbl { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.28); margin-top: 5px; }
+    .stat-box-sub { font-size: 10px; color: rgba(255,255,255,0.25); margin-top: 3px; }
+
+    .sec-lbl { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.27); margin-bottom: 12px; margin-top: 20px; }
+    .sec-lbl:first-child { margin-top: 0; }
+    .perf-sec { display: flex; flex-direction: column; gap: 12px; }
+    .perf-row { display: flex; flex-direction: column; gap: 5px; }
+    .perf-hd { display: flex; justify-content: space-between; }
+    .perf-lbl { font-size: 10px; color: rgba(255,255,255,0.35); font-weight: 700; }
+    .perf-pct { font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700; color: #fff; }
+    .perf-track { height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+    .perf-fill { height: 100%; border-radius: 3px; }
+    .perf-fill.g { background: linear-gradient(90deg, #4ade80, #22d3ee); }
+    .perf-fill.p { background: linear-gradient(90deg, #7c3aed, #a855f7); }
+  </style>
+</head>
+<body>
+  <div class="bg-blobs">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+
+  <div class="page">
+    <script src="header.js"></script>
+
+    <div class="content-layout">
+      <script src="sidebar-left.js"></script>
+
+      <!-- ══════════ MAIN CONTENT ══════════ -->
+      <main class="main-content" style="display:flex;flex-direction:column;">
+
+        <!-- LIST VIEW -->
+        <div id="view-list" style="display:flex;flex-direction:column;flex:1;min-height:0;">
+
+          <!-- Sticky header -->
+          <div class="teams-header">
+            <div class="th-title-row">
+              <div class="th-title">Teams</div>
+              <div class="th-count" id="team-count"></div>
+            </div>
+
+            <div class="th-search">
+              <span class="th-search-icon">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                  <circle cx="6.5" cy="6.5" r="4.5"/><path d="M10.5 10.5L14 14"/>
+                </svg>
+              </span>
+              <input type="text" id="search-input" placeholder="Search teams…" oninput="renderTeams()"/>
+            </div>
+
+            <div class="th-filter-row">
+              <button class="game-pill" data-game="cs2" onclick="setGame('cs2',this)">
+                <img src="img_M/logocs2.png" alt=""/> CS2
+                <span class="game-pill-count" id="cnt-cs2">0</span>
+              </button>
+              <button class="game-pill active" data-game="lol" onclick="setGame('lol',this)">
+                <img src="img_M/logo lol.png" alt=""/> LoL
+                <span class="game-pill-count" id="cnt-lol">0</span>
+              </button>
+              <button class="game-pill" data-game="valo" onclick="setGame('valo',this)">
+                <img src="img_M/logo valo.png" alt=""/> Valorant
+                <span class="game-pill-count" id="cnt-valo">0</span>
+              </button>
+              <button class="game-pill" data-game="rl" onclick="setGame('rl',this)">
+                <img src="img_M/logo rocket league.png" alt=""/> Rocket League
+                <span class="game-pill-count" id="cnt-rl">0</span>
+              </button>
+
+              <div class="th-sort">
+                <label for="sort-sel">Sort</label>
+                <select id="sort-sel" onchange="renderTeams()">
+                  <option value="popularity">Popularity</option>
+                  <option value="rank">World Ranking</option>
+                  <option value="name">Name A–Z</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grid -->
+          <div class="teams-scroll">
+            <div class="teams-grid" id="teams-grid"></div>
+          </div>
+
+        </div><!-- /view-list -->
+
+        <!-- DETAIL VIEW -->
+        <div id="view-detail">
+          <div class="detail-scroll">
+
+            <button class="back-btn" onclick="showList()">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 3L5 8l5 5"/>
+              </svg>
+              Back to Teams
+            </button>
+
+            <div id="detail-hero"></div>
+
+            <div class="detail-tabs">
+              <button class="dtab active" onclick="switchTab('roster',this)">Roster</button>
+              <button class="dtab" onclick="switchTab('upcoming',this)">Upcoming</button>
+              <button class="dtab" onclick="switchTab('results',this)">Results</button>
+              <button class="dtab" onclick="switchTab('stats',this)">Matches Played</button>
+            </div>
+
+            <div id="tab-roster"   class="tab-panel active"></div>
+            <div id="tab-upcoming" class="tab-panel"></div>
+            <div id="tab-results"  class="tab-panel"></div>
+            <div id="tab-stats"    class="tab-panel"></div>
+
+          </div>
+        </div><!-- /view-detail -->
+
+      </main>
+
+      <script src="sidebar-right.js"></script>
+    </div><!-- /content-layout -->
+  </div><!-- /page -->
+
+  <script>if(sessionStorage.getItem('sb_access')!=='1'){window.location.replace('gate.html');}</script>
+  <script>
+  /* ═══════════════════════════
+     DATA
+  ═══════════════════════════ */
+  var GAMES = {
+    cs2:  { name:'CS2',               logo:'img_M/logocs2.png' },
+    lol:  { name:'League of Legends',  logo:'img_M/logo lol.png' },
+    valo: { name:'Valorant',           logo:'img_M/logo valo.png' },
+    rl:   { name:'Rocket League',      logo:'img_M/logo rocket league.png' },
+  };
+
+  var ROLE_STYLE = {
+    AWPer:{bg:'rgba(239,68,68,0.18)',color:'#f87171'},
+    IGL:{bg:'rgba(124,58,237,0.20)',color:'#c084fc'},
+    Star:{bg:'rgba(250,204,21,0.18)',color:'#fde047'},
+    Rifler:{bg:'rgba(59,130,246,0.15)',color:'#93c5fd'},
+    Support:{bg:'rgba(74,222,128,0.15)',color:'#86efac'},
+    Mid:{bg:'rgba(168,85,247,0.18)',color:'#d8b4fe'},
+    Bot:{bg:'rgba(59,130,246,0.15)',color:'#93c5fd'},
+    Top:{bg:'rgba(251,146,60,0.18)',color:'#fdba74'},
+    Jungle:{bg:'rgba(74,222,128,0.15)',color:'#86efac'},
+    Duelist:{bg:'rgba(239,68,68,0.18)',color:'#f87171'},
+    Initiator:{bg:'rgba(59,130,246,0.15)',color:'#93c5fd'},
+    Controller:{bg:'rgba(124,58,237,0.20)',color:'#c084fc'},
+    Sentinel:{bg:'rgba(74,222,128,0.15)',color:'#86efac'},
+    Striker:{bg:'rgba(239,68,68,0.18)',color:'#f87171'},
+    Midfield:{bg:'rgba(124,58,237,0.20)',color:'#c084fc'},
+    Defend:{bg:'rgba(74,222,128,0.15)',color:'#86efac'},
+  };
+
+  var TEAMS = [
+    {id:'navi',game:'cs2',name:'Natus Vincere',short:'NaVi',logo:'img_M/NAVI_Logo_2020.png',color:'#f9c74f',rank:1,popularity:98,region:'Europe',
+     nextMatch:{oppName:'Vitality',oppLogo:'img_M/logovita.png',date:'Jun 8',event:'ESL Pro League S21',myOdds:'1.85',oppOdds:'1.95',page:'match.html'},
+     roster:[{nick:'s1mple',name:'Oleksandr Kostyliev',role:'AWPer',flag:'🇺🇦'},{nick:'b1t',name:'Valeriy Vakhovskyi',role:'Rifler',flag:'🇺🇦'},{nick:'jL',name:'Joonas Peltola',role:'Rifler',flag:'🇫🇮'},{nick:'iM',name:'Igor Makarov',role:'Rifler',flag:'🇺🇦'},{nick:'Aleksib',name:'Aleksi Virolainen',role:'IGL',flag:'🇫🇮'}],
+     upcoming:[{oppName:'Vitality',oppLogo:'img_M/logovita.png',event:'ESL Pro League S21',date:'Jun 8',myOdds:'1.85',oppOdds:'1.95',page:'match.html'},{oppName:'G2 Esports',oppLogo:'img_M/G2.webp',event:'BLAST Premier',date:'Jun 15',myOdds:'1.60',oppOdds:'2.30',page:'match.html'},{oppName:'Spirit',oppLogo:'img_M/spirit.png',event:'IEM Cologne',date:'Jun 22',myOdds:'2.10',oppOdds:'1.70',page:'match.html'}],
+     results:[{oppName:'FaZe Clan',oppLogo:null,event:'BLAST Spring',date:'May 28',score:'2–0',win:true},{oppName:'Spirit',oppLogo:'img_M/spirit.png',event:'ESL Pro League',date:'May 22',score:'1–2',win:false},{oppName:'Vitality',oppLogo:'img_M/logovita.png',event:'IEM Dallas',date:'May 18',score:'2–1',win:true},{oppName:'Astralis',oppLogo:'img_M/astralis.svg',event:'ESL Pro League',date:'May 12',score:'2–0',win:true}],
+     stats:{played:68,wins:44,losses:24,winRate:64.7,maps:142}},
+
+    {id:'vitality',game:'cs2',name:'Team Vitality',short:'Vitality',logo:'img_M/logovita.png',color:'#ffe94a',rank:2,popularity:95,region:'France',
+     nextMatch:{oppName:'NaVi',oppLogo:'img_M/NAVI_Logo_2020.png',date:'Jun 8',event:'ESL Pro League S21',myOdds:'1.95',oppOdds:'1.85',page:'match.html'},
+     roster:[{nick:'ZywOo',name:'Mathieu Herbaut',role:'AWPer',flag:'🇫🇷'},{nick:'apEX',name:'Dan Madesclaire',role:'IGL',flag:'🇫🇷'},{nick:'Misutaaa',name:'Laurent Béthoux',role:'Rifler',flag:'🇫🇷'},{nick:'Spinx',name:'Tomas Jiskra',role:'Rifler',flag:'🇨🇿'},{nick:'flameZ',name:'Shahar Shushan',role:'Rifler',flag:'🇮🇱'}],
+     upcoming:[{oppName:'NaVi',oppLogo:'img_M/NAVI_Logo_2020.png',event:'ESL Pro League S21',date:'Jun 8',myOdds:'1.95',oppOdds:'1.85',page:'match.html'},{oppName:'Spirit',oppLogo:'img_M/spirit.png',event:'BLAST Premier',date:'Jun 16',myOdds:'1.80',oppOdds:'2.00',page:'match.html'}],
+     results:[{oppName:'NaVi',oppLogo:'img_M/NAVI_Logo_2020.png',event:'IEM Dallas',date:'May 18',score:'1–2',win:false},{oppName:'Astralis',oppLogo:'img_M/astralis.svg',event:'ESL Pro League',date:'May 14',score:'2–0',win:true},{oppName:'OG',oppLogo:'img_M/OG_Logo.png',event:'BLAST Spring',date:'May 10',score:'2–1',win:true}],
+     stats:{played:72,wins:49,losses:23,winRate:68.1,maps:156}},
+
+    {id:'g2',game:'cs2',name:'G2 Esports',short:'G2',logo:'img_M/G2.webp',color:'#ef4444',rank:3,popularity:92,region:'Europe',
+     nextMatch:{oppName:'Astralis',oppLogo:'img_M/astralis.svg',date:'Jun 10',event:'BLAST Premier',myOdds:'1.45',oppOdds:'2.70',page:'match.html'},
+     roster:[{nick:'NiKo',name:'Nikola Kovač',role:'Rifler',flag:'🇧🇦'},{nick:'huNter-',name:'Denis Savić',role:'Rifler',flag:'🇧🇦'},{nick:'jks',name:'Justin Savage',role:'AWPer',flag:'🇦🇺'},{nick:'nexa',name:'Nemanja Isaković',role:'IGL',flag:'🇷🇸'},{nick:'Hooxi',name:'Igor Homenko',role:'Support',flag:'🇺🇦'}],
+     upcoming:[{oppName:'Astralis',oppLogo:'img_M/astralis.svg',event:'BLAST Premier',date:'Jun 10',myOdds:'1.45',oppOdds:'2.70',page:'match.html'},{oppName:'NaVi',oppLogo:'img_M/NAVI_Logo_2020.png',event:'IEM Cologne',date:'Jun 20',myOdds:'2.30',oppOdds:'1.60',page:'match.html'}],
+     results:[{oppName:'Spirit',oppLogo:'img_M/spirit.png',event:'BLAST Spring',date:'May 26',score:'2–1',win:true},{oppName:'NaVi',oppLogo:'img_M/NAVI_Logo_2020.png',event:'ESL Pro League',date:'May 20',score:'1–2',win:false},{oppName:'Vitality',oppLogo:'img_M/logovita.png',event:'IEM Dallas',date:'May 16',score:'2–0',win:true}],
+     stats:{played:65,wins:41,losses:24,winRate:63.1,maps:138}},
+
+    {id:'spirit',game:'cs2',name:'Team Spirit',short:'Spirit',logo:'img_M/spirit.png',color:'#38bdf8',rank:4,popularity:86,region:'CIS',
+     nextMatch:{oppName:'OG',oppLogo:'img_M/OG_Logo.png',date:'Jun 12',event:'IEM Cologne',myOdds:'1.30',oppOdds:'3.40',page:'match.html'},
+     roster:[{nick:'donk',name:'Danil Kryshkovets',role:'Star',flag:'🇷🇺'},{nick:'magixx',name:'Boris Vorobiev',role:'AWPer',flag:'🇷🇺'},{nick:'chopper',name:'Leonid Vishnyakov',role:'IGL',flag:'🇷🇺'},{nick:'Perfecto',name:'Ilya Zalutskiy',role:'Support',flag:'🇷🇺'},{nick:'zont1x',name:'Dmitriy Klokov',role:'Rifler',flag:'🇷🇺'}],
+     upcoming:[{oppName:'OG',oppLogo:'img_M/OG_Logo.png',event:'IEM Cologne',date:'Jun 12',myOdds:'1.30',oppOdds:'3.40',page:'match.html'}],
+     results:[{oppName:'Vitality',oppLogo:'img_M/logovita.png',event:'ESL Pro League',date:'May 22',score:'2–1',win:true},{oppName:'G2',oppLogo:'img_M/G2.webp',event:'BLAST Spring',date:'May 26',score:'1–2',win:false}],
+     stats:{played:60,wins:42,losses:18,winRate:70.0,maps:130}},
+
+    {id:'astralis',game:'cs2',name:'Astralis',short:'AST',logo:'img_M/astralis.svg',color:'#ef4444',rank:7,popularity:80,region:'Denmark',
+     nextMatch:{oppName:'G2 Esports',oppLogo:'img_M/G2.webp',date:'Jun 10',event:'BLAST Premier',myOdds:'2.70',oppOdds:'1.45',page:'match.html'},
+     roster:[{nick:'gla1ve',name:'Lukas Rossander',role:'IGL',flag:'🇩🇰'},{nick:'Xyp9x',name:'Andreas Højsleth',role:'Support',flag:'🇩🇰'},{nick:'dupreeh',name:'Peter Rasmussen',role:'Rifler',flag:'🇩🇰'},{nick:'Magisk',name:'Emil Reif',role:'Rifler',flag:'🇩🇰'},{nick:'dev1ce',name:'Nicolai Reedtz',role:'AWPer',flag:'🇩🇰'}],
+     upcoming:[{oppName:'G2 Esports',oppLogo:'img_M/G2.webp',event:'BLAST Premier',date:'Jun 10',myOdds:'2.70',oppOdds:'1.45',page:'match.html'}],
+     results:[{oppName:'OG',oppLogo:'img_M/OG_Logo.png',event:'ESL Pro League',date:'May 20',score:'2–0',win:true},{oppName:'Vitality',oppLogo:'img_M/logovita.png',event:'ESL Pro League',date:'May 14',score:'0–2',win:false}],
+     stats:{played:55,wins:31,losses:24,winRate:56.4,maps:118}},
+
+    {id:'og',game:'cs2',name:'OG',short:'OG',logo:'img_M/OG_Logo.png',color:'#60a5fa',rank:10,popularity:72,region:'Europe',
+     nextMatch:{oppName:'Spirit',oppLogo:'img_M/spirit.png',date:'Jun 12',event:'IEM Cologne',myOdds:'3.40',oppOdds:'1.30',page:'match.html'},
+     roster:[{nick:'flameZ',name:'Shahar Shushan',role:'Star',flag:'🇮🇱'},{nick:'nexa',name:'Nemanja Isaković',role:'IGL',flag:'🇷🇸'},{nick:'ISSAA',name:'Issa Murad',role:'AWPer',flag:'🇯🇴'},{nick:'valde',name:'Valdemar Vangså',role:'Rifler',flag:'🇩🇰'},{nick:'mantuu',name:'Oliver Skovgaard',role:'Rifler',flag:'🇩🇰'}],
+     upcoming:[{oppName:'Spirit',oppLogo:'img_M/spirit.png',event:'IEM Cologne',date:'Jun 12',myOdds:'3.40',oppOdds:'1.30',page:'match.html'}],
+     results:[{oppName:'Astralis',oppLogo:'img_M/astralis.svg',event:'ESL Pro League',date:'May 20',score:'0–2',win:false},{oppName:'Vitality',oppLogo:'img_M/logovita.png',event:'BLAST Spring',date:'May 10',score:'1–2',win:false}],
+     stats:{played:48,wins:24,losses:24,winRate:50.0,maps:100}},
+
+    {id:'t1',game:'lol',name:'T1',short:'T1',logo:'img_M/logoT1.png',color:'#ef4444',rank:1,popularity:99,region:'South Korea',
+     nextMatch:{oppName:'Karmine Corp',oppLogo:'img_M/logoKC.png',date:'Jun 9',event:'Worlds 2025 · Final',myOdds:'1.65',oppOdds:'2.30',page:'match2.html'},
+     roster:[{nick:'Faker',name:'Lee Sang-hyeok',role:'Mid',flag:'🇰🇷'},{nick:'Gumayusi',name:'Lee Min-hyeong',role:'Bot',flag:'🇰🇷'},{nick:'Keria',name:'Ryu Min-seok',role:'Support',flag:'🇰🇷'},{nick:'Zeus',name:'Choi Woo-je',role:'Top',flag:'🇰🇷'},{nick:'Oner',name:'Moon Hyeon-joon',role:'Jungle',flag:'🇰🇷'}],
+     upcoming:[{oppName:'Karmine Corp',oppLogo:'img_M/logoKC.png',event:'Worlds 2025 · Final',date:'Jun 9',myOdds:'1.65',oppOdds:'2.30',page:'match2.html'},{oppName:'G2 Esports',oppLogo:'img_M/G2.webp',event:'LCK Cup',date:'Jun 18',myOdds:'1.40',oppOdds:'2.90',page:'match2.html'}],
+     results:[{oppName:'Gen.G',oppLogo:null,event:'LCK Spring Final',date:'May 25',score:'3–1',win:true},{oppName:'KT Rolster',oppLogo:null,event:'LCK',date:'May 18',score:'2–0',win:true},{oppName:'Karmine Corp',oppLogo:'img_M/logoKC.png',event:'Worlds QF',date:'May 10',score:'3–2',win:true}],
+     stats:{played:82,wins:62,losses:20,winRate:75.6,maps:164}},
+
+    {id:'kcorp',game:'lol',name:'Karmine Corp',short:'KCorp',logo:'img_M/logoKC.png',color:'#38bdf8',rank:3,popularity:90,region:'Europe',
+     nextMatch:{oppName:'T1',oppLogo:'img_M/logoT1.png',date:'Jun 9',event:'Worlds 2025 · Final',myOdds:'2.30',oppOdds:'1.65',page:'match2.html'},
+     roster:[{nick:'Canna',name:'Kim Chang-dong',role:'Top',flag:'🇰🇷'},{nick:'Closer',name:'Kim Jun-hyeok',role:'Jungle',flag:'🇰🇷'},{nick:'Daglas',name:'Kévin Ghanbari',role:'Mid',flag:'🇫🇷'},{nick:'Rekkles',name:'Martin Larsson',role:'Bot',flag:'🇸🇪'},{nick:'Hylissang',name:'Zdravets Iliev',role:'Support',flag:'🇧🇬'}],
+     upcoming:[{oppName:'T1',oppLogo:'img_M/logoT1.png',event:'Worlds 2025 · Final',date:'Jun 9',myOdds:'2.30',oppOdds:'1.65',page:'match2.html'}],
+     results:[{oppName:'Cloud9',oppLogo:null,event:'Worlds SF',date:'May 20',score:'3–1',win:true},{oppName:'T1',oppLogo:'img_M/logoT1.png',event:'Worlds QF',date:'May 10',score:'2–3',win:false},{oppName:'Team BDS',oppLogo:null,event:'LEC',date:'May 5',score:'2–0',win:true}],
+     stats:{played:76,wins:51,losses:25,winRate:67.1,maps:148}},
+
+    {id:'g2lol',game:'lol',name:'G2 Esports',short:'G2',logo:'img_M/G2.webp',color:'#ef4444',rank:5,popularity:88,region:'Europe',
+     nextMatch:{oppName:'Fnatic',oppLogo:null,date:'Jun 14',event:'LEC Summer',myOdds:'1.55',oppOdds:'2.50',page:'match2.html'},
+     roster:[{nick:'BrokenBlade',name:'Sergen Çelik',role:'Top',flag:'🇩🇪'},{nick:'Yike',name:'Martin Sundelin',role:'Jungle',flag:'🇸🇪'},{nick:'Caps',name:'Rasmus Borregaard',role:'Mid',flag:'🇩🇰'},{nick:'Hans Sama',name:'Steven Liv',role:'Bot',flag:'🇫🇷'},{nick:'Mikyx',name:'Mihael Mehle',role:'Support',flag:'🇸🇮'}],
+     upcoming:[{oppName:'Fnatic',oppLogo:null,event:'LEC Summer',date:'Jun 14',myOdds:'1.55',oppOdds:'2.50',page:'match2.html'},{oppName:'Karmine Corp',oppLogo:'img_M/logoKC.png',event:'LEC Summer',date:'Jun 21',myOdds:'1.70',oppOdds:'2.10',page:'match2.html'}],
+     results:[{oppName:'Karmine Corp',oppLogo:'img_M/logoKC.png',event:'LEC Spring',date:'May 28',score:'2–1',win:true},{oppName:'Fnatic',oppLogo:null,event:'LEC Spring',date:'May 22',score:'2–0',win:true},{oppName:'T1',oppLogo:'img_M/logoT1.png',event:'Worlds QF',date:'May 5',score:'1–3',win:false}],
+     stats:{played:70,wins:46,losses:24,winRate:65.7,maps:138}},
+
+    {id:'sentinels',game:'valo',name:'Sentinels',short:'SEN',logo:null,color:'#e11d48',rank:2,popularity:82,region:'North America',
+     nextMatch:{oppName:'NRG Esports',oppLogo:null,date:'Jun 7',event:'VCT Americas',myOdds:'1.80',oppOdds:'2.00',page:'match.html'},
+     roster:[{nick:'TenZ',name:'Tyson Ngo',role:'Duelist',flag:'🇨🇦'},{nick:'ShahZaM',name:'Shahzeb Khan',role:'IGL',flag:'🇺🇸'},{nick:'SicK',name:'Hunter Mims',role:'Initiator',flag:'🇺🇸'},{nick:'zombs',name:'Jared Gitlin',role:'Controller',flag:'🇺🇸'},{nick:'dapr',name:'Michael Gulino',role:'Sentinel',flag:'🇺🇸'}],
+     upcoming:[{oppName:'NRG Esports',oppLogo:null,event:'VCT Americas',date:'Jun 7',myOdds:'1.80',oppOdds:'2.00',page:'match.html'},{oppName:'Cloud9',oppLogo:null,event:'VCT Americas',date:'Jun 14',myOdds:'1.65',oppOdds:'2.25',page:'match.html'}],
+     results:[{oppName:'Cloud9',oppLogo:null,event:'VCT Americas',date:'May 27',score:'2–1',win:true},{oppName:'LOUD',oppLogo:null,event:'VCT Americas',date:'May 21',score:'1–2',win:false}],
+     stats:{played:52,wins:34,losses:18,winRate:65.4,maps:106}},
+
+    {id:'nrg',game:'valo',name:'NRG Esports',short:'NRG',logo:null,color:'#f97316',rank:4,popularity:74,region:'North America',
+     nextMatch:{oppName:'Sentinels',oppLogo:null,date:'Jun 7',event:'VCT Americas',myOdds:'2.00',oppOdds:'1.80',page:'match.html'},
+     roster:[{nick:'s0m',name:'Samuel Oh',role:'IGL',flag:'🇺🇸'},{nick:'eeiu',name:'Daniel Vucenovic',role:'Sentinel',flag:'🇺🇸'},{nick:'ardiis',name:'Ardis Svarenieks',role:'Duelist',flag:'🇱🇻'},{nick:'crashies',name:'Austin Roberts',role:'Initiator',flag:'🇺🇸'},{nick:'Victor',name:'Victor Wong',role:'Duelist',flag:'🇺🇸'}],
+     upcoming:[{oppName:'Sentinels',oppLogo:null,event:'VCT Americas',date:'Jun 7',myOdds:'2.00',oppOdds:'1.80',page:'match.html'}],
+     results:[{oppName:'Sentinels',oppLogo:null,event:'VCT Americas',date:'May 14',score:'2–0',win:true},{oppName:'LOUD',oppLogo:null,event:'VCT Americas',date:'May 8',score:'1–2',win:false}],
+     stats:{played:48,wins:28,losses:20,winRate:58.3,maps:98}},
+
+    {id:'g2rl',game:'rl',name:'G2 Esports',short:'G2',logo:'img_M/G2.webp',color:'#ef4444',rank:1,popularity:78,region:'North America',
+     nextMatch:{oppName:'Team BDS',oppLogo:null,date:'Jun 11',event:'RLCS World Championship',myOdds:'1.70',oppOdds:'2.10',page:'match.html'},
+     roster:[{nick:'jstn',name:'Justin Morales',role:'Striker',flag:'🇺🇸'},{nick:'Chicago',name:'Ryan Deptula',role:'Midfield',flag:'🇺🇸'},{nick:'Noobkiller',name:'Søren Kaarup',role:'Defend',flag:'🇩🇰'}],
+     upcoming:[{oppName:'Team BDS',oppLogo:null,event:'RLCS World Championship',date:'Jun 11',myOdds:'1.70',oppOdds:'2.10',page:'match.html'}],
+     results:[{oppName:'Team BDS',oppLogo:null,event:'RLCS Spring',date:'May 25',score:'4–2',win:true},{oppName:'Vitality',oppLogo:'img_M/logovita.png',event:'RLCS Spring',date:'May 19',score:'3–4',win:false}],
+     stats:{played:44,wins:29,losses:15,winRate:65.9,maps:88}},
+
+    {id:'vitrl',game:'rl',name:'Team Vitality',short:'Vit.',logo:'img_M/logovita.png',color:'#ffe94a',rank:2,popularity:71,region:'Europe',
+     nextMatch:{oppName:'G2 Esports',oppLogo:'img_M/G2.webp',date:'Jun 11',event:'RLCS World Championship',myOdds:'2.10',oppOdds:'1.70',page:'match.html'},
+     roster:[{nick:'Fairy Peak!',name:'Victor Locquet',role:'Striker',flag:'🇫🇷'},{nick:'Ferra',name:'Fernando Pacheco',role:'Midfield',flag:'🇪🇸'},{nick:'Alphyyy',name:'Alexis Robbe',role:'Defend',flag:'🇫🇷'}],
+     upcoming:[{oppName:'G2 Esports',oppLogo:'img_M/G2.webp',event:'RLCS World Championship',date:'Jun 11',myOdds:'2.10',oppOdds:'1.70',page:'match.html'}],
+     results:[{oppName:'G2 Esports',oppLogo:'img_M/G2.webp',event:'RLCS Spring',date:'May 19',score:'4–3',win:true},{oppName:'Moist',oppLogo:null,event:'RLCS Spring',date:'May 12',score:'3–1',win:true}],
+     stats:{played:40,wins:26,losses:14,winRate:65.0,maps:82}},
+  ];
+
+  /* ═══════════════════════════
+     STATE
+  ═══════════════════════════ */
+  var currentGame = 'lol';
+
+  /* ═══════════════════════════
+     HELPERS
+  ═══════════════════════════ */
+  function logoHtml(logo, name, size, color) {
+    if (logo) return '<img src="' + logo + '" alt="' + (name||'') + '" style="width:' + size + 'px;height:' + size + 'px;object-fit:contain;" onerror="this.style.display=\'none\'">';
+    return '<span class="tc-logo-init" style="color:' + (color||'#fff') + '">' + (name||'???').slice(0,3).toUpperCase() + '</span>';
+  }
+  function mlImg(logo, name, size) {
+    if (logo) return '<img src="' + logo + '" alt="" style="width:' + size + 'px;height:' + size + 'px;object-fit:contain;" onerror="this.style.display=\'none\'">';
+    return '<div class="ml-team-init">' + (name||'???').slice(0,3) + '</div>';
+  }
+
+  /* ═══════════════════════════
+     FILTER / RENDER
+  ═══════════════════════════ */
+  function updateCounts() {
+    var counts = { cs2:0, lol:0, valo:0, rl:0 };
+    TEAMS.forEach(function(t) { if (counts[t.game] !== undefined) counts[t.game]++; });
+    Object.keys(counts).forEach(function(g) {
+      var el = document.getElementById('cnt-' + g);
+      if (el) el.textContent = counts[g];
+    });
+  }
+
+  function setGame(game, btn) {
+    currentGame = game;
+    document.querySelectorAll('.game-pill').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    renderTeams();
+  }
+
+  function renderTeams() {
+    var sortBy = document.getElementById('sort-sel').value;
+    var query  = (document.getElementById('search-input').value || '').trim().toLowerCase();
+
+    var list = TEAMS.filter(function(t) {
+      var gameOk = currentGame === 'all' || t.game === currentGame;
+      var nameOk = !query || t.name.toLowerCase().includes(query) || t.short.toLowerCase().includes(query);
+      return gameOk && nameOk;
+    });
+
+    /* Sort: teams with upcoming match first (by popularity), then rest */
+    list.sort(function(a, b) {
+      var aHas = a.nextMatch ? 1 : 0;
+      var bHas = b.nextMatch ? 1 : 0;
+      if (aHas !== bHas) return bHas - aHas;
+      if (sortBy === 'rank')  return a.rank - b.rank;
+      if (sortBy === 'name')  return a.name.localeCompare(b.name);
+      return b.popularity - a.popularity;
+    });
+
+    var cnt = document.getElementById('team-count');
+    cnt.innerHTML = '<strong>' + list.length + '</strong> team' + (list.length !== 1 ? 's' : '');
+
+    var grid = document.getElementById('teams-grid');
+    grid.innerHTML = list.length
+      ? list.map(buildCard).join('')
+      : '<div class="empty-state">No teams found.</div>';
+  }
+
+  /* ═══════════════════════════
+     CARD
+  ═══════════════════════════ */
+  function buildCard(t) {
+    var g   = GAMES[t.game];
+    var dot = t.nextMatch ? '<div class="tc-match-dot" title="Upcoming match"></div>' : '';
+    var gamePill = g
+      ? '<div class="tc-game"><img src="' + g.logo + '" alt=""/> ' + g.name + '</div>'
+      : '';
+    return [
+      '<div class="team-card" onclick="window.location.href=\'KarmineCorp.html\'" title="View ' + t.name + '">',
+      '  ' + dot,
+      '  <div class="tc-logo">' + logoHtml(t.logo, t.short, 62, t.color) + '</div>',
+      '  <div class="tc-name">' + t.name + '</div>',
+      '  ' + gamePill,
+      '</div>',
+    ].join('');
+  }
+
+  /* ═══════════════════════════
+     NAVIGATION
+  ═══════════════════════════ */
+  function goMatch(page) { window.location.href = page; }
+
+  function showList() {
+    document.getElementById('view-detail').style.display = 'none';
+    document.getElementById('view-list').style.display   = 'flex';
+    document.querySelector('.main-content').scrollTop = 0;
+  }
+
+  function showTeam(id) {
+    var t = TEAMS.find(function(x) { return x.id === id; });
+    if (!t) return;
+    document.querySelectorAll('.dtab').forEach(function(b)     { b.classList.remove('active'); });
+    document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+    document.querySelectorAll('.dtab')[0].classList.add('active');
+    document.getElementById('tab-roster').classList.add('active');
+    populateDetail(t);
+    document.getElementById('view-list').style.display   = 'none';
+    document.getElementById('view-detail').style.display = 'flex';
+    document.querySelector('.detail-scroll').scrollTop = 0;
+  }
+
+  function switchTab(tab, btn) {
+    document.querySelectorAll('.dtab').forEach(function(b)     { b.classList.remove('active'); });
+    document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('tab-' + tab).classList.add('active');
+  }
+
+  /* ═══════════════════════════
+     DETAIL
+  ═══════════════════════════ */
+  function populateDetail(t) {
+    var g = GAMES[t.game];
+
+    var heroLogo = t.logo
+      ? '<img src="' + t.logo + '" alt="' + t.short + '" style="width:70px;height:70px;object-fit:contain;">'
+      : '<span class="hero-logo-init" style="color:' + (t.color||'#fff') + '">' + t.short.slice(0,3) + '</span>';
+
+    document.getElementById('detail-hero').innerHTML = [
+      '<div class="team-hero">',
+      '  <div class="hero-logo">' + heroLogo + '</div>',
+      '  <div class="hero-info">',
+      '    <div class="hero-name">' + t.name + '</div>',
+      '    <div class="hero-sub">',
+      '      ' + (g ? '<div class="hero-game"><img src="' + g.logo + '" alt=""/> ' + g.name + '</div>' : ''),
+      '      <div class="hero-rank">#' + t.rank + ' World</div>',
+      '      <div class="hero-region">· ' + t.region + '</div>',
+      '    </div>',
+      '    <div class="hero-stats">',
+      '      <div class="hs"><div class="hs-val">' + t.stats.played + '</div><div class="hs-lbl">Matches</div></div>',
+      '      <div class="hs"><div class="hs-val green">' + t.stats.wins + '</div><div class="hs-lbl">Wins</div></div>',
+      '      <div class="hs"><div class="hs-val red">' + t.stats.losses + '</div><div class="hs-lbl">Losses</div></div>',
+      '      <div class="hs"><div class="hs-val purple">' + t.stats.winRate + '%</div><div class="hs-lbl">Win Rate</div></div>',
+      '    </div>',
+      '  </div>',
+      '</div>',
+    ].join('');
+
+    /* Roster */
+    document.getElementById('tab-roster').innerHTML = '<div class="roster-grid">' + t.roster.map(function(p) {
+      var rc = ROLE_STYLE[p.role] || {bg:'rgba(255,255,255,0.08)',color:'#e2e8f0'};
+      return '<div class="player-card"><div class="pc-top"><span class="pc-initial">' + p.nick.slice(0,1) + '</span><span class="pc-role" style="background:' + rc.bg + ';color:' + rc.color + ';border:1px solid ' + rc.color + '33">' + p.role + '</span></div><div class="pc-body"><div class="pc-nick">' + p.nick + '</div><div class="pc-name">' + p.name + '</div><div class="pc-flag">' + p.flag + '</div></div></div>';
+    }).join('') + '</div>';
+
+    /* Upcoming */
+    var noMatch = '<div style="padding:36px 0;text-align:center;color:rgba(255,255,255,0.25);font-size:13px">No upcoming matches.</div>';
+    document.getElementById('tab-upcoming').innerHTML = '<div class="match-list">' + (t.upcoming && t.upcoming.length ? t.upcoming.map(function(m) {
+      return '<div class="ml-row clickable" onclick="goMatch(\'' + (m.page||'match.html') + '\')">' +
+        '<div class="ml-event">' + m.event + '</div>' +
+        '<div class="ml-teams"><div class="ml-team">' + mlImg(t.logo, t.short, 22) + '<span class="ml-tname">' + t.short + '</span></div>' +
+        '<div class="ml-vs">VS</div>' +
+        '<div class="ml-team">' + mlImg(m.oppLogo, m.oppName, 22) + '<span class="ml-tname">' + m.oppName + '</span></div></div>' +
+        '<div class="ml-date">' + m.date + '</div>' +
+        '<div class="ml-odds"><div class="ml-odd" onclick="event.stopPropagation();goMatch(\'' + (m.page||'match.html') + '\')">' + m.myOdds + '</div><div class="ml-odd" onclick="event.stopPropagation();goMatch(\'' + (m.page||'match.html') + '\')">' + m.oppOdds + '</div></div>' +
+        '</div>';
+    }).join('') : noMatch) + '</div>';
+
+    /* Results */
+    document.getElementById('tab-results').innerHTML = '<div class="match-list">' + (t.results && t.results.length ? t.results.map(function(r) {
+      return '<div class="ml-row">' +
+        '<div class="ml-event">' + r.event + '</div>' +
+        '<div class="ml-teams"><div class="ml-team">' + mlImg(t.logo, t.short, 22) + '<span class="ml-tname">' + t.short + '</span></div>' +
+        '<div class="ml-vs">VS</div>' +
+        '<div class="ml-team">' + mlImg(r.oppLogo, r.oppName, 22) + '<span class="ml-tname">' + r.oppName + '</span></div></div>' +
+        '<div class="ml-date">' + r.date + '</div>' +
+        '<div class="ml-score">' + r.score + '</div>' +
+        '<div class="ml-result ' + (r.win?'win':'loss') + '">' + (r.win?'WIN':'LOSS') + '</div>' +
+        '</div>';
+    }).join('') : noMatch) + '</div>';
+
+    /* Stats */
+    var s = t.stats;
+    var mpm = (s.maps/s.played).toFixed(1);
+    document.getElementById('tab-stats').innerHTML =
+      '<div class="stats-grid">' +
+      '<div class="stat-box"><div class="stat-box-val">' + s.played + '</div><div class="stat-box-lbl">Matches Played</div><div class="stat-box-sub">All time</div></div>' +
+      '<div class="stat-box"><div class="stat-box-val green">' + s.wins + '</div><div class="stat-box-lbl">Victories</div><div class="stat-box-sub">' + s.losses + ' losses</div></div>' +
+      '<div class="stat-box"><div class="stat-box-val purple">' + s.winRate + '%</div><div class="stat-box-lbl">Win Rate</div><div class="stat-box-sub">Overall</div></div>' +
+      '<div class="stat-box"><div class="stat-box-val">' + s.maps + '</div><div class="stat-box-lbl">Maps Played</div><div class="stat-box-sub">Avg ' + mpm + ' / match</div></div>' +
+      '</div>' +
+      '<div class="sec-lbl">Performance</div>' +
+      '<div class="perf-sec">' +
+      '<div class="perf-row"><div class="perf-hd"><span class="perf-lbl">Win Rate</span><span class="perf-pct">' + s.winRate + '%</span></div><div class="perf-track"><div class="perf-fill g" style="width:' + s.winRate + '%"></div></div></div>' +
+      '<div class="perf-row"><div class="perf-hd"><span class="perf-lbl">Maps / Match</span><span class="perf-pct">' + mpm + '</span></div><div class="perf-track"><div class="perf-fill p" style="width:' + Math.min(100,Math.round(parseFloat(mpm)/3*100)) + '%"></div></div></div>' +
+      '<div class="perf-row"><div class="perf-hd"><span class="perf-lbl">World Ranking</span><span class="perf-pct">#' + t.rank + '</span></div><div class="perf-track"><div class="perf-fill p" style="width:' + Math.max(5,Math.round((20-t.rank)/20*100)) + '%"></div></div></div>' +
+      '</div>';
+  }
+
+  /* ═══════════════════════════
+     INIT
+  ═══════════════════════════ */
+  updateCounts();
+  renderTeams();
+  </script>
+</body>
+</html>

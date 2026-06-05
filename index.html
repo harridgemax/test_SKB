@@ -1482,96 +1482,7 @@
 
     <div class="content-layout">
 
-    <!-- ══════════ SIDEBAR GAUCHE ══════════ -->
-    <aside class="sidebar-left">
-      <div class="sidebar-title">Tournaments</div>
-
-      <!-- CS2 -->
-      <div class="game-item open">
-        <div class="game-header" onclick="toggleGame(this)">
-          <div class="game-icon"><img src="img_M/logocs2.png" alt="CS2"/></div>
-          <span class="game-name">CS2</span>
-          <span class="game-chevron">▶</span>
-        </div>
-        <div class="tournament-list">
-          <a class="tournament-item" href="bracket.html"><span class="tournament-name">ESL Pro League S21</span><span class="t-live-dot"></span></a>
-          <a class="tournament-item" href="bracket.html"><span class="tournament-name">BLAST Premier Spring</span><span class="t-live-dot"></span></a>
-          <a class="tournament-item" href="bracket.html"><span class="tournament-name">IEM Cologne 2025</span><span class="t-count">3</span></a>
-        </div>
-      </div>
-
-      <!-- League of Legends -->
-      <div class="game-item">
-        <div class="game-header" onclick="toggleGame(this)">
-          <div class="game-icon"><img src="img_M/logo lol.png" alt="LoL"/></div>
-          <span class="game-name">League of Legends</span>
-          <span class="game-chevron">▶</span>
-        </div>
-        <div class="tournament-list">
-          <a class="tournament-item" href="bracket.html"><span class="tournament-name">LEC Spring Split</span><span class="t-live-dot"></span></a>
-          <a class="tournament-item" href="bracket.html"><span class="tournament-name">Worlds 2025</span><span class="t-count">8</span></a>
-          <a class="tournament-item" href="bracket.html"><span class="tournament-name">LCS Summer</span><span class="t-count">4</span></a>
-        </div>
-      </div>
-
-      <!-- Valorant -->
-      <div class="game-item">
-        <div class="game-header" onclick="toggleGame(this)">
-          <div class="game-icon"><img src="img_M/logo valo.png" alt="Valorant"/></div>
-          <span class="game-name">Valorant</span>
-          <span class="game-chevron">▶</span>
-        </div>
-        <div class="tournament-list">
-          <a class="tournament-item" href="bracket.html"><span class="tournament-name">VCT Americas</span><span class="t-live-dot"></span></a>
-          <a class="tournament-item" href="bracket.html"><span class="tournament-name">VCT EMEA</span><span class="t-count">5</span></a>
-          <a class="tournament-item" href="bracket.html"><span class="tournament-name">Champions 2025</span><span class="t-count">2</span></a>
-        </div>
-      </div>
-
-      <!-- Dota 2 -->
-      <div class="game-item">
-        <div class="game-header" onclick="toggleGame(this)">
-          <div class="game-icon"><img src="img_M/logo dota2.png" alt="Dota 2"/></div>
-          <span class="game-name">Dota 2</span>
-          <span class="game-chevron">▶</span>
-        </div>
-        <div class="tournament-list">
-          <a class="tournament-item" href="bracket.html"><span class="tournament-name">The International 2025</span><span class="t-live-dot"></span></a>
-          <a class="tournament-item" href="bracket.html"><span class="tournament-name">ESL One Berlin</span><span class="t-count">6</span></a>
-          <a class="tournament-item" href="bracket.html"><span class="tournament-name">DreamLeague S25</span><span class="t-count">3</span></a>
-        </div>
-      </div>
-
-      <!-- Rocket League -->
-      <div class="game-item">
-        <div class="game-header" onclick="toggleGame(this)">
-          <div class="game-icon"><img src="img_M/logo rocket league.png" alt="Rocket League"/></div>
-          <span class="game-name">Rocket League</span>
-          <span class="game-chevron">▶</span>
-        </div>
-        <div class="tournament-list">
-          <a class="tournament-item" href="bracket.html"><span class="tournament-name">RLCS 2025 Majors</span><span class="t-count">4</span></a>
-          <a class="tournament-item" href="bracket.html"><span class="tournament-name">EU Regional</span><span class="t-live-dot"></span></a>
-          <a class="tournament-item" href="bracket.html"><span class="tournament-name">World Championship</span><span class="t-count">1</span></a>
-        </div>
-      </div>
-
-      <!-- Overwatch -->
-      <div class="game-item">
-        <div class="game-header" onclick="toggleGame(this)">
-          <div class="game-icon"><img src="img_M/logo overwatch2.png" alt="Overwatch 2"/></div>
-          <span class="game-name">Overwatch 2</span>
-          <span class="game-chevron">▶</span>
-        </div>
-        <div class="tournament-list">
-          <a class="tournament-item" href="bracket.html"><span class="tournament-name">OWL Grand Finals</span><span class="t-count">2</span></a>
-          <a class="tournament-item" href="bracket.html"><span class="tournament-name">Contenders EU</span><span class="t-count">5</span></a>
-        </div>
-      </div>
-
-    </aside>
-
-    <!-- ══════════ CONTENU PRINCIPAL ══════════ -->
+        <script src="sidebar-left.js"></script>
     <div class="main-content">
 
     <!-- ══════════ CAROUSEL ══════════ -->
@@ -2156,56 +2067,7 @@
 
     </div><!-- /main-content -->
 
-    <!-- ══════════ SIDEBAR DROITE — BET BUILDER ══════════ -->
-    <aside class="sidebar-right">
-
-      <div class="bb-header">
-        <span class="bb-title">Bet Slip</span>
-        <span class="bb-count" id="bb-count">0</span>
-        <button class="bb-toggle" id="bbToggle" title="Réduire / Agrandir">&#10095;</button>
-      </div>
-
-      <!-- Paris ajoutés (injectés par betslip.js) -->
-      <div id="bb-bets-list"></div>
-
-      <div class="bb-divider"></div>
-
-      <!-- Cote combinée -->
-      <div class="bb-combined">
-        <span class="bb-combined-label">Combined odds</span>
-        <span class="bb-combined-val" id="bb-combined-val">1.00</span>
-      </div>
-
-      <div class="bb-divider"></div>
-
-      <!-- Mise -->
-      <div class="bb-stake-row">
-        <span class="bb-stake-label">Stake (£)</span>
-        <input class="bb-stake-input" type="number" placeholder="0.00" value="10" />
-      </div>
-
-      <!-- Montants rapides -->
-      <div class="bb-quick-amounts">
-        <div class="bb-qa">+5</div>
-        <div class="bb-qa">+10</div>
-        <div class="bb-qa">+25</div>
-        <div class="bb-qa">+50</div>
-      </div>
-
-      <!-- Gains potentiels -->
-      <div class="bb-gains">
-        <span class="bb-gains-label">Potential winnings</span>
-        <span class="bb-gains-val" id="bbGains">£30.50</span>
-      </div>
-
-      <!-- Bouton parier -->
-      <button class="bb-submit">Place bet</button>
-
-      <div class="bb-terms">Responsible gambling · 18+ · T&Cs apply</div>
-
-    </aside>
-
-    </div><!-- /content-layout -->
+        <script src="sidebar-right.js"></script>
 
   </div><!-- /page -->
   <script>if(sessionStorage.getItem('sb_access')!=='1'){window.location.replace('gate.html');}</script>
@@ -2382,7 +2244,7 @@
       btn.addEventListener('mouseleave', function() { clearInterval(iv); });
     })();
   </script>
-  <script src="betslip.js"></script>
+
 </body>
 </html>
 
