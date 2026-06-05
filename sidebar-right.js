@@ -110,9 +110,21 @@
   var s = document.currentScript;
   s.parentNode.insertBefore(aside, s);
 
+  /* ── Apply saved state immediately (before first paint) ── */
+  if (localStorage.getItem('skb_sr_collapsed') === '1') {
+    aside.classList.add('collapsed');
+    aside.style.transition = 'none';
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        aside.style.transition = '';
+      });
+    });
+  }
+
   /* ── Toggle collapse ── */
   aside.querySelector('#bbToggle').addEventListener('click', function () {
     aside.classList.toggle('collapsed');
+    localStorage.setItem('skb_sr_collapsed', aside.classList.contains('collapsed') ? '1' : '0');
   });
 
   /* ── Load betslip.js once ── */

@@ -1321,10 +1321,22 @@
       border: 1px solid rgba(255,255,255,0.1);
       background: #000;
       cursor: pointer;
-      transition: transform 0.2s, border-color 0.2s;
       position: relative;
+      transform-style: preserve-3d;
+      transform: perspective(800px) rotateX(2deg);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      will-change: transform, opacity;
     }
-    .gc-card:hover { transform: translateY(-5px); border-color: rgba(168,85,247,0.6); box-shadow: 0 12px 32px rgba(124,58,237,0.25); }
+    .holo-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.15) 0%, transparent 60%);
+      mix-blend-mode: screen;
+      z-index: 2;
+    }
     .gc-frame {
       width: 100%;
       height: 100%;
@@ -2242,6 +2254,50 @@
       var iv;
       btn.addEventListener('mouseenter', function() { iv = setInterval(spawnWhiteParticle, 65); });
       btn.addEventListener('mouseleave', function() { clearInterval(iv); });
+    })();
+
+    // ── Game card 3D tilt + holographic shimmer ──
+    (function () {
+      document.querySelectorAll('.gc-card').forEach(function (card) {
+        var overlay = document.createElement('div');
+        overlay.className = 'holo-overlay';
+        card.insertBefore(overlay, card.firstChild);
+
+        card.addEventListener('mousemove', function (e) {
+          var rect = card.getBoundingClientRect();
+          var x = (e.clientX - rect.left) / rect.width;
+          var y = (e.clientY - rect.top) / rect.height;
+          var rotX = (0.5 - y) * 16;
+          var rotY = (x - 0.5) * 16;
+          card.style.transform = 'perspective(800px) rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg) translateY(-6px) scale(1.03)';
+          card.style.boxShadow = '0 20px 40px rgba(0,0,0,0.5), 0 0 20px rgba(124,92,252,0.2)';
+          overlay.style.opacity = '1';
+          overlay.style.background = 'radial-gradient(circle at ' + (x * 100) + '% ' + (y * 100) + '%, rgba(255,255,255,0.12) 0%, rgba(124,92,252,0.06) 40%, transparent 70%)';
+        });
+
+        card.addEventListener('mouseleave', function () {
+          card.style.transform = 'perspective(800px) rotateX(2deg) rotateY(0deg)';
+          card.style.boxShadow = 'none';
+          overlay.style.opacity = '0';
+        });
+
+        card.addEventListener('click', function (e) {
+          e.preventDefault();
+          var href = card.getAttribute('href');
+          card.style.transition = 'transform 0.15s ease';
+          card.style.transform = 'perspective(800px) rotateY(90deg) scale(1.05)';
+          setTimeout(function () {
+            var mc = document.querySelector('.main-content');
+            if (mc) {
+              mc.style.willChange = 'transform, opacity';
+              mc.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+              mc.style.transform = 'scale(0.96)';
+              mc.style.opacity = '0';
+            }
+            setTimeout(function () { window.location.href = href; }, 300);
+          }, 150);
+        });
+      });
     })();
   </script>
 
