@@ -19,7 +19,7 @@
     '  flex-shrink:0;',
     '}',
     '.nav-logo{flex:1;text-decoration:none;}',
-    '.nav-logo img{height:30px;mix-blend-mode:screen;display:block;}',
+    '.nav-logo img{height:20px;mix-blend-mode:screen;display:block;}',
     '.nav-center{',
     '  display:flex;align-items:center;gap:36px;',
     '  flex:1;justify-content:center;',
@@ -174,6 +174,43 @@
     '}',
     '.skb-mob-content::-webkit-scrollbar{display:none;}',
 
+    /* ── Floating bet slip FAB ── */
+    '.skb-mob-bs-fab{position:absolute;bottom:72px;right:12px;width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);backdrop-filter:blur(8px);box-shadow:0 4px 16px rgba(0,0,0,0.3);display:none;align-items:center;justify-content:center;cursor:pointer;z-index:20;transition:transform 0.15s,opacity 0.2s;}',
+    '.skb-mob-bs-fab:hover{transform:scale(1.1);}',
+    '.skb-mob-bs-fab img{width:30px;height:30px;object-fit:contain;filter:brightness(0) invert(1);}',
+    '.skb-mob-bs-fab-badge{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;background:#ef4444;color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid #070b1f;}',
+
+    /* ── Bet slip panel (slide-up) ── */
+    '.skb-mob-bs-panel{position:absolute;bottom:0;left:0;right:0;z-index:30;background:#0d1025;border-radius:20px 20px 0 0;border-top:1px solid rgba(255,255,255,0.1);transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);display:flex;flex-direction:column;max-height:88%;}',
+    '.skb-mob-bs-panel.open{transform:translateY(0);}',
+    '.skb-mob-bs-panel-handle{width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,0.2);margin:10px auto 0;}',
+    '.skb-mob-bs-panel-hdr{display:flex;align-items:center;padding:12px 16px 8px;gap:8px;}',
+    '.skb-mob-bs-panel-title{font-family:\'Rajdhani\',sans-serif;font-size:16px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#fff;flex:1;}',
+    '.skb-mob-bs-panel-count{background:#7c3aed;color:#fff;font-size:10px;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;}',
+    '.skb-mob-bs-panel-close{background:none;border:none;color:rgba(255,255,255,0.5);font-size:20px;cursor:pointer;padding:0 2px;line-height:1;}',
+    '.skb-mob-bs-panel-body{flex:1;overflow-y:auto;padding:0 14px;scrollbar-width:none;}',
+    '.skb-mob-bs-panel-body::-webkit-scrollbar{display:none;}',
+    '.skb-mob-bs-empty{text-align:center;padding:28px 0;color:rgba(255,255,255,0.3);font-size:12px;line-height:1.6;}',
+    '.skb-mob-bs-bet{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;margin-bottom:8px;position:relative;}',
+    '.skb-mob-bs-bet-game{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#a855f7;margin-bottom:3px;}',
+    '.skb-mob-bs-bet-match{font-size:10px;color:rgba(255,255,255,0.45);margin-bottom:4px;}',
+    '.skb-mob-bs-bet-pick{font-family:\'Rajdhani\',sans-serif;font-size:13px;font-weight:700;color:#fff;}',
+    '.skb-mob-bs-bet-odds{position:absolute;top:10px;right:10px;font-family:\'Rajdhani\',sans-serif;font-size:14px;font-weight:800;color:#fff;background:#070b1f;border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:2px 8px;}',
+    '.skb-mob-bs-bet-remove{position:absolute;bottom:8px;right:10px;font-size:9px;color:rgba(255,255,255,0.4);cursor:pointer;letter-spacing:0.5px;}',
+    '.skb-mob-bs-bet-remove:hover{color:#fff;}',
+    '.skb-mob-bs-divider{height:1px;background:rgba(255,255,255,0.07);margin:8px 0;}',
+    '.skb-mob-bs-combined{display:flex;justify-content:space-between;align-items:center;padding:4px 0;}',
+    '.skb-mob-bs-combined-lbl{font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#fff;}',
+    '.skb-mob-bs-combined-val{font-family:\'Rajdhani\',sans-serif;font-size:18px;font-weight:700;color:#fff;background:#070b1f;border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:2px 8px;}',
+    '.skb-mob-bs-stake-lbl{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:5px;}',
+    '.skb-mob-bs-stake-input{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:8px 12px;color:#fff;font-family:\'Exo 2\',sans-serif;font-size:13px;outline:none;margin-bottom:8px;}',
+    '.skb-mob-bs-qa{display:flex;gap:6px;margin-bottom:8px;}',
+    '.skb-mob-bs-qa-btn{flex:1;padding:5px 0;text-align:center;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:6px;font-size:11px;font-weight:700;color:rgba(255,255,255,0.6);cursor:pointer;}',
+    '.skb-mob-bs-gains{display:flex;justify-content:space-between;align-items:center;background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.2);border-radius:8px;padding:8px 12px;margin-bottom:12px;}',
+    '.skb-mob-bs-gains-lbl{font-size:11px;font-weight:700;text-transform:uppercase;color:#fff;}',
+    '.skb-mob-bs-gains-val{font-family:\'Rajdhani\',sans-serif;font-size:18px;font-weight:700;color:#fff;}',
+    '.skb-mob-bs-submit{width:100%;padding:12px;border:1px solid rgba(255,255,255,0.3);border-radius:10px;background:rgba(255,255,255,0.15);color:#fff;font-family:\'Rajdhani\',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;cursor:pointer;margin-bottom:16px;}',
+
     /* bottom nav bar */
     '.skb-mob-nav{',
     '  flex-shrink:0;',
@@ -234,16 +271,12 @@
     '  backdrop-filter:blur(14px);',
     '  border-bottom:1px solid rgba(255,255,255,0.05);',
     '}',
-    '.skb-mob-logo{height:22px;mix-blend-mode:screen;}',
-    '.skb-mob-login{',
-    '  padding:6px 14px;border-radius:5px;border:none;cursor:pointer;',
-    '  background:rgba(255,255,255,0.15);',
-    '  border:1px solid rgba(255,255,255,0.3);',
-    "  font-family:'Exo 2',sans-serif;font-size:9px;font-weight:700;",
-    '  letter-spacing:1.5px;text-transform:uppercase;color:#fff;',
-    '  transform:skewX(-10deg);',
-    '}',
-    '.skb-mob-login span{display:inline-block;transform:skewX(10deg);}',
+    '.skb-mob-logo{height:16px;mix-blend-mode:screen;}',
+    '.skb-mob-avatar{height:38px;object-fit:contain;cursor:pointer;}',
+    '.skb-mob-header-right{display:flex;align-items:center;gap:6px;}',
+    '.skb-mob-wallet{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:10px;padding:5px 8px 5px 12px;cursor:pointer;}',
+    '.skb-mob-wallet-amount{font-family:\'Rajdhani\',sans-serif;font-size:14px;font-weight:800;color:#fff;letter-spacing:0.3px;white-space:nowrap;}',
+    '.skb-mob-wallet-add{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;}',
 
     /* ── Match card ── */
     '.skb-mob-card{',
@@ -678,6 +711,129 @@
     '}',
     '.skb-mob-live-odd-btn:hover{border-color:rgba(255,255,255,0.4);}',
 
+    /* ── Match view ── */
+    '.skb-mob-match-view{display:none;flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;flex-direction:column;}',
+    '.skb-mob-match-view::-webkit-scrollbar{display:none;}',
+    '.skb-mob-mv-topbar{display:flex;align-items:center;gap:10px;padding:12px 14px 8px;flex-shrink:0;}',
+    '.skb-mob-mv-back{background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;}',
+    '.skb-mob-mv-back img{width:22px;height:22px;object-fit:contain;transform:scaleX(-1);}',
+    '.skb-mob-mv-title{font-family:\'Rajdhani\',sans-serif;font-size:14px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.7);flex:1;}',
+    '.skb-mob-mv-live{display:flex;align-items:center;gap:4px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.35);border-radius:6px;padding:3px 8px;font-size:9px;font-weight:700;color:#f87171;letter-spacing:1px;}',
+    '.skb-mob-mv-live-dot{width:5px;height:5px;border-radius:50%;background:#ef4444;animation:skb-pulse 1.2s infinite;}',
+    '@keyframes skb-pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(1.4);}}',
+    /* header card */
+    '.skb-mob-mv-header{margin:0 14px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:16px;padding:16px 14px 12px;}',
+    '.skb-mob-mv-teams{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}',
+    '.skb-mob-mv-team{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;}',
+    '.skb-mob-mv-team img{width:52px;height:52px;object-fit:contain;}',
+    '.skb-mob-mv-team-name{font-family:\'Rajdhani\',sans-serif;font-size:13px;font-weight:700;color:#fff;text-align:center;}',
+    '.skb-mob-mv-team-odd{font-family:\'Rajdhani\',sans-serif;font-size:26px;font-weight:900;padding:5px 18px;border-radius:8px;background:#070b1f;border:1px solid rgba(255,255,255,0.15);cursor:pointer;transition:border-color 0.15s;}',
+    '.skb-mob-mv-team-odd:hover{border-color:rgba(255,255,255,0.4);}',
+    '.skb-mob-mv-center{display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;padding:0 8px;}',
+    '.skb-mob-mv-score{font-family:\'Rajdhani\',sans-serif;font-size:30px;font-weight:900;color:#fff;letter-spacing:2px;}',
+    '.skb-mob-mv-round{font-size:9px;font-weight:700;color:rgba(255,255,255,0.4);letter-spacing:1px;text-transform:uppercase;}',
+    '.skb-mob-mv-graph{width:100%;display:block;overflow:visible;}',
+    /* tabs */
+    '.skb-mob-mv-tabs{display:flex;gap:0;margin:0 14px 12px;background:rgba(255,255,255,0.04);border-radius:10px;padding:3px;flex-shrink:0;}',
+    '.skb-mob-mv-tab{flex:1;text-align:center;padding:6px 0;font-size:10px;font-weight:700;letter-spacing:0.5px;color:rgba(255,255,255,0.4);cursor:pointer;border-radius:8px;transition:background 0.15s,color 0.15s;}',
+    '.skb-mob-mv-tab.active{background:rgba(168,85,247,0.25);color:#fff;}',
+    /* tab panels */
+    '.skb-mob-mv-panel{display:none;padding:0 14px 80px;flex-direction:column;gap:10px;}',
+    '.skb-mob-mv-panel.active{display:flex;}',
+    /* event cards */
+    '.skb-mob-mv-section-ttl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:4px;}',
+    '.skb-mob-mv-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;overflow:hidden;}',
+    '.skb-mob-mv-card-hdr{padding:10px 12px 8px;font-size:11px;font-weight:700;color:rgba(255,255,255,0.7);border-bottom:1px solid rgba(255,255,255,0.06);}',
+    '.skb-mob-mv-card-row{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-bottom:1px solid rgba(255,255,255,0.05);}',
+    '.skb-mob-mv-card-row:last-child{border-bottom:none;}',
+    '.skb-mob-mv-card-lbl{font-size:12px;color:rgba(255,255,255,0.7);}',
+    '.skb-mob-mv-card-odd{font-family:\'Rajdhani\',sans-serif;font-size:15px;font-weight:800;padding:3px 12px;border-radius:7px;background:#070b1f;border:1px solid rgba(255,255,255,0.12);cursor:pointer;color:#fff;transition:border-color 0.15s;}',
+    '.skb-mob-mv-card-odd:hover{border-color:rgba(255,255,255,0.35);}',
+    '.skb-mob-mv-card-odd.bb-selected{background:#0f1530!important;border-color:rgba(255,255,255,0.5)!important;}',
+    /* double bet */
+    '.skb-mob-mv-dbl{display:flex;gap:8px;}',
+    '.skb-mob-mv-dbl-opt{flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:10px;padding:10px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:border-color 0.15s;}',
+    '.skb-mob-mv-dbl-opt:hover{border-color:rgba(168,85,247,0.4);}',
+    '.skb-mob-mv-dbl-team{font-family:\'Rajdhani\',sans-serif;font-size:12px;font-weight:700;color:#fff;}',
+    '.skb-mob-mv-dbl-opt-val{font-family:\'Rajdhani\',sans-serif;font-size:20px;font-weight:900;color:#fff;}',
+
+    /* ── Game view ── */
+    '.skb-mob-game-view{display:none;flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;flex-direction:column;}',
+    '.skb-mob-game-view::-webkit-scrollbar{display:none;}',
+    '.skb-mob-gv-topbar{display:flex;align-items:center;gap:10px;padding:12px 14px 8px;flex-shrink:0;}',
+    '.skb-mob-gv-back{background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;}',
+    '.skb-mob-gv-back img{width:22px;height:22px;object-fit:contain;transform:scaleX(-1);}',
+    '.skb-mob-gv-title{font-family:\'Rajdhani\',sans-serif;font-size:16px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#fff;flex:1;}',
+    '.skb-mob-gv-banner{position:relative;margin:0 14px 16px;border-radius:16px;overflow:hidden;min-height:130px;display:flex;flex-direction:column;justify-content:flex-end;border:1px solid rgba(255,255,255,0.09);}',
+    '.skb-mob-gv-banner-bg-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(0.25);}',
+    '.skb-mob-gv-banner-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(250,204,21,0.15) 0%,rgba(7,11,31,0.85) 60%);}',
+    '.skb-mob-gv-banner-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);opacity:0.2;width:70px;height:70px;object-fit:contain;}',
+    '.skb-mob-gv-banner-content{position:relative;z-index:2;padding:14px 16px 12px;}',
+    '.skb-mob-gv-game-name{font-family:\'Exo 2\',sans-serif;font-size:20px;font-weight:900;color:#fff;letter-spacing:1px;text-transform:uppercase;text-shadow:0 2px 12px rgba(0,0,0,0.5);}',
+    '.skb-mob-gv-followers{margin-top:7px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.5);letter-spacing:0.2px;}',
+    '.skb-mob-gv-bets-placed{margin-top:8px;font-size:9px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#fff;text-align:right;}',
+    '.skb-mob-gv-section-ttl{font-family:\'Exo 2\',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#fff;padding:0 14px;margin:20px 0 10px;}',
+    '.skb-mob-gv-section-ttl:first-of-type{margin-top:0;}',
+    '.skb-mob-gv-matches{padding:0 14px;display:flex;flex-direction:column;gap:10px;margin-bottom:4px;}',
+    '.skb-mob-gv-tourn-track{display:flex;gap:10px;overflow-x:auto;padding:0 14px 4px;scrollbar-width:none;touch-action:pan-x;cursor:grab;margin-bottom:4px;}',
+    '.skb-mob-gv-tourn-track:active{cursor:grabbing;}',
+    '.skb-mob-gv-tourn-track::-webkit-scrollbar{display:none;}',
+    '.skb-mob-gv-tc{flex:0 0 130px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:14px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;transition:border-color 0.15s,background 0.15s;}',
+    '.skb-mob-gv-tc:hover{background:rgba(168,85,247,0.1);border-color:rgba(168,85,247,0.35);}',
+    '.skb-mob-gv-tc-badge{width:44px;height:44px;border-radius:10px;border:1px solid;display:flex;align-items:center;justify-content:center;flex-shrink:0;}',
+    '.skb-mob-gv-tc-badge img{width:28px;height:28px;object-fit:contain;}',
+    '.skb-mob-gv-tc-name{font-family:\'Exo 2\',sans-serif;font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.3;}',
+    '.skb-mob-gv-tc-sub{font-size:8px;color:rgba(255,255,255,0.4);text-align:center;line-height:1.3;}',
+    '.skb-mob-gv-tc-status{font-size:8px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;padding:2px 8px;border-radius:4px;}',
+    '.skb-mob-gv-tc-status.is-live{background:rgba(233,30,140,0.2);color:#e91e8c;border:1px solid rgba(233,30,140,0.35);}',
+    '.skb-mob-gv-tc-status.upcoming{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.1);}',
+    '.skb-mob-gv-players{padding-bottom:80px;}',
+    '.skb-mob-gv-tlist{display:flex;flex-direction:row;gap:8px;padding:0 14px 4px;overflow-x:auto;scrollbar-width:none;touch-action:pan-x;cursor:grab;margin-bottom:12px;height:140px;align-items:flex-start;}',
+    '.skb-mob-gv-tlist:active{cursor:grabbing;}',
+    '.skb-mob-gv-tlist::-webkit-scrollbar{display:none;}',
+    '.skb-mob-gv-ti{flex:0 0 120px;display:flex;flex-direction:column;align-items:center;gap:7px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px 8px;cursor:pointer;transition:background 0.15s,border-color 0.15s;}',
+    '.skb-mob-gv-ti:hover{background:rgba(168,85,247,0.08);border-color:rgba(168,85,247,0.3);}',
+    '.skb-mob-gv-ti-logo{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}',
+    '.skb-mob-gv-ti-logo img{width:24px;height:24px;object-fit:contain;}',
+    '.skb-mob-gv-ti-info{width:100%;}',
+    '.skb-mob-gv-ti-name{font-family:\'Exo 2\',sans-serif;font-size:10px;font-weight:700;color:#fff;text-align:center;line-height:1.3;}',
+    '.skb-mob-gv-ti-sub{font-size:8px;color:rgba(255,255,255,0.4);margin-top:2px;text-align:center;line-height:1.3;}',
+    '.skb-mob-tourn-live{font-size:8px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;padding:2px 7px;border-radius:4px;flex-shrink:0;}',
+    '.skb-mob-tourn-live.is-live{background:rgba(233,30,140,0.2);color:#e91e8c;border:1px solid rgba(233,30,140,0.35);}',
+    '.skb-mob-tourn-live.upcoming{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.1);}',
+    '.skb-mob-gv-other-matches{padding:0 14px 90px;display:flex;flex-direction:column;gap:8px;}',
+    '.skb-mob-gv-om-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;}',
+    '.skb-mob-gv-om-label{font-size:9px;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:1px;text-transform:uppercase;}',
+    '.skb-mob-gv-om-row{display:flex;align-items:center;justify-content:space-between;gap:6px;}',
+    '.skb-mob-gv-om-team{display:flex;align-items:center;gap:7px;flex:1;min-width:0;}',
+    '.skb-mob-gv-om-team img{width:24px;height:24px;object-fit:contain;flex-shrink:0;}',
+    '.skb-mob-gv-om-name{font-family:\'Exo 2\',sans-serif;font-size:11px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}',
+    '.skb-mob-gv-om-team.right{flex-direction:row-reverse;text-align:right;}',
+    '.skb-mob-gv-om-vs{font-size:9px;font-weight:900;color:rgba(255,255,255,0.2);flex-shrink:0;}',
+    '.skb-mob-gv-om-odds{display:flex;gap:6px;}',
+    '.skb-mob-gv-om-odd{flex:1;text-align:center;padding:4px 0;border-radius:6px;background:#070b1f;border:1px solid rgba(255,255,255,0.1);font-family:\'Rajdhani\',sans-serif;font-size:14px;font-weight:900;color:#fff;cursor:pointer;}',
+    '.skb-mob-gv-om-odd:hover{border-color:rgba(255,255,255,0.3);background:rgba(255,255,255,0.08);}',
+
+    /* ── Store view ── */
+    '.skb-mob-store-view{display:none;flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;flex-direction:column;}',
+    '.skb-mob-store-view::-webkit-scrollbar{display:none;}',
+    '.skb-mob-store-topbar{display:flex;align-items:center;gap:10px;padding:14px 14px 8px;flex-shrink:0;}',
+    '.skb-mob-store-back{background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;}',
+    '.skb-mob-store-title{font-family:\'Rajdhani\',sans-serif;font-size:16px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#fff;flex:1;}',
+    '.skb-mob-store-coins{display:flex;align-items:center;gap:5px;background:rgba(250,204,21,0.1);border:1px solid rgba(250,204,21,0.3);border-radius:8px;padding:4px 10px;}',
+    '.skb-mob-store-coins-val{font-family:\'Rajdhani\',sans-serif;font-size:14px;font-weight:800;color:#facc15;}',
+    '.skb-mob-store-section{padding:14px 14px 4px;}',
+    '.skb-mob-store-section-ttl{font-size:15px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#fff;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.07);}',
+    '.skb-mob-store-grid{display:flex;gap:8px;}',
+    '.skb-mob-store-item{flex:1;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);overflow:hidden;cursor:pointer;transition:border-color 0.2s,transform 0.2s;display:flex;flex-direction:column;}',
+    '.skb-mob-store-item:hover{border-color:rgba(168,85,247,0.4);transform:translateY(-3px);}',
+    '.skb-mob-store-item.equipped{border-color:rgba(168,85,247,0.6);background:rgba(168,85,247,0.08);}',
+    '.skb-mob-store-img{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;padding:4px;background:rgba(255,255,255,0.02);}',
+    '.skb-mob-store-img img{width:100%;height:100%;object-fit:contain;}',
+    '.skb-mob-store-info{padding:8px;}',
+    '.skb-mob-store-name{font-family:\'Rajdhani\',sans-serif;font-size:14px;font-weight:800;letter-spacing:0.5px;text-transform:uppercase;color:#fff;margin-bottom:6px;text-align:center;}',
+    '.skb-mob-store-price{font-size:10px;font-weight:600;color:rgba(255,255,255,0.45);text-align:center;margin-top:2px;}',
+
     /* ── Profil view ── */
     '.skb-mob-profil-view{display:none;flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;}',
     '.skb-mob-profil-view::-webkit-scrollbar{display:none;}',
@@ -797,6 +953,11 @@
     '}',
     '.skb-mob-bh-badge.won{background:rgba(56,189,248,0.15);color:#38bdf8;border:1px solid rgba(56,189,248,0.3);}',
     '.skb-mob-bh-badge.lost{background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.3);}',
+
+    /* ── Not Yet Available view ── */
+    '.skb-mob-nya-view{display:none;flex:1;flex-direction:column;align-items:center;justify-content:center;background:#000;gap:14px;}',
+    '.skb-mob-nya-title{font-family:\'Exo 2\',sans-serif;font-size:20px;font-weight:900;color:#fff;letter-spacing:2px;text-transform:uppercase;text-align:center;}',
+    '.skb-mob-nya-sub{font-size:11px;color:rgba(255,255,255,0.3);letter-spacing:1px;text-align:center;}',
 
     /* ── Bracket view ── */
     '.skb-mob-bracket-view{display:none;flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;flex-direction:column;}',
@@ -1010,9 +1171,8 @@
 
     /* Avatar + dropdown */
     '  <div class="nav-avatar-wrap">',
-    '    <div class="nav-avatar" id="skbNavAvatar">',
-    '      GR',
-    '      <div class="nav-online"></div>',
+    '    <div id="skbNavAvatar" style="cursor:pointer;display:flex;align-items:center;">',
+    '      <img src="img_M/head skin .png" alt="avatar" style="height:42px;object-fit:contain;display:block;"/>',
     '    </div>',
     '    <div class="nav-dropdown" id="skbNavDropdown">',
     '      <a class="nav-dd-item" href="profile.html">',
@@ -1091,7 +1251,10 @@
     '    <div class="skb-mob-content">',
     '    <div class="skb-mob-header">',
     '      <img class="skb-mob-logo" src="img_M/SKB LOGO.png" alt="SkillBet" />',
-    '      <button class="skb-mob-login"><span>LOGIN</span></button>',
+    '      <div class="skb-mob-header-right">',
+    '        <button class="skb-mob-wallet"><span class="skb-mob-wallet-amount">£1,247.50</span><span class="skb-mob-wallet-add">+</span></button>',
+    '        <img class="skb-mob-avatar" src="img_M/head skin .png" alt="avatar"/>',
+    '      </div>',
     '    </div>',
     '    <div class="skb-mob-card">',
     '      <div class="skb-mob-card-bg"><img src="img_M/image.jpg" alt=""/></div>',
@@ -1735,7 +1898,10 @@
     '  <div class="skb-mob-esport-view">',
     '    <div class="skb-mob-header">',
     '      <img class="skb-mob-logo" src="img_M/SKB LOGO.png" alt="SkillBet" />',
-    '      <button class="skb-mob-login"><span>LOGIN</span></button>',
+    '      <div class="skb-mob-header-right">',
+    '        <button class="skb-mob-wallet"><span class="skb-mob-wallet-amount">£1,247.50</span><span class="skb-mob-wallet-add">+</span></button>',
+    '        <img class="skb-mob-avatar" src="img_M/head skin .png" alt="avatar"/>',
+    '      </div>',
     '    </div>',
     '    <div class="skb-mob-tourn">',
     '      <div class="skb-mob-tourn-title">Current Tournaments</div>',
@@ -1823,7 +1989,10 @@
     '  <div class="skb-mob-live-view">',
     '    <div class="skb-mob-header">',
     '      <img class="skb-mob-logo" src="img_M/SKB LOGO.png" alt="SkillBet" />',
-    '      <button class="skb-mob-login"><span>LOGIN</span></button>',
+    '      <div class="skb-mob-header-right">',
+    '        <button class="skb-mob-wallet"><span class="skb-mob-wallet-amount">£1,247.50</span><span class="skb-mob-wallet-add">+</span></button>',
+    '        <img class="skb-mob-avatar" src="img_M/head skin .png" alt="avatar"/>',
+    '      </div>',
     '    </div>',
     '    <div class="skb-mob-live-filter">',
     '      <button class="skb-mob-live-filter-btn active" data-game="all">All</button>',
@@ -1930,7 +2099,10 @@
     '  <div class="skb-mob-profil-view">',
     '    <div class="skb-mob-header">',
     '      <img class="skb-mob-logo" src="img_M/SKB LOGO.png" alt="SkillBet" />',
-    '      <button class="skb-mob-login"><span>LOGIN</span></button>',
+    '      <div class="skb-mob-header-right">',
+    '        <button class="skb-mob-wallet"><span class="skb-mob-wallet-amount">£1,247.50</span><span class="skb-mob-wallet-add">+</span></button>',
+    '        <img class="skb-mob-avatar" src="img_M/head skin .png" alt="avatar"/>',
+    '      </div>',
     '    </div>',
     '    <div class="skb-mob-profil-header">',
     '      <div class="skb-mob-profil-skin">',
@@ -2112,6 +2284,513 @@
     '    </div>',
 
     '  </div>',   /* end profil view */
+
+    /* ── Store view ── */
+    '  <div class="skb-mob-store-view">',
+    '    <div class="skb-mob-store-topbar">',
+    '      <button class="skb-mob-store-back"><img src="img_M/arrow.png" alt="back" style="width:26px;height:26px;object-fit:contain;transform:scaleX(-1);"/></button>',
+    '      <div class="skb-mob-store-title">Store</div>',
+    '',
+    '    </div>',
+
+    /* Characters */
+    '    <div class="skb-mob-store-section">',
+    '      <div class="skb-mob-store-section-ttl">Characters</div>',
+    '      <div class="skb-mob-store-grid">',
+    '        <div class="skb-mob-store-item equipped">',
+    '          <div class="skb-mob-store-img" style="background:transparent;"><img src="img_M/lion.png" alt="Lion" style="mix-blend-mode:screen;"/></div>',
+    '          <div class="skb-mob-store-info"><div class="skb-mob-store-name">Bad Lion</div><div class="skb-mob-store-price">4.99£</div></div>',
+    '        </div>',
+    '        <div class="skb-mob-store-item">',
+    '          <div class="skb-mob-store-img" style="background:transparent;"><img src="img_M/axo.png" alt="Axo" style="mix-blend-mode:screen;"/></div>',
+    '          <div class="skb-mob-store-info"><div class="skb-mob-store-name">AXO</div><div class="skb-mob-store-price">4.99£</div></div>',
+    '        </div>',
+    '        <div class="skb-mob-store-item">',
+    '          <div class="skb-mob-store-img" style="background:transparent;"><img src="img_M/panda.png" alt="Panda" style="mix-blend-mode:screen;"/></div>',
+    '          <div class="skb-mob-store-info"><div class="skb-mob-store-name">Hight Panda</div><div class="skb-mob-store-price">4.99£</div></div>',
+    '        </div>',
+    '      </div>',
+    '    </div>',
+
+    /* Head accessories */
+    '    <div class="skb-mob-store-section">',
+    '      <div class="skb-mob-store-section-ttl">Head Accessories</div>',
+    '      <div class="skb-mob-store-grid">',
+    '        <div class="skb-mob-store-item">',
+    '          <div class="skb-mob-store-img"><img src="img_M/casquette.png" alt="Cap"/></div>',
+    '          <div class="skb-mob-store-info"><div class="skb-mob-store-name">Blue Cap</div><div class="skb-mob-store-price">1.50£</div></div>',
+    '        </div>',
+    '        <div class="skb-mob-store-item">',
+    '          <div class="skb-mob-store-img" style="filter:hue-rotate(45deg);"><img src="img_M/casquette.png" alt="Cap Gold"/></div>',
+    '          <div class="skb-mob-store-info"><div class="skb-mob-store-name">Gold Cap</div><div class="skb-mob-store-price">1.50£</div></div>',
+    '        </div>',
+    '        <div class="skb-mob-store-item">',
+    '          <div class="skb-mob-store-img" style="filter:hue-rotate(260deg);"><img src="img_M/casquette.png" alt="Cap Purple"/></div>',
+    '          <div class="skb-mob-store-info"><div class="skb-mob-store-name">Purple Cap</div><div class="skb-mob-store-price">1.50£</div></div>',
+    '        </div>',
+    '      </div>',
+    '    </div>',
+
+    /* Back accessory */
+    '    <div class="skb-mob-store-section">',
+    '      <div class="skb-mob-store-section-ttl">Back Accessory</div>',
+    '      <div class="skb-mob-store-grid">',
+    '        <div class="skb-mob-store-item">',
+    '          <div class="skb-mob-store-img"><img src="img_M/manette.png" alt="Controller"/></div>',
+    '          <div class="skb-mob-store-info"><div class="skb-mob-store-name">Controller</div><div class="skb-mob-store-price">2.25£</div></div>',
+    '        </div>',
+    '        <div class="skb-mob-store-item">',
+    '          <div class="skb-mob-store-img" style="filter:hue-rotate(120deg);"><img src="img_M/manette.png" alt="Controller XL"/></div>',
+    '          <div class="skb-mob-store-info"><div class="skb-mob-store-name">Ctrl XL</div><div class="skb-mob-store-price">2.25£</div></div>',
+    '        </div>',
+    '        <div class="skb-mob-store-item">',
+    '          <div class="skb-mob-store-img" style="filter:hue-rotate(200deg);"><img src="img_M/manette.png" alt="Controller Pro"/></div>',
+    '          <div class="skb-mob-store-info"><div class="skb-mob-store-name">Ctrl Pro</div><div class="skb-mob-store-price">2.25£</div></div>',
+    '        </div>',
+    '      </div>',
+    '    </div>',
+
+    /* Foot accessories */
+    '    <div class="skb-mob-store-section" style="padding-bottom:40px;">',
+    '      <div class="skb-mob-store-section-ttl">Foot Accessories</div>',
+    '      <div class="skb-mob-store-grid">',
+    '        <div class="skb-mob-store-item">',
+    '          <div class="skb-mob-store-img"><img src="img_M/shoes.png" alt="Shoes"/></div>',
+    '          <div class="skb-mob-store-info"><div class="skb-mob-store-name">W Low Shoes</div><div class="skb-mob-store-price">3.00£</div></div>',
+    '        </div>',
+    '        <div class="skb-mob-store-item">',
+    '          <div class="skb-mob-store-img" style="filter:hue-rotate(45deg);"><img src="img_M/shoes.png" alt="Shoes Gold"/></div>',
+    '          <div class="skb-mob-store-info"><div class="skb-mob-store-name">Gold Shoes</div><div class="skb-mob-store-price">3.00£</div></div>',
+    '        </div>',
+    '        <div class="skb-mob-store-item">',
+    '          <div class="skb-mob-store-img" style="filter:hue-rotate(260deg);"><img src="img_M/shoes.png" alt="Shoes Neon"/></div>',
+    '          <div class="skb-mob-store-info"><div class="skb-mob-store-name">Neon Shoes</div><div class="skb-mob-store-price">3.00£</div></div>',
+    '        </div>',
+    '      </div>',
+    '    </div>',
+
+    '  </div>',   /* end store view */
+
+    /* ── Match view ── */
+    '  <div class="skb-mob-match-view" id="skbMatchView">',
+
+    /* top bar */
+    '    <div class="skb-mob-mv-topbar">',
+    '      <button class="skb-mob-mv-back" id="skbMvBack"><img src="img_M/arrow.png" alt="back"/></button>',
+    '      <div class="skb-mob-mv-title">NaVi vs Spirit</div>',
+    '    </div>',
+
+    /* header card */
+    '    <div class="skb-mob-mv-header">',
+    '      <div class="skb-mob-mv-teams">',
+    '        <div class="skb-mob-mv-team">',
+    '          <img src="img_M/NAVI_Logo_2020.png" alt="NaVi"/>',
+    '          <div class="skb-mob-mv-team-name">NaVi</div>',
+    '          <div class="skb-mob-mv-team-odd skb-mob-mv-card-odd" data-pick="NaVi à gagner" data-odds="2.30" data-match="NaVi vs Spirit">2.30</div>',
+    '        </div>',
+    '        <div class="skb-mob-mv-center">',
+    '          <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.4);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">CS2 · ESL Pro League</div>',
+    '          <div class="skb-mob-mv-score">13 — 8</div>',
+    '          <div class="skb-mob-mv-round">Map 2 · R15</div>',
+    '        </div>',
+    '        <div class="skb-mob-mv-team">',
+    '          <img src="img_M/spirit.png" alt="Spirit" style="filter:invert(1);mix-blend-mode:screen;"/>',
+    '          <div class="skb-mob-mv-team-name">Spirit</div>',
+    '          <div class="skb-mob-mv-team-odd skb-mob-mv-card-odd" data-pick="Spirit à gagner" data-odds="1.55" data-match="NaVi vs Spirit">1.55</div>',
+    '        </div>',
+    '      </div>',
+    /* win probability graph */
+    '      <svg class="skb-mob-mv-graph" viewBox="0 0 500 100" preserveAspectRatio="xMidYMid meet">',
+    '        <defs>',
+    '          <linearGradient id="mvga" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#facc15" stop-opacity="0.25"/><stop offset="100%" stop-color="#facc15" stop-opacity="0"/></linearGradient>',
+    '          <linearGradient id="mvgb" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffffff" stop-opacity="0"/><stop offset="100%" stop-color="#ffffff" stop-opacity="0.12"/></linearGradient>',
+    '        </defs>',
+    '        <line x1="20" y1="50" x2="460" y2="50" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="4,3"/>',
+    '        <path d="M20,50 60,42 95,46 130,38 165,32 200,40 235,28 270,34 305,24 340,30 375,20 410,26 460,20 L460,50 Z" fill="url(#mvga)"/>',
+    '        <path d="M20,50 60,58 95,54 130,62 165,68 200,60 235,72 270,66 305,76 340,70 375,80 410,74 460,80 L460,50 Z" fill="url(#mvgb)"/>',
+    '        <polyline points="20,50 60,42 95,46 130,38 165,32 200,40 235,28 270,34 305,24 340,30 375,20 410,26 460,20" fill="none" stroke="#facc15" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>',
+    '        <polyline points="20,50 60,58 95,54 130,62 165,68 200,60 235,72 270,66 305,76 340,70 375,80 410,74 460,80" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>',
+    '        <circle cx="460" cy="20" r="4" fill="#facc15"/>',
+    '        <circle cx="460" cy="80" r="4" fill="rgba(255,255,255,0.7)"/>',
+    '        <text x="466" y="24" fill="#facc15" font-size="12" font-weight="700" font-family="Exo 2,sans-serif">NaVi 27%</text>',
+    '        <text x="466" y="84" fill="rgba(255,255,255,0.7)" font-size="12" font-weight="700" font-family="Exo 2,sans-serif">Spirit 73%</text>',
+    '      </svg>',
+    '    </div>',
+
+    /* tabs */
+    '    <div class="skb-mob-mv-tabs">',
+    '      <div class="skb-mob-mv-tab active" data-tab="mv-main">Main</div>',
+    '      <div class="skb-mob-mv-tab" data-tab="mv-match">Match</div>',
+    '      <div class="skb-mob-mv-tab" data-tab="mv-map">Map</div>',
+    '      <div class="skb-mob-mv-tab" data-tab="mv-players">Players</div>',
+    '    </div>',
+
+    /* ── Tab Main ── */
+    '    <div class="skb-mob-mv-panel active" id="mv-main">',
+    '      <div class="skb-mob-mv-section-ttl">Victoire du match</div>',
+    '      <div class="skb-mob-mv-dbl">',
+    '        <div class="skb-mob-mv-dbl-opt skb-mob-mv-card-odd" data-pick="NaVi à gagner" data-odds="2.30" data-match="NaVi vs Spirit"><div class="skb-mob-mv-dbl-team">NaVi</div><div class="skb-mob-mv-dbl-opt-val">2.30</div></div>',
+    '        <div class="skb-mob-mv-dbl-opt skb-mob-mv-card-odd" data-pick="Spirit à gagner" data-odds="1.55" data-match="NaVi vs Spirit"><div class="skb-mob-mv-dbl-team">Spirit</div><div class="skb-mob-mv-dbl-opt-val">1.55</div></div>',
+    '      </div>',
+    '      <div class="skb-mob-mv-section-ttl">Événements</div>',
+    '      <div class="skb-mob-mv-card">',
+    '        <div class="skb-mob-mv-card-hdr">First Blood — Map 2</div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">NaVi first blood</span><div class="skb-mob-mv-card-odd" data-pick="NaVi first blood" data-odds="3.40" data-match="NaVi vs Spirit">3.40</div></div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">Spirit first blood</span><div class="skb-mob-mv-card-odd" data-pick="Spirit first blood" data-odds="1.28" data-match="NaVi vs Spirit">1.28</div></div>',
+    '      </div>',
+    '      <div class="skb-mob-mv-card">',
+    '        <div class="skb-mob-mv-card-hdr">donk — Total kills</div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">Plus de 15,5</span><div class="skb-mob-mv-card-odd" data-pick="donk +15.5 kills" data-odds="1.75" data-match="NaVi vs Spirit">1.75</div></div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">Moins de 15,5</span><div class="skb-mob-mv-card-odd" data-pick="donk -15.5 kills" data-odds="2.05" data-match="NaVi vs Spirit">2.05</div></div>',
+    '      </div>',
+    '      <div class="skb-mob-mv-card">',
+    '        <div class="skb-mob-mv-card-hdr">Pistol round — Map 2</div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">NaVi (CT side)</span><div class="skb-mob-mv-card-odd" data-pick="NaVi pistol round" data-odds="2.10" data-match="NaVi vs Spirit">2.10</div></div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">Spirit (T side)</span><div class="skb-mob-mv-card-odd" data-pick="Spirit pistol round" data-odds="1.72" data-match="NaVi vs Spirit">1.72</div></div>',
+    '      </div>',
+    '      <div class="skb-mob-mv-card">',
+    '        <div class="skb-mob-mv-card-hdr">Kill au couteau</div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">Oui</span><div class="skb-mob-mv-card-odd" data-pick="Kill couteau — Oui" data-odds="8.50" data-match="NaVi vs Spirit">8.50</div></div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">Non</span><div class="skb-mob-mv-card-odd" data-pick="Kill couteau — Non" data-odds="1.06" data-match="NaVi vs Spirit">1.06</div></div>',
+    '      </div>',
+    '    </div>',
+
+    /* ── Tab Match ── */
+    '    <div class="skb-mob-mv-panel" id="mv-match">',
+    '      <div class="skb-mob-mv-card">',
+    '        <div class="skb-mob-mv-card-hdr">Vainqueur de la série</div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">NaVi 2-0</span><div class="skb-mob-mv-card-odd" data-pick="NaVi 2-0" data-odds="3.20" data-match="NaVi vs Spirit">3.20</div></div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">NaVi 2-1</span><div class="skb-mob-mv-card-odd" data-pick="NaVi 2-1" data-odds="5.50" data-match="NaVi vs Spirit">5.50</div></div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">Spirit 2-1</span><div class="skb-mob-mv-card-odd" data-pick="Spirit 2-1" data-odds="2.80" data-match="NaVi vs Spirit">2.80</div></div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">Spirit 2-0</span><div class="skb-mob-mv-card-odd" data-pick="Spirit 2-0" data-odds="1.85" data-match="NaVi vs Spirit">1.85</div></div>',
+    '      </div>',
+    '      <div class="skb-mob-mv-card">',
+    '        <div class="skb-mob-mv-card-hdr">Total de rounds</div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">Plus de 55,5</span><div class="skb-mob-mv-card-odd" data-pick="Total rounds +55.5" data-odds="1.90" data-match="NaVi vs Spirit">1.90</div></div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">Moins de 55,5</span><div class="skb-mob-mv-card-odd" data-pick="Total rounds -55.5" data-odds="1.90" data-match="NaVi vs Spirit">1.90</div></div>',
+    '      </div>',
+    '    </div>',
+
+    /* ── Tab Map ── */
+    '    <div class="skb-mob-mv-panel" id="mv-map">',
+    '      <div class="skb-mob-mv-card">',
+    '        <div class="skb-mob-mv-card-hdr">Map 2 — Inferno</div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">NaVi gagne map 2</span><div class="skb-mob-mv-card-odd" data-pick="NaVi gagne map 2" data-odds="2.50" data-match="NaVi vs Spirit">2.50</div></div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">Spirit gagne map 2</span><div class="skb-mob-mv-card-odd" data-pick="Spirit gagne map 2" data-odds="1.52" data-match="NaVi vs Spirit">1.52</div></div>',
+    '      </div>',
+    '      <div class="skb-mob-mv-card">',
+    '        <div class="skb-mob-mv-card-hdr">Rounds map 2</div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">NaVi handicap -3,5</span><div class="skb-mob-mv-card-odd" data-pick="NaVi hcp -3.5" data-odds="2.20" data-match="NaVi vs Spirit">2.20</div></div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">Spirit handicap +3,5</span><div class="skb-mob-mv-card-odd" data-pick="Spirit hcp +3.5" data-odds="1.65" data-match="NaVi vs Spirit">1.65</div></div>',
+    '      </div>',
+    '    </div>',
+
+    /* ── Tab Players ── */
+    '    <div class="skb-mob-mv-panel" id="mv-players">',
+    '      <div class="skb-mob-mv-card">',
+    '        <div class="skb-mob-mv-card-hdr">s1mple — Total kills map 2</div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">Plus de 18,5</span><div class="skb-mob-mv-card-odd" data-pick="s1mple +18.5 kills" data-odds="1.85" data-match="NaVi vs Spirit">1.85</div></div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">Moins de 18,5</span><div class="skb-mob-mv-card-odd" data-pick="s1mple -18.5 kills" data-odds="1.95" data-match="NaVi vs Spirit">1.95</div></div>',
+    '      </div>',
+    '      <div class="skb-mob-mv-card">',
+    '        <div class="skb-mob-mv-card-hdr">donk — MVP du match</div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">Oui</span><div class="skb-mob-mv-card-odd" data-pick="donk MVP" data-odds="2.40" data-match="NaVi vs Spirit">2.40</div></div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">Non</span><div class="skb-mob-mv-card-odd" data-pick="donk pas MVP" data-odds="1.48" data-match="NaVi vs Spirit">1.48</div></div>',
+    '      </div>',
+    '      <div class="skb-mob-mv-card">',
+    '        <div class="skb-mob-mv-card-hdr">Meilleur ratio — map 2</div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">s1mple</span><div class="skb-mob-mv-card-odd" data-pick="s1mple best ratio" data-odds="2.10" data-match="NaVi vs Spirit">2.10</div></div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">donk</span><div class="skb-mob-mv-card-odd" data-pick="donk best ratio" data-odds="1.70" data-match="NaVi vs Spirit">1.70</div></div>',
+    '        <div class="skb-mob-mv-card-row"><span class="skb-mob-mv-card-lbl">Autre joueur</span><div class="skb-mob-mv-card-odd" data-pick="autre best ratio" data-odds="3.50" data-match="NaVi vs Spirit">3.50</div></div>',
+    '      </div>',
+    '    </div>',
+
+    '  </div>',   /* end match view */
+
+    /* ── Game view ── */
+    '  <div class="skb-mob-game-view" id="skbGameView">',
+
+    /* top bar */
+    '    <div class="skb-mob-gv-topbar">',
+    '      <button class="skb-mob-gv-back" id="skbGvBack"><img src="img_M/arrow.png" alt="back"/></button>',
+    '      <div class="skb-mob-gv-title" id="skbGvTitle">CS2</div>',
+    '    </div>',
+
+    /* banner */
+    '    <div class="skb-mob-gv-banner">',
+    '      <img class="skb-mob-gv-banner-bg-img" src="img_M/game_card/CARD-CS2.png" alt="" id="skbGvBannerImg"/>',
+    '      <div class="skb-mob-gv-banner-overlay" id="skbGvBannerOverlay"></div>',
+    '      <img class="skb-mob-gv-banner-icon" src="img_M/logocs2.png" alt="" id="skbGvIcon"/>',
+    '      <div class="skb-mob-gv-banner-content">',
+    '        <div class="skb-mob-gv-game-name" id="skbGvGameName">Counter-Strike 2</div>',
+    '        <div class="skb-mob-gv-followers" id="skbGvFollowers">Followed by 847,312 people</div>',
+    '      </div>',
+    '    </div>',
+
+    /* Huge Craze */
+    '    <div class="skb-mob-gv-section-ttl">Huge Craze</div>',
+    '    <div class="skb-mob-gv-matches">',
+
+    /* Card 1 — Vitality vs NaVi */
+    '      <div class="skb-mob-hcard" style="flex:0 0 auto;scroll-snap-align:unset;">',
+    '        <div class="skb-mob-hcard-bg contain"><img src="img_M/Counter_Strike_2_Logo.png" alt=""/></div>',
+    '        <div class="skb-mob-hcard-content">',
+    '          <div class="skb-mob-hcard-label">CS2 · ESL Pro League S21 — Final</div>',
+    '          <div class="skb-mob-hcard-teams">',
+    '            <div class="skb-mob-hcard-team"><img src="img_M/logovita.png" alt="Vitality"/><div class="skb-mob-hcard-odd">1.75</div></div>',
+    '            <div class="skb-mob-hcard-vs">VS</div>',
+    '            <div class="skb-mob-hcard-team"><img src="img_M/NAVI_Logo_2020.png" alt="NaVi" style="mix-blend-mode:multiply"/><div class="skb-mob-hcard-odd">2.05</div></div>',
+    '          </div>',
+    '          <svg class="skb-mob-hcard-graph" viewBox="0 0 500 120" preserveAspectRatio="xMidYMid meet">',
+    '            <defs>',
+    '              <linearGradient id="gvcg1a" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#facc15" stop-opacity="0"/><stop offset="100%" stop-color="#facc15" stop-opacity="0.22"/></linearGradient>',
+    '              <linearGradient id="gvcg1b" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#60a5fa" stop-opacity="0.18"/><stop offset="100%" stop-color="#60a5fa" stop-opacity="0"/></linearGradient>',
+    '            </defs>',
+    '            <line x1="38" y1="60" x2="430" y2="60" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="4,3"/>',
+    '            <path d="M38,60 125,54 212,48 300,44 387,40 430,38 L430,108 L38,108 Z" fill="url(#gvcg1a)"/>',
+    '            <path d="M38,60 125,66 212,72 300,76 387,80 430,82 L430,8 L38,8 Z" fill="url(#gvcg1b)"/>',
+    '            <polyline points="38,60 125,54 212,48 300,44 387,40 430,38" fill="none" stroke="#facc15" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>',
+    '            <polyline points="38,60 125,66 212,72 300,76 387,80 430,82" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>',
+    '            <circle cx="430" cy="38" r="3.5" fill="#facc15"/><circle cx="430" cy="82" r="3.5" fill="#60a5fa"/>',
+    '            <text x="436" y="42" fill="#facc15" font-size="11" font-weight="700" font-family="Exo 2,sans-serif">Vita 63%</text>',
+    '            <text x="436" y="86" fill="#60a5fa" font-size="11" font-weight="700" font-family="Exo 2,sans-serif">NaVi 37%</text>',
+    '          </svg>',
+    '          <div class="skb-mob-gv-bets-placed">14,382 bets placed</div>',
+    '        </div>',
+    '      </div>',
+
+    /* Card 2 — G2 vs Spirit */
+    '      <div class="skb-mob-hcard" style="flex:0 0 auto;scroll-snap-align:unset;">',
+    '        <div class="skb-mob-hcard-bg contain"><img src="img_M/Counter_Strike_2_Logo.png" alt=""/></div>',
+    '        <div class="skb-mob-hcard-content">',
+    '          <div class="skb-mob-hcard-label">CS2 · ESL Pro League S21 — Semi</div>',
+    '          <div class="skb-mob-hcard-teams">',
+    '            <div class="skb-mob-hcard-team"><img src="img_M/G2.webp" alt="G2"/><div class="skb-mob-hcard-odd">2.10</div></div>',
+    '            <div class="skb-mob-hcard-vs">VS</div>',
+    '            <div class="skb-mob-hcard-team"><img src="img_M/spirit.png" alt="Spirit" style="filter:invert(1)"/><div class="skb-mob-hcard-odd">1.70</div></div>',
+    '          </div>',
+    '          <svg class="skb-mob-hcard-graph" viewBox="0 0 500 120" preserveAspectRatio="xMidYMid meet">',
+    '            <defs>',
+    '              <linearGradient id="gvcg2a" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c084fc" stop-opacity="0"/><stop offset="100%" stop-color="#c084fc" stop-opacity="0.2"/></linearGradient>',
+    '              <linearGradient id="gvcg2b" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff" stop-opacity="0.15"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/></linearGradient>',
+    '            </defs>',
+    '            <line x1="38" y1="60" x2="430" y2="60" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="4,3"/>',
+    '            <path d="M38,60 125,66 212,62 300,70 387,74 430,74 L430,108 L38,108 Z" fill="url(#gvcg2a)"/>',
+    '            <path d="M38,60 125,54 212,58 300,50 387,46 430,46 L430,8 L38,8 Z" fill="url(#gvcg2b)"/>',
+    '            <polyline points="38,60 125,66 212,62 300,70 387,74 430,74" fill="none" stroke="#c084fc" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>',
+    '            <polyline points="38,60 125,54 212,58 300,50 387,46 430,46" fill="none" stroke="#ffffff" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>',
+    '            <circle cx="430" cy="74" r="3.5" fill="#c084fc"/><circle cx="430" cy="46" r="3.5" fill="#fff"/>',
+    '            <text x="436" y="78" fill="#c084fc" font-size="11" font-weight="700" font-family="Exo 2,sans-serif">G2 42%</text>',
+    '            <text x="436" y="50" fill="#fff" font-size="11" font-weight="700" font-family="Exo 2,sans-serif">Spirit 58%</text>',
+    '          </svg>',
+    '          <div class="skb-mob-gv-bets-placed">9,071 bets placed</div>',
+    '        </div>',
+    '      </div>',
+
+    /* Card 3 — NaVi vs MOUZ */
+    '      <div class="skb-mob-hcard" style="flex:0 0 auto;scroll-snap-align:unset;">',
+    '        <div class="skb-mob-hcard-bg contain"><img src="img_M/Counter_Strike_2_Logo.png" alt=""/></div>',
+    '        <div class="skb-mob-hcard-content">',
+    '          <div class="skb-mob-hcard-label">CS2 · IEM Cologne — Quarter-Final</div>',
+    '          <div class="skb-mob-hcard-teams">',
+    '            <div class="skb-mob-hcard-team"><img src="img_M/NAVI_Logo_2020.png" alt="NaVi" style="mix-blend-mode:multiply"/><div class="skb-mob-hcard-odd">1.90</div></div>',
+    '            <div class="skb-mob-hcard-vs">VS</div>',
+    '            <div class="skb-mob-hcard-team"><img src="img_M/mouz.svg" alt="MOUZ"/><div class="skb-mob-hcard-odd">1.90</div></div>',
+    '          </div>',
+    '          <svg class="skb-mob-hcard-graph" viewBox="0 0 500 120" preserveAspectRatio="xMidYMid meet">',
+    '            <defs>',
+    '              <linearGradient id="gvcg3a" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#60a5fa" stop-opacity="0.18"/><stop offset="100%" stop-color="#60a5fa" stop-opacity="0"/></linearGradient>',
+    '              <linearGradient id="gvcg3b" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f97316" stop-opacity="0"/><stop offset="100%" stop-color="#f97316" stop-opacity="0.2"/></linearGradient>',
+    '            </defs>',
+    '            <line x1="38" y1="60" x2="430" y2="60" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="4,3"/>',
+    '            <path d="M38,60 125,56 212,52 300,58 387,54 430,56 L430,8 L38,8 Z" fill="url(#gvcg3a)"/>',
+    '            <path d="M38,60 125,64 212,68 300,62 387,66 430,64 L430,108 L38,108 Z" fill="url(#gvcg3b)"/>',
+    '            <polyline points="38,60 125,56 212,52 300,58 387,54 430,56" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>',
+    '            <polyline points="38,60 125,64 212,68 300,62 387,66 430,64" fill="none" stroke="#f97316" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>',
+    '            <circle cx="430" cy="56" r="3.5" fill="#60a5fa"/><circle cx="430" cy="64" r="3.5" fill="#f97316"/>',
+    '            <text x="436" y="60" fill="#60a5fa" font-size="11" font-weight="700" font-family="Exo 2,sans-serif">NaVi 52%</text>',
+    '            <text x="436" y="68" fill="#f97316" font-size="11" font-weight="700" font-family="Exo 2,sans-serif">MOUZ 48%</text>',
+    '          </svg>',
+    '          <div class="skb-mob-gv-bets-placed">21,654 bets placed</div>',
+    '        </div>',
+    '      </div>',
+
+    '    </div>',  /* end gv-matches */
+
+    /* Tournaments */
+    '    <div class="skb-mob-gv-section-ttl">Tournaments</div>',
+    '    <div class="skb-mob-gv-tlist">',
+
+    '      <div class="skb-mob-gv-ti">',
+    '        <div class="skb-mob-gv-ti-logo" style="background:rgba(250,204,21,0.12);"><img src="img_M/logocs2.png" alt=""/></div>',
+    '        <div class="skb-mob-gv-ti-info">',
+    '          <div class="skb-mob-gv-ti-name">ESL Pro League S21</div>',
+    '          <div class="skb-mob-gv-ti-sub">Malta · Group Stage</div>',
+    '        </div>',
+    '        <span class="skb-mob-tourn-live is-live">Live</span>',
+    '      </div>',
+
+    '      <div class="skb-mob-gv-ti">',
+    '        <div class="skb-mob-gv-ti-logo" style="background:rgba(250,204,21,0.12);"><img src="img_M/logocs2.png" alt=""/></div>',
+    '        <div class="skb-mob-gv-ti-info">',
+    '          <div class="skb-mob-gv-ti-name">IEM Cologne 2025</div>',
+    '          <div class="skb-mob-gv-ti-sub">Cologne · Semi-finals</div>',
+    '        </div>',
+    '        <span class="skb-mob-tourn-live is-live">Live</span>',
+    '      </div>',
+
+    '      <div class="skb-mob-gv-ti">',
+    '        <div class="skb-mob-gv-ti-logo" style="background:rgba(250,204,21,0.12);"><img src="img_M/logocs2.png" alt=""/></div>',
+    '        <div class="skb-mob-gv-ti-info">',
+    '          <div class="skb-mob-gv-ti-name">BLAST Premier Spring</div>',
+    '          <div class="skb-mob-gv-ti-sub">Copenhagen · Finals</div>',
+    '        </div>',
+    '        <span class="skb-mob-tourn-live upcoming">J+2</span>',
+    '      </div>',
+
+    '      <div class="skb-mob-gv-ti">',
+    '        <div class="skb-mob-gv-ti-logo" style="background:rgba(250,204,21,0.12);"><img src="img_M/logocs2.png" alt=""/></div>',
+    '        <div class="skb-mob-gv-ti-info">',
+    '          <div class="skb-mob-gv-ti-name">PGL Major 2025</div>',
+    '          <div class="skb-mob-gv-ti-sub">Shanghai · Playoffs</div>',
+    '        </div>',
+    '        <span class="skb-mob-tourn-live upcoming">J+5</span>',
+    '      </div>',
+
+    '      <div class="skb-mob-gv-ti">',
+    '        <div class="skb-mob-gv-ti-logo" style="background:rgba(250,204,21,0.12);"><img src="img_M/logocs2.png" alt=""/></div>',
+    '        <div class="skb-mob-gv-ti-info">',
+    '          <div class="skb-mob-gv-ti-name">ESL One Berlin</div>',
+    '          <div class="skb-mob-gv-ti-sub">Berlin · Group Stage</div>',
+    '        </div>',
+    '        <span class="skb-mob-tourn-live upcoming">J+9</span>',
+    '      </div>',
+
+    '    </div>',  /* end gv-tlist */
+
+    /* Top Players */
+    '    <div class="skb-mob-gv-section-ttl">Top Players</div>',
+    '    <div class="skb-mob-players-track" style="padding-bottom:80px;">',
+
+    '      <div class="tp-pc">',
+    '        <div class="tp-pc-bg" style="background:linear-gradient(175deg,#1a1400 0%,#2a2000 60%,#3a2e00 100%);"></div>',
+    '        <div class="tp-pc-team-badge" style="background:rgba(250,204,21,0.2);border:1px solid rgba(250,204,21,0.5);color:#facc15;">Vitality</div>',
+    '        <div class="tp-pc-body">',
+    '          <div class="tp-pc-name">ZywOo</div>',
+    '          <svg class="tp-pc-avatar" viewBox="0 0 80 88" fill="none">',
+    '            <path d="M22 22 C22 17 27 14 32 13 L40 11 L48 13 C53 14 58 17 58 22 L63 42 L54 44 L54 76 L26 76 L26 44 L17 42 Z" fill="#facc15" stroke="#d4a000" stroke-width="1.5"/>',
+    '            <path d="M26 13 L26 76 M54 13 L54 76" stroke="#111" stroke-width="4" opacity="0.4"/>',
+    '            <path d="M34 11 Q40 14 46 11" stroke="#d4a000" stroke-width="2" fill="none"/>',
+    '            <text x="40" y="60" text-anchor="middle" fill="#111" font-size="9" font-weight="900" font-family="Arial">VITALITY</text>',
+    '            <path d="M22 22 L17 42 L26 44 L26 30 Z" fill="#facc15" stroke="#d4a000" stroke-width="1"/>',
+    '            <path d="M58 22 L63 42 L54 44 L54 30 Z" fill="#facc15" stroke="#d4a000" stroke-width="1"/>',
+    '          </svg>',
+    '          <div class="tp-pc-role">Star Rifler</div>',
+    '        </div>',
+    '        <div class="tp-pc-footer" style="background:linear-gradient(90deg,#d4a000,#facc15);color:#111;">',
+    '          <div class="tp-pc-footer-label">Highest Rating</div>',
+    '          <div class="tp-pc-odd">1.70</div>',
+    '        </div>',
+    '      </div>',
+
+    '      <div class="tp-pc">',
+    '        <div class="tp-pc-bg" style="background:linear-gradient(175deg,#09090f 0%,#0f0c1e 60%,#1a1040 100%);"></div>',
+    '        <div class="tp-pc-team-badge" style="background:rgba(245,197,24,0.2);border:1px solid rgba(245,197,24,0.5);color:#f5c518;">NaVi</div>',
+    '        <div class="tp-pc-body">',
+    '          <div class="tp-pc-name">s1mple</div>',
+    '          <svg class="tp-pc-avatar" viewBox="0 0 80 88" fill="none">',
+    '            <path d="M22 22 C22 17 27 14 32 13 L40 11 L48 13 C53 14 58 17 58 22 L63 42 L54 44 L54 76 L26 76 L26 44 L17 42 Z" fill="#0a0a0a" stroke="#f5c518" stroke-width="1.5"/>',
+    '            <path d="M36 13 L36 76 M44 13 L44 76" stroke="#f5c518" stroke-width="3" opacity="0.7"/>',
+    '            <path d="M34 11 Q40 14 46 11" stroke="#f5c518" stroke-width="2" fill="none"/>',
+    '            <text x="40" y="60" text-anchor="middle" fill="#f5c518" font-size="11" font-weight="900" font-family="Arial">NaVi</text>',
+    '            <path d="M22 22 L17 42 L26 44 L26 30 Z" fill="#111" stroke="#f5c518" stroke-width="1"/>',
+    '            <path d="M58 22 L63 42 L54 44 L54 30 Z" fill="#111" stroke="#f5c518" stroke-width="1"/>',
+    '          </svg>',
+    '          <div class="tp-pc-role">AWPer</div>',
+    '        </div>',
+    '        <div class="tp-pc-footer" style="background:linear-gradient(90deg,#b8960a,#f5c518);color:#111;">',
+    '          <div class="tp-pc-footer-label">Highest Rating</div>',
+    '          <div class="tp-pc-odd">2.20</div>',
+    '        </div>',
+    '      </div>',
+
+    '      <div class="tp-pc">',
+    '        <div class="tp-pc-bg" style="background:linear-gradient(175deg,#1a0000 0%,#2e0a0a 60%,#3d1010 100%);"></div>',
+    '        <div class="tp-pc-team-badge" style="background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.5);color:#f87171;">T1</div>',
+    '        <div class="tp-pc-body">',
+    '          <div class="tp-pc-name">Faker</div>',
+    '          <svg class="tp-pc-avatar" viewBox="0 0 80 88" fill="none">',
+    '            <path d="M22 22 C22 17 27 14 32 13 L40 11 L48 13 C53 14 58 17 58 22 L63 42 L54 44 L54 76 L26 76 L26 44 L17 42 Z" fill="#cc0000" stroke="#990000" stroke-width="1.5"/>',
+    '            <path d="M20 30 L60 30 L60 50 L20 50 Z" fill="#fff" opacity="0.08"/>',
+    '            <path d="M34 11 Q40 9 46 11" stroke="#fff" stroke-width="2" fill="none"/>',
+    '            <text x="40" y="60" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-family="Arial">T1</text>',
+    '            <path d="M22 22 L17 42 L26 44 L26 30 Z" fill="#cc0000" stroke="#990000" stroke-width="1"/>',
+    '            <path d="M58 22 L63 42 L54 44 L54 30 Z" fill="#cc0000" stroke="#990000" stroke-width="1"/>',
+    '          </svg>',
+    '          <div class="tp-pc-role">Mid Lane</div>',
+    '        </div>',
+    '        <div class="tp-pc-footer" style="background:linear-gradient(90deg,#990000,#ef4444);color:#fff;">',
+    '          <div class="tp-pc-footer-label">Highest Rating</div>',
+    '          <div class="tp-pc-odd">1.55</div>',
+    '        </div>',
+    '      </div>',
+
+    '      <div class="tp-pc">',
+    '        <div class="tp-pc-bg" style="background:linear-gradient(175deg,#0e0e0e 0%,#1a1a1a 60%,#252525 100%);"></div>',
+    '        <div class="tp-pc-team-badge" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.35);color:#fff;">G2</div>',
+    '        <div class="tp-pc-body">',
+    '          <div class="tp-pc-name">Caps</div>',
+    '          <svg class="tp-pc-avatar" viewBox="0 0 80 88" fill="none">',
+    '            <path d="M22 22 C22 17 27 14 32 13 L40 11 L48 13 C53 14 58 17 58 22 L63 42 L54 44 L54 76 L26 76 L26 44 L17 42 Z" fill="#1a1a1a" stroke="#e53935" stroke-width="1.5"/>',
+    '            <path d="M22 22 L58 55" stroke="#e53935" stroke-width="7" opacity="0.5" stroke-linecap="round"/>',
+    '            <path d="M34 11 Q40 9 46 11" stroke="#e53935" stroke-width="2" fill="none"/>',
+    '            <text x="40" y="60" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-family="Arial">G2</text>',
+    '            <path d="M22 22 L17 42 L26 44 L26 30 Z" fill="#1a1a1a" stroke="#e53935" stroke-width="1"/>',
+    '            <path d="M58 22 L63 42 L54 44 L54 30 Z" fill="#1a1a1a" stroke="#e53935" stroke-width="1"/>',
+    '          </svg>',
+    '          <div class="tp-pc-role">Mid Lane</div>',
+    '        </div>',
+    '        <div class="tp-pc-footer" style="background:linear-gradient(90deg,#111,#333);color:#fff;">',
+    '          <div class="tp-pc-footer-label">Highest Rating</div>',
+    '          <div class="tp-pc-odd">2.80</div>',
+    '        </div>',
+    '      </div>',
+
+    '      <div class="tp-pc">',
+    '        <div class="tp-pc-bg" style="background:linear-gradient(175deg,#060a18 0%,#0a1030 60%,#0e1540 100%);"></div>',
+    '        <div class="tp-pc-team-badge" style="background:rgba(56,130,246,0.2);border:1px solid rgba(56,130,246,0.5);color:#60a5fa;">Spirit</div>',
+    '        <div class="tp-pc-body">',
+    '          <div class="tp-pc-name">TORONTO<br>TOKYO</div>',
+    '          <svg class="tp-pc-avatar" viewBox="0 0 80 88" fill="none">',
+    '            <path d="M22 22 C22 17 27 14 32 13 L40 11 L48 13 C53 14 58 17 58 22 L63 42 L54 44 L54 76 L26 76 L26 44 L17 42 Z" fill="#0d1a3a" stroke="#3882f6" stroke-width="1.5"/>',
+    '            <path d="M22 22 L58 55" stroke="#3882f6" stroke-width="8" opacity="0.5" stroke-linecap="round"/>',
+    '            <path d="M22 22 L58 55" stroke="#60a5fa" stroke-width="3" opacity="0.7" stroke-linecap="round"/>',
+    '            <path d="M34 11 Q40 9 46 11" stroke="#3882f6" stroke-width="2" fill="none"/>',
+    '            <text x="40" y="62" text-anchor="middle" fill="#93c5fd" font-size="9" font-weight="900" font-family="Arial">SPIRIT</text>',
+    '            <path d="M22 22 L17 42 L26 44 L26 30 Z" fill="#0d1a3a" stroke="#3882f6" stroke-width="1"/>',
+    '            <path d="M58 22 L63 42 L54 44 L54 30 Z" fill="#0d1a3a" stroke="#3882f6" stroke-width="1"/>',
+    '          </svg>',
+    '          <div class="tp-pc-role">Carry</div>',
+    '        </div>',
+    '        <div class="tp-pc-footer" style="background:linear-gradient(90deg,#1d4ed8,#3882f6);color:#fff;">',
+    '          <div class="tp-pc-footer-label">Highest Rating</div>',
+    '          <div class="tp-pc-odd">3.20</div>',
+    '        </div>',
+    '      </div>',
+
+    '    </div>',  /* end players track */
+
+    /* Other Matches */
+    '    <div class="skb-mob-gv-section-ttl" style="margin-top:20px;">Other Matches</div>',
+    '    <div class="skb-mob-gv-other-matches" id="skbOtherMatches"></div>',
+
+    '  </div>',   /* end game view */
+
+    /* ── Not Yet Available view ── */
+    '  <div class="skb-mob-nya-view" id="skbNyaView">',
+    '    <div class="skb-mob-nya-title">Not Yet Available</div>',
+    '    <div class="skb-mob-nya-sub">Coming soon</div>',
+    '  </div>',
 
     /* ── Bracket view ── */
     '  <div class="skb-mob-bracket-view">',
@@ -2470,6 +3149,47 @@
 
     '  </div>',   /* end bracket view */
 
+    /* floating betslip button */
+    '  <div class="skb-mob-bs-fab" id="skbBsFab">',
+    '    <img src="img_M/bets.png" alt="bets"/>',
+    '    <span class="skb-mob-bs-fab-badge" id="skbBsBadge" style="display:none;">0</span>',
+    '  </div>',
+
+    /* bet slip slide-up panel */
+    '  <div class="skb-mob-bs-panel" id="skbBsPanel">',
+    '    <div class="skb-mob-bs-panel-handle"></div>',
+    '    <div class="skb-mob-bs-panel-hdr">',
+    '      <span class="skb-mob-bs-panel-title">Bet Slip</span>',
+    '      <span class="skb-mob-bs-panel-count" id="skbBsPanelCount">0</span>',
+    '      <button class="skb-mob-bs-panel-close" id="skbBsPanelClose">✕</button>',
+    '    </div>',
+    '    <div class="skb-mob-bs-panel-body" id="skbBsPanelBody">',
+    '      <div class="skb-mob-bs-empty" id="skbBsEmpty">Clique sur une cote<br/>pour ajouter un pari</div>',
+    '      <div id="skbBsList"></div>',
+    '      <div id="skbBsBottom" style="display:none;">',
+    '        <div class="skb-mob-bs-divider"></div>',
+    '        <div class="skb-mob-bs-combined">',
+    '          <span class="skb-mob-bs-combined-lbl">Cote combinée</span>',
+    '          <span class="skb-mob-bs-combined-val" id="skbBsCombined">1.00</span>',
+    '        </div>',
+    '        <div class="skb-mob-bs-divider"></div>',
+    '        <div class="skb-mob-bs-stake-lbl">Mise (£)</div>',
+    '        <input class="skb-mob-bs-stake-input" id="skbBsStake" type="number" value="10" placeholder="0.00"/>',
+    '        <div class="skb-mob-bs-qa">',
+    '          <div class="skb-mob-bs-qa-btn" data-add="5">+5</div>',
+    '          <div class="skb-mob-bs-qa-btn" data-add="10">+10</div>',
+    '          <div class="skb-mob-bs-qa-btn" data-add="25">+25</div>',
+    '          <div class="skb-mob-bs-qa-btn" data-add="50">+50</div>',
+    '        </div>',
+    '        <div class="skb-mob-bs-gains">',
+    '          <span class="skb-mob-bs-gains-lbl">Gains potentiels</span>',
+    '          <span class="skb-mob-bs-gains-val" id="skbBsGains">£10.00</span>',
+    '        </div>',
+    '        <button class="skb-mob-bs-submit" id="skbBsSubmit">Place bet</button>',
+    '      </div>',
+    '    </div>',
+    '  </div>',
+
     /* bottom nav */
     '    <div class="skb-mob-nav">',
 
@@ -2563,8 +3283,12 @@
     var liveView     = overlay.querySelector('.skb-mob-live-view');
     var profilView   = overlay.querySelector('.skb-mob-profil-view');
     var bracketView  = overlay.querySelector('.skb-mob-bracket-view');
+    var storeView    = overlay.querySelector('.skb-mob-store-view');
+    var matchView    = overlay.querySelector('.skb-mob-match-view');
+    var gameView     = overlay.querySelector('.skb-mob-game-view');
+    var nyaView      = overlay.querySelector('.skb-mob-nya-view');
 
-    var allViews = [contentView, esportView, liveView, profilView, bracketView];
+    var allViews = [contentView, esportView, liveView, profilView, bracketView, storeView, matchView, gameView, nyaView];
 
     function hideAllViews() {
       allViews.forEach(function (v) { if (v) v.style.display = 'none'; });
@@ -2612,12 +3336,64 @@
       profilView.style.display = 'block';
     });
 
-    /* Game → show main content */
+    /* Game → Not Yet Available */
     allNavTabs[3].addEventListener('click', function () {
       deactivateAllTabs(); activateTab(allNavTabs[3]);
       hideAllViews();
-      contentView.style.display = '';
+      if (nyaView) nyaView.style.display = 'flex';
     });
+
+    /* ── Go to the store → store view dans le téléphone ── */
+    (function () {
+      var storeBtn = overlay.querySelector('.skb-mob-profil-store-btn');
+      if (storeBtn) storeBtn.addEventListener('click', function () {
+        hideAllViews();
+        if (storeView) storeView.style.display = 'flex';
+      });
+
+      /* Bouton retour dans la store → revenir au profil */
+      var storeBack = storeView ? storeView.querySelector('.skb-mob-store-back') : null;
+      if (storeBack) storeBack.addEventListener('click', function () {
+        hideAllViews();
+        profilView.style.display = 'block';
+        deactivateAllTabs();
+        activateTab(allNavTabs[2]);
+      });
+
+      /* Buy → Equip → Equipped par section */
+      if (storeView) {
+        storeView.querySelectorAll('.skb-mob-store-btn').forEach(function(btn) {
+          btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (btn.disabled) return;
+            if (btn.classList.contains('skb-mob-store-btn-buy')) {
+              btn.classList.remove('skb-mob-store-btn-buy');
+              btn.classList.add('skb-mob-store-btn-equip');
+              btn.textContent = 'Equip';
+            } else if (btn.classList.contains('skb-mob-store-btn-equip')) {
+              var section = btn.closest('.skb-mob-store-grid');
+              if (section) {
+                section.querySelectorAll('.skb-mob-store-item').forEach(function(c) {
+                  c.classList.remove('equipped');
+                  var b = c.querySelector('.skb-mob-store-btn');
+                  if (b && b.classList.contains('skb-mob-store-btn-equipped')) {
+                    b.classList.remove('skb-mob-store-btn-equipped');
+                    b.classList.add('skb-mob-store-btn-equip');
+                    b.textContent = 'Equip';
+                    b.disabled = false;
+                  }
+                });
+              }
+              btn.closest('.skb-mob-store-item').classList.add('equipped');
+              btn.classList.remove('skb-mob-store-btn-equip');
+              btn.classList.add('skb-mob-store-btn-equipped');
+              btn.textContent = 'On';
+              btn.disabled = true;
+            }
+          });
+        });
+      }
+    })();
 
     /* ── Particules "Go to the store" ── */
     (function () {
@@ -2644,6 +3420,183 @@
         ).onfinish = function () { p.remove(); };
       }
       setInterval(spawnParticle, 30);
+    })();
+
+    /* ── Floating Bet Slip FAB + Panel ── */
+    (function () {
+      var fab      = overlay.querySelector('#skbBsFab');
+      var badge    = overlay.querySelector('#skbBsBadge');
+      var panel    = overlay.querySelector('#skbBsPanel');
+      var closeBtn = overlay.querySelector('#skbBsPanelClose');
+      var list     = overlay.querySelector('#skbBsList');
+      var empty    = overlay.querySelector('#skbBsEmpty');
+      var bottom   = overlay.querySelector('#skbBsBottom');
+      var combined = overlay.querySelector('#skbBsCombined');
+      var gains    = overlay.querySelector('#skbBsGains');
+      var stake    = overlay.querySelector('#skbBsStake');
+      var countEl  = overlay.querySelector('#skbBsPanelCount');
+
+      var bets = [];
+
+      function calcCombined() {
+        return bets.reduce(function(acc, b) { return acc * b.odds; }, 1);
+      }
+
+      function updateGains() {
+        var s = parseFloat(stake ? stake.value : '10') || 0;
+        var c = calcCombined();
+        if (gains) gains.textContent = '£' + (s * c).toFixed(2);
+        if (combined) combined.textContent = c.toFixed(2);
+      }
+
+      function render() {
+        if (!list) return;
+        list.innerHTML = '';
+        var isEmpty = bets.length === 0;
+        if (empty) empty.style.display = isEmpty ? '' : 'none';
+        if (bottom) bottom.style.display = isEmpty ? 'none' : '';
+        if (badge) { badge.textContent = bets.length; badge.style.display = bets.length ? 'flex' : 'none'; }
+        if (countEl) countEl.textContent = bets.length;
+        if (fab) fab.style.display = bets.length ? 'flex' : 'none';
+
+        bets.forEach(function(bet, i) {
+          var div = document.createElement('div');
+          div.className = 'skb-mob-bs-bet';
+          div.innerHTML =
+            '<div class="skb-mob-bs-bet-game">Counter-Strike 2</div>' +
+            '<div class="skb-mob-bs-bet-match">' + bet.match + '</div>' +
+            '<div class="skb-mob-bs-bet-pick">' + bet.pick + '</div>' +
+            '<div class="skb-mob-bs-bet-odds">' + bet.odds.toFixed(2) + '</div>' +
+            '<div class="skb-mob-bs-bet-remove" data-i="' + i + '">✕ retirer</div>';
+          list.appendChild(div);
+        });
+
+        list.querySelectorAll('.skb-mob-bs-bet-remove').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            bets.splice(parseInt(btn.getAttribute('data-i')), 1);
+            render(); updateGains();
+          });
+        });
+
+        updateGains();
+      }
+
+      /* Ouvre/ferme le panel */
+      function openPanel() { if (panel) panel.classList.add('open'); }
+      function closePanel() { if (panel) panel.classList.remove('open'); }
+
+      if (fab) fab.addEventListener('click', openPanel);
+      if (closeBtn) closeBtn.addEventListener('click', closePanel);
+
+      /* Stake input + quick amounts */
+      if (stake) stake.addEventListener('input', updateGains);
+      overlay.querySelectorAll('.skb-mob-bs-qa-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          if (stake) { stake.value = (parseFloat(stake.value) || 0) + parseFloat(btn.getAttribute('data-add')); }
+          updateGains();
+        });
+      });
+
+      /* Submit */
+      var submit = overlay.querySelector('#skbBsSubmit');
+      if (submit) submit.addEventListener('click', function() {
+        bets = [];
+        render();
+        closePanel();
+        if (stake) stake.value = '10';
+      });
+
+      /* Écoute les clics sur les cotes — capture phase pour intercepter
+         avant betslip.js ET traiter le pari en même temps */
+      overlay.addEventListener('click', function(e) {
+        var odd = e.target.closest('.skb-mob-odd, .skb-mob-hcard-odd, .skb-mob-match-card-odd, .skb-mob-live-odd-btn, .tp-pc-odd, .tc-odd, .tc-combined, .hm-odd');
+        if (!odd) return;
+
+        /* Stoppe la propagation vers betslip.js (site bureau) */
+        e.stopPropagation();
+
+        var oddsVal = parseFloat(odd.textContent.replace(',', '.')) || 1;
+
+        /* Récupère le nom de l'équipe / joueur */
+        var teamEl = odd.closest('.skb-mob-team, .skb-mob-hcard-team');
+        var tpCard = odd.closest('.tp-pc');
+        var pick;
+        if (tpCard) {
+          var pName = tpCard.querySelector('.tp-pc-name');
+          pick = (pName ? pName.textContent.trim() : 'Player') + ' — Best Perf.';
+        } else if (teamEl) {
+          var img = teamEl.querySelector('img');
+          pick = (img ? img.getAttribute('alt') : odd.textContent) + ' to win';
+        } else {
+          pick = 'Pari ' + (bets.length + 1);
+        }
+
+        /* Récupère le nom du match */
+        var card = odd.closest('[class*="card"], [class*="hcard"], [class*="event"], [class*="match"]');
+        var labelEl = card ? card.querySelector('[class*="event-label"], [class*="label"]') : null;
+        var matchName = labelEl ? labelEl.textContent.trim() : 'Match';
+
+        /* Évite les doublons */
+        var dup = bets.some(function(b) { return b.match === matchName && b.pick === pick; });
+        if (dup) return;
+
+        bets.push({ match: matchName, pick: pick, odds: oddsVal });
+        render();
+
+        /* Pulse sur le FAB */
+        if (fab) {
+          fab.style.transform = 'scale(1.25)';
+          setTimeout(function() { fab.style.transform = ''; }, 200);
+        }
+      }, true); /* capture phase */
+
+      render();
+    })();
+
+    /* ── Match view ── */
+    (function () {
+      if (!matchView) return;
+
+      /* Retour : revenir à la vue précédente (contentView) */
+      var mvBack = matchView.querySelector('#skbMvBack');
+      if (mvBack) mvBack.addEventListener('click', function () {
+        hideAllViews();
+        contentView.style.display = '';
+        deactivateAllTabs(); activateTab(betTab);
+      });
+
+      /* Tabs */
+      matchView.querySelectorAll('.skb-mob-mv-tab').forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          matchView.querySelectorAll('.skb-mob-mv-tab').forEach(function(t) { t.classList.remove('active'); });
+          matchView.querySelectorAll('.skb-mob-mv-panel').forEach(function(p) { p.classList.remove('active'); });
+          tab.classList.add('active');
+          var target = matchView.querySelector('#' + tab.getAttribute('data-tab'));
+          if (target) target.classList.add('active');
+        });
+      });
+
+      /* Cotes dans la match view → déjà gérées par le listener capture FAB */
+
+      /* Ouverture depuis n'importe quel match cliqué dans l'appli */
+      overlay.addEventListener('click', function(e) {
+        /* Ne pas ouvrir si on a cliqué sur une cote */
+        if (e.target.closest('.skb-mob-mv-card-odd, .skb-mob-hcard-odd, .skb-mob-odd, .skb-mob-match-card-odd, .skb-mob-live-odd-btn, .tp-pc-odd, .tc-odd, .tc-combined, .hm-odd, .skb-mob-bs-fab, .skb-mob-bs-panel')) return;
+
+        var card = e.target.closest('.skb-mob-hcard, .skb-mob-match-card');
+        if (!card) return;
+
+        hideAllViews();
+        matchView.style.display = 'flex';
+        /* Reset tabs */
+        matchView.querySelectorAll('.skb-mob-mv-tab').forEach(function(t) { t.classList.remove('active'); });
+        matchView.querySelectorAll('.skb-mob-mv-panel').forEach(function(p) { p.classList.remove('active'); });
+        var firstTab = matchView.querySelector('.skb-mob-mv-tab');
+        var firstPanel = matchView.querySelector('#mv-main');
+        if (firstTab) firstTab.classList.add('active');
+        if (firstPanel) firstPanel.classList.add('active');
+        matchView.scrollTop = 0;
+      });
     })();
 
     /* ── Betting History filter ── */
@@ -2805,6 +3758,131 @@
           esportView.style.display = 'block';
         });
       }
+    })();
+
+    /* ── Game view (clic sur une carte de jeu dans l'onglet Esport) ── */
+    (function () {
+      if (!gameView) return;
+
+      /* Données par jeu : titre, image banner, icon, couleur overlay, followers */
+      var gameData = {
+        'LoL':              { name: 'League of Legends', banner: 'img_M/game_card/CARD-LOL.png',           icon: 'img_M/logo lol.png',                         color: 'rgba(239,68,68,0.15)',   followers: '2,341,089' },
+        'CS2':              { name: 'Counter-Strike 2',  banner: 'img_M/game_card/CARD-CS2.png',           icon: 'img_M/logocs2.png',                          color: 'rgba(250,204,21,0.15)',  followers: '1,847,312' },
+        'Dota 2':           { name: 'Dota 2',            banner: 'img_M/game_card/CARD-DOTA2.png',         icon: 'img_M/logo dota2.png',                       color: 'rgba(77,130,245,0.15)',  followers: '983,450' },
+        'Fortnite':         { name: 'Fortnite',          banner: 'img_M/game_card/CARD-FORTNITE.png',      icon: 'img_M/game_card/CARD-FORTNITE.png',          color: 'rgba(99,179,237,0.15)',  followers: '3,102,774' },
+        'Call of Duty':     { name: 'Call of Duty',      banner: 'img_M/game_card/CARD-CALLOFDUTY.png',    icon: 'img_M/game_card/CARD-CALLOFDUTY.png',        color: 'rgba(34,197,94,0.12)',   followers: '1,204,561' },
+        'FIFA':             { name: 'FIFA / EA FC',      banner: 'img_M/game_card/CARD-FIFA.png',          icon: 'img_M/game_card/CARD-FIFA.png',              color: 'rgba(250,204,21,0.12)',  followers: '4,587,220' },
+        'Valorant':         { name: 'Valorant',          banner: 'img_M/game_card/AFFICHE-VALORANT.png',   icon: 'img_M/game_card/AFFICHE-VALORANT.png',       color: 'rgba(255,70,85,0.15)',   followers: '1,673,908' },
+        'Hearthstone':      { name: 'Hearthstone',       banner: 'img_M/game_card/CARD-HEARTHSTONE.png',   icon: 'img_M/game_card/CARD-HEARTHSTONE.png',       color: 'rgba(250,170,60,0.15)',  followers: '512,340' },
+        'Deadlock':         { name: 'Deadlock',          banner: 'img_M/game_card/CARD-DEADLOCK.png',      icon: 'img_M/game_card/CARD-DEADLOCK.png',          color: 'rgba(168,85,247,0.15)',  followers: '289,103' },
+        'Chess':            { name: 'Chess',             banner: 'img_M/game_card/CARD-CHESS.png',         icon: 'img_M/game_card/CARD-CHESS.png',             color: 'rgba(255,255,255,0.08)', followers: '743,890' },
+        'CrossFire':        { name: 'CrossFire',         banner: 'img_M/game_card/CARD-CROSSFIRE.png',     icon: 'img_M/game_card/CARD-CROSSFIRE.png',         color: 'rgba(239,68,68,0.12)',   followers: '418,227' },
+        'Rocket League':    { name: 'Rocket League',     banner: 'img_M/game_card/AFFICHE-ROCKET-LEAGUE.png', icon: 'img_M/game_card/AFFICHE-ROCKET-LEAGUE.png', color: 'rgba(99,179,237,0.15)', followers: '634,518' },
+        'Overwatch':        { name: 'Overwatch 2',       banner: 'img_M/game_card/AFFICHE-OVERWATCH.png',  icon: 'img_M/game_card/AFFICHE-OVERWATCH.png',      color: 'rgba(250,120,50,0.15)',  followers: '891,034' },
+        'PUBG':             { name: 'PUBG',              banner: "img_M/game_card/AFFICHE-Playerunknown's.png", icon: "img_M/game_card/AFFICHE-Playerunknown's.png", color: 'rgba(250,204,21,0.12)', followers: '1,056,782' },
+      };
+
+      var gvBannerImg     = gameView.querySelector('#skbGvBannerImg');
+      var gvBannerOverlay = gameView.querySelector('#skbGvBannerOverlay');
+      var gvIcon          = gameView.querySelector('#skbGvIcon');
+      var gvTitle         = gameView.querySelector('#skbGvTitle');
+      var gvGameName      = gameView.querySelector('#skbGvGameName');
+      var gvFollowers     = gameView.querySelector('#skbGvFollowers');
+
+      /* Clic sur une carte dans la grille esport */
+      var gcItems = overlay.querySelectorAll('.skb-mob-gc-item');
+      gcItems.forEach(function (item) {
+        item.addEventListener('click', function () {
+          var img = item.querySelector('img');
+          var alt = img ? img.getAttribute('alt') : '';
+          var data = gameData[alt] || { name: alt || 'Esport', banner: (img ? img.src : ''), icon: (img ? img.src : ''), color: 'rgba(168,85,247,0.15)' };
+
+          /* Mise à jour du contenu dynamique */
+          if (gvBannerImg) gvBannerImg.src = data.banner;
+          if (gvBannerOverlay) gvBannerOverlay.style.background = 'linear-gradient(135deg,' + data.color + ' 0%,rgba(7,11,31,0.85) 60%)';
+          if (gvIcon) gvIcon.src = data.icon;
+          if (gvTitle) gvTitle.textContent = alt;
+          if (gvGameName) gvGameName.textContent = data.name;
+          if (gvFollowers) gvFollowers.textContent = 'Followed by ' + (data.followers || Math.floor(Math.random()*900+100)+','+Math.floor(Math.random()*900+100)) + ' people';
+
+          deactivateAllTabs(); activateTab(allNavTabs[0]);
+          hideAllViews();
+          gameView.style.display = 'flex';
+          gameView.scrollTop = 0;
+          var tlist = gameView.querySelector('.skb-mob-gv-tlist');
+          if (tlist) tlist.style.minHeight = '130px';
+          var ptrack = gameView.querySelector('.skb-mob-players-track');
+          if (ptrack) {
+            ptrack.style.minHeight = '220px';
+            ptrack.style.alignItems = 'flex-start';
+            ptrack.querySelectorAll('.tp-pc').forEach(function(c){ c.style.minHeight = '210px'; });
+          }
+        });
+      });
+
+      /* Bouton retour → vue esport */
+      var gvBack = gameView.querySelector('#skbGvBack');
+      if (gvBack) gvBack.addEventListener('click', function () {
+        deactivateAllTabs(); activateTab(allNavTabs[0]);
+        hideAllViews();
+        esportView.style.display = 'block';
+      });
+
+      /* Other Matches — génération des 35 cartes */
+      (function () {
+        var omContainer = gameView.querySelector('#skbOtherMatches');
+        if (!omContainer) return;
+        var teams = [
+          { name: 'NaVi',       logo: 'img_M/logocs2.png' },
+          { name: 'Vitality',   logo: 'img_M/logocs2.png' },
+          { name: 'G2',         logo: 'img_M/logocs2.png' },
+          { name: 'FaZe',       logo: 'img_M/logocs2.png' },
+          { name: 'Heroic',     logo: 'img_M/logocs2.png' },
+          { name: 'Astralis',   logo: 'img_M/logocs2.png' },
+          { name: 'Liquid',     logo: 'img_M/logocs2.png' },
+          { name: 'MOUZ',       logo: 'img_M/logocs2.png' },
+          { name: 'Spirit',     logo: 'img_M/logocs2.png' },
+          { name: 'Complexity', logo: 'img_M/logocs2.png' },
+          { name: 'BIG',        logo: 'img_M/logocs2.png' },
+          { name: 'ENCE',       logo: 'img_M/logocs2.png' },
+          { name: 'Outsiders',  logo: 'img_M/logocs2.png' },
+          { name: 'Cloud9',     logo: 'img_M/logocs2.png' },
+          { name: 'fnatic',     logo: 'img_M/logocs2.png' },
+          { name: 'OG',         logo: 'img_M/logocs2.png' },
+          { name: 'paiN',       logo: 'img_M/logocs2.png' },
+          { name: 'FURIA',      logo: 'img_M/logocs2.png' },
+          { name: 'VP',         logo: 'img_M/logocs2.png' },
+          { name: 'NiP',        logo: 'img_M/logocs2.png' },
+        ];
+        var tourneys = ['ESL Pro League S21', 'IEM Cologne 2025', 'BLAST Premier', 'PGL Major', 'IEM Katowice', 'ESL One Berlin', 'BLAST Spring Final'];
+        var times = ['Live', 'Auj. 18:00', 'Auj. 20:30', 'Auj. 22:00', 'Dem. 14:00', 'Dem. 17:30', 'Dem. 21:00', 'J+2 15:00', 'J+3 19:00'];
+        function rnd(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+        function odd() { var v = (1 + Math.random() * 3.5).toFixed(2); return v; }
+        var html = '';
+        for (var i = 0; i < 35; i++) {
+          var t1 = teams[rnd(0, teams.length - 1)];
+          var t2 = teams[rnd(0, teams.length - 1)];
+          while (t2.name === t1.name) t2 = teams[rnd(0, teams.length - 1)];
+          var tourn = tourneys[rnd(0, tourneys.length - 1)];
+          var time  = times[rnd(0, times.length - 1)];
+          var o1 = odd(), o2 = odd(), od = (Math.random() > 0.5 ? (1 + Math.random() * 1.5).toFixed(2) : 'N/A');
+          var liveTag = time === 'Live' ? ' <span style="color:#e91e8c;font-size:9px;font-weight:900;">● LIVE</span>' : '';
+          html += '<div class="skb-mob-gv-om-card">' +
+            '<div class="skb-mob-gv-om-label">' + tourn + ' · ' + time + liveTag + '</div>' +
+            '<div class="skb-mob-gv-om-row">' +
+              '<div class="skb-mob-gv-om-team"><img src="' + t1.logo + '" alt=""/><span class="skb-mob-gv-om-name">' + t1.name + '</span></div>' +
+              '<span class="skb-mob-gv-om-vs">VS</span>' +
+              '<div class="skb-mob-gv-om-team right"><img src="' + t2.logo + '" alt=""/><span class="skb-mob-gv-om-name">' + t2.name + '</span></div>' +
+            '</div>' +
+            '<div class="skb-mob-gv-om-odds">' +
+              '<div class="skb-mob-gv-om-odd">' + o1 + '</div>' +
+              '<div class="skb-mob-gv-om-odd" style="background:rgba(255,255,255,0.04);font-size:10px;color:rgba(255,255,255,0.3);">Draw</div>' +
+              '<div class="skb-mob-gv-om-odd">' + o2 + '</div>' +
+            '</div>' +
+          '</div>';
+        }
+        omContainer.innerHTML = html;
+      })();
     })();
 
     /* ── Game filter logic ── */

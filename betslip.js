@@ -274,6 +274,71 @@
       });
     });
 
+    /* ── Top Players (index.html + game-cs.html) ── */
+    document.querySelectorAll('.tp-pc-odd').forEach(function (btn) {
+      btn.style.cursor = 'pointer';
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var card   = btn.closest('.tp-pc');
+        var name   = card && card.querySelector('.tp-pc-name');
+        var team   = card && card.querySelector('.tp-pc-team-badge');
+        var player = name ? name.textContent.trim() : 'Player';
+        var teamTxt = team ? team.textContent.trim() : 'Esport';
+        var oddsVal = parseFloat(btn.textContent) || 1;
+        btn.classList.toggle('bb-selected');
+        if (btn.classList.contains('bb-selected')) {
+          addBet(teamTxt, player + ' — Best Performance', 'Top perf. ' + player, oddsVal);
+        } else {
+          var b = getBets();
+          saveBets(b.filter(function(x) { return x.pick !== 'Top perf. ' + player; }));
+          renderBets();
+        }
+      });
+    });
+
+    /* ── Top Combos individuel (index.html) — clic sur une cote seule ── */
+    document.querySelectorAll('.tc-odd').forEach(function (odd) {
+      odd.style.cursor = 'pointer';
+      odd.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var bet    = odd.closest('.tc-bet');
+        var game   = bet && bet.querySelector('.tc-game');
+        var pick   = bet ? bet.querySelector('.tc-pick').textContent.replace(odd.textContent, '').trim() : 'Pick';
+        var gameTxt = game ? game.textContent.trim() : 'Esport';
+        var oddsVal = parseFloat(odd.textContent.replace(',', '.')) || 1;
+        odd.classList.toggle('bb-selected');
+        if (odd.classList.contains('bb-selected')) {
+          addBet(gameTxt, pick, pick, oddsVal);
+        } else {
+          var b = getBets();
+          saveBets(b.filter(function(x) { return !(x.pick === pick); }));
+          renderBets();
+        }
+      });
+    });
+
+    /* ── Top Combos global (index.html) — clic sur la cote combinée ── */
+    document.querySelectorAll('.tc-combined').forEach(function (btn) {
+      btn.style.cursor = 'pointer';
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var card   = btn.closest('.tc-card');
+        var picks  = card ? Array.from(card.querySelectorAll('.tc-pick')).map(function(p) {
+          return p.textContent.replace(/[\d,\.]+$/, '').trim();
+        }) : [];
+        var oddsVal = parseFloat(btn.textContent.replace(',', '.')) || 1;
+        var matchStr = 'Combiné — ' + picks.slice(0, 2).join(' + ');
+        btn.classList.toggle('bb-selected');
+        if (btn.classList.contains('bb-selected')) {
+          addBet('Top Combiné', matchStr, picks.join(' · '), oddsVal);
+        } else {
+          var b = getBets();
+          saveBets(b.filter(function(x) { return x.match !== matchStr; }));
+          renderBets();
+        }
+      });
+    });
+
   });
 
 })();

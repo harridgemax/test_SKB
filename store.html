@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SkillBet — Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --purple: #7c3aed; --purple-light: #a855f7; --pink: #ec4899; }
+
+    html, body {
+      height: 100%; overflow: hidden;
+      font-family: 'Exo 2', sans-serif; color: #fff;
+      background:
+        radial-gradient(1200px 800px at 20% 10%, rgba(124,58,237,.26), transparent 60%),
+        radial-gradient(900px 600px at 40% 80%, rgba(236,72,153,.22), transparent 55%),
+        #070b1f;
+    }
+
+    .bg-blobs { position: fixed; inset: 0; pointer-events: none; z-index: 0; filter: blur(70px); opacity: .85; }
+    .blob { position: absolute; width: 460px; height: 460px; border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, rgba(124,58,237,.95), transparent 60%),
+                  radial-gradient(circle at 65% 65%, rgba(236,72,153,.90), transparent 62%);
+      animation: floaty 5s ease-in-out infinite; }
+    .b1 { top:-140px; left:-140px; } .b2 { top:12%; right:-180px; animation-delay:-1s; } .b3 { bottom:-200px; left:30%; animation-delay:-2s; }
+    @keyframes floaty { 0%,100%{transform:translate3d(0,0,0) scale(1);} 50%{transform:translate3d(40px,-30px,0) scale(1.08);} }
+
+    .page { position: relative; z-index: 1; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+    .content-layout { display: flex; flex: 1; align-items: flex-start; overflow: hidden; min-height: 0; }
+
+    /* ── Sidebar gauche ── */
+    .sidebar-left { width: 210px; flex-shrink: 0; height: calc(100vh - 64px); overflow-y: auto; background: rgba(5,8,22,0.65); border-right: 1px solid rgba(255,255,255,0.06); padding: 20px 0 40px; scrollbar-width: thin; scrollbar-color: rgba(168,85,247,0.3) transparent; position: sticky; top: 0; }
+    .sidebar-left::-webkit-scrollbar { width: 4px; }
+    .sidebar-left::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.3); border-radius: 4px; }
+    .sl-title { font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.3); padding: 0 18px; margin-bottom: 12px; }
+    .sl-nav { display: flex; align-items: center; gap: 10px; padding: 10px 18px; cursor: pointer; border-left: 2px solid transparent; transition: background 0.15s, border-color 0.15s; text-decoration: none; color: inherit; }
+    .sl-nav:hover { background: rgba(168,85,247,0.1); }
+    .sl-nav.active { border-left-color: #a855f7; background: rgba(168,85,247,0.15); }
+    .sl-nav-icon { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(255,255,255,0.05); font-size: 16px; }
+    .sl-nav-name { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.8); }
+    .sl-nav.active .sl-nav-name { color: #fff; }
+    .sl-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 10px 18px; }
+
+    /* ── Main content ── */
+    .main-content { flex: 1; min-width: 0; height: 100%; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(168,85,247,0.2) transparent; padding: 36px 48px 60px; }
+    .main-content::-webkit-scrollbar { width: 4px; }
+    .main-content::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.3); border-radius: 4px; }
+
+    /* ── Store header ── */
+    .store-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; }
+    .store-title { font-family: 'Rajdhani', sans-serif; font-size: 32px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #fff; }
+    .store-coins { display: flex; align-items: center; gap: 8px; background: rgba(250,204,21,0.1); border: 1px solid rgba(250,204,21,0.3); border-radius: 12px; padding: 8px 16px; }
+    .store-coins-icon { font-size: 20px; }
+    .store-coins-val { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 800; color: #facc15; }
+    .store-coins-lbl { font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 600; letter-spacing: 0.5px; }
+
+    /* ── Section ── */
+    .store-section { margin-bottom: 40px; }
+    .store-section-title { font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+
+    /* ── Items grid ── */
+    .store-grid { display: flex; gap: 16px; }
+
+    /* ── Item card ── */
+    .item-card {
+      flex: 1; border-radius: 16px; overflow: hidden;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09);
+      display: flex; flex-direction: column;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      cursor: pointer; position: relative;
+    }
+    .item-card:hover { transform: translateY(-5px); border-color: rgba(168,85,247,0.4); box-shadow: 0 12px 30px rgba(0,0,0,0.4); }
+    .item-card.equipped { border-color: rgba(168,85,247,0.6); background: rgba(168,85,247,0.08); }
+    .item-card.equipped::after { content: 'EQUIPPED'; position: absolute; top: 10px; right: 10px; font-size: 8px; font-weight: 800; letter-spacing: 1px; color: #a855f7; background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.4); border-radius: 4px; padding: 2px 6px; }
+
+    .item-img-wrap { width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(255,255,255,0.02); }
+    .item-img-wrap img { width: 100%; height: 100%; object-fit: contain; display: block; transition: transform 0.3s; }
+    .item-card:hover .item-img-wrap img { transform: scale(1.08); }
+
+    .item-info { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+    .item-name { font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #fff; }
+    .item-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .item-price { display: flex; align-items: center; gap: 5px; }
+    .item-price-icon { font-size: 14px; }
+    .item-price-val { font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 800; color: #facc15; }
+    .item-btn { padding: 6px 14px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Exo 2', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; transition: background 0.15s, transform 0.15s; }
+    .item-btn-buy { background: linear-gradient(135deg, #7c3aed, #a855f7); color: #fff; }
+    .item-btn-buy:hover { transform: scale(1.05); }
+    .item-btn-equip { background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.4); color: #c084fc; }
+    .item-btn-equip:hover { background: rgba(168,85,247,0.25); }
+    .item-btn-equipped { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.4); cursor: default; }
+
+    /* ── Sidebar droite — Bet Slip ── */
+    .sidebar-right { width: 290px; flex-shrink: 0; height: calc(100vh - 64px); overflow-y: auto; background: rgba(5,8,22,0.65); border-left: 1px solid rgba(255,255,255,0.06); padding: 20px 16px 40px; scrollbar-width: thin; scrollbar-color: rgba(168,85,247,0.3) transparent; position: sticky; top: 0; display: flex; flex-direction: column; gap: 14px; }
+    .sidebar-right::-webkit-scrollbar { width: 4px; }
+    .sidebar-right::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.3); border-radius: 4px; }
+    .sidebar-right.collapsed { width: 38px; min-width: 38px; padding: 14px 6px; overflow: hidden; }
+    .sidebar-right.collapsed > *:not(.bb-header) { display: none; }
+    .sidebar-right.collapsed .bb-title, .sidebar-right.collapsed .bb-count { display: none; }
+    .bb-toggle { margin-left: auto; background: none; border: none; cursor: pointer; color: rgba(168,85,247,0.8); font-size: 18px; line-height: 1; padding: 2px 4px; transition: transform 0.3s, color 0.2s; flex-shrink: 0; }
+    .bb-toggle:hover { color: #a855f7; }
+    .sidebar-right.collapsed .bb-toggle { transform: scaleX(-1); }
+    .bb-header { display: flex; align-items: center; gap: 10px; }
+    .bb-title { font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; flex: 1; }
+    .bb-count { background: #7c3aed; color: #fff; font-size: 10px; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .bb-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 32px 16px; background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.1); border-radius: 14px; text-align: center; }
+    .bb-empty-icon { font-size: 28px; opacity: 0.4; }
+    .bb-empty-text { font-size: 11px; color: rgba(255,255,255,0.35); letter-spacing: 0.5px; line-height: 1.5; }
+    .bb-bet { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 12px 14px; position: relative; }
+    .bb-bet-game { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #a855f7; margin-bottom: 4px; }
+    .bb-bet-match { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 6px; }
+    .bb-bet-pick { font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #fff; }
+    .bb-bet-odds { position: absolute; top: 12px; right: 14px; font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 800; color: #fff; background: #070b1f; border: 1px solid rgba(255,255,255,0.1); border-radius: 7px; padding: 3px 10px; }
+    .bb-bet-remove { position: absolute; bottom: 10px; right: 14px; font-size: 10px; color: rgba(255,255,255,0.75); cursor: pointer; letter-spacing: 1px; }
+    .bb-bet-remove:hover { color: #fff; }
+    .bb-divider { height: 1px; background: rgba(255,255,255,0.06); }
+    .bb-combined { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; }
+    .bb-combined-label { font-size: 11px; color: #fff; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; }
+    .bb-combined-val { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; color: #fff; background: #070b1f; border: 1px solid rgba(255,255,255,0.1); border-radius: 7px; padding: 3px 10px; }
+    .bb-stake-row { display: flex; flex-direction: column; gap: 6px; }
+    .bb-stake-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.4); }
+    .bb-stake-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 14px; color: #fff; font-family: 'Exo 2', sans-serif; font-size: 14px; font-weight: 600; outline: none; width: 100%; transition: border-color 0.2s; }
+    .bb-stake-input:focus { border-color: #a855f7; }
+    .bb-quick-amounts { display: flex; gap: 6px; }
+    .bb-qa { flex: 1; padding: 6px 0; text-align: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.6); cursor: pointer; transition: background 0.2s, color 0.2s; }
+    .bb-qa:hover { background: rgba(168,85,247,0.2); color: #fff; border-color: #a855f7; }
+    .bb-gains { display: flex; justify-content: space-between; align-items: center; background: rgba(168,85,247,0.08); border: 1px solid rgba(168,85,247,0.2); border-radius: 10px; padding: 10px 14px; }
+    .bb-gains-label { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #fff; }
+    .bb-gains-val { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: #fff; }
+    .bb-submit { width: 100%; padding: 12px; border: 1px solid rgba(255,255,255,0.35); border-radius: 12px; cursor: pointer; font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 1px; background: rgba(255,255,255,0.18); color: #fff; transition: background 0.2s, border-color 0.2s; position: relative; overflow: visible; }
+    .bb-submit:hover { background: rgba(255,255,255,0.24); border-color: rgba(255,255,255,0.55); }
+    .bb-terms { font-size: 9px; color: rgba(255,255,255,0.2); text-align: center; letter-spacing: 0.5px; line-height: 1.5; }
+
+    @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.5;transform:scale(1.4);} }
+  </style>
+</head>
+<body>
+  <div class="bg-blobs">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+
+  <div class="page">
+
+    <script src="header.js"></script>
+
+    <div class="content-layout">
+
+      <!-- ══ SIDEBAR GAUCHE ══ -->
+      <aside class="sidebar-left">
+        <div class="sl-title">Store</div>
+
+        <a class="sl-nav active" href="store.html">
+          <div class="sl-nav-icon">🧑</div>
+          <span class="sl-nav-name">Characters</span>
+        </a>
+        <a class="sl-nav" href="store.html">
+          <div class="sl-nav-icon">🧢</div>
+          <span class="sl-nav-name">Head accessories</span>
+        </a>
+        <a class="sl-nav" href="store.html">
+          <div class="sl-nav-icon">🎒</div>
+          <span class="sl-nav-name">Back accessory</span>
+        </a>
+        <a class="sl-nav" href="store.html">
+          <div class="sl-nav-icon">👟</div>
+          <span class="sl-nav-name">Foot accessories</span>
+        </a>
+
+        <div class="sl-divider"></div>
+
+        <a class="sl-nav" href="profile.html">
+          <div class="sl-nav-icon">←</div>
+          <span class="sl-nav-name" style="color:rgba(168,85,247,0.8);">Back to Profile</span>
+        </a>
+      </aside>
+
+      <!-- ══ CONTENU PRINCIPAL ══ -->
+      <main class="main-content">
+
+        <div class="store-header">
+          <div class="store-title">Cosmetics Store</div>
+          <div class="store-coins">
+            <span class="store-coins-icon">🪙</span>
+            <div>
+              <div class="store-coins-val">4,200</div>
+              <div class="store-coins-lbl">coins</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── CHARACTERS ── -->
+        <div class="store-section" id="section-characters">
+          <div class="store-section-title">Characters</div>
+          <div class="store-grid">
+
+            <!-- Lion -->
+            <div class="item-card equipped" onclick="equipItem(this)">
+              <div class="item-img-wrap">
+                <img src="img_M/lion.png" alt="Lion"/>
+              </div>
+              <div class="item-info">
+                <div class="item-name">Lion</div>
+                <div class="item-footer">
+                  <div class="item-price"><span class="item-price-icon">🪙</span><span class="item-price-val">Free</span></div>
+                  <button class="item-btn item-btn-equipped" disabled>Equipped</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Axolotl -->
+            <div class="item-card" onclick="equipItem(this)">
+              <div class="item-img-wrap">
+                <img src="img_M/axo.png" alt="Axo"/>
+              </div>
+              <div class="item-info">
+                <div class="item-name">Axolotl</div>
+                <div class="item-footer">
+                  <div class="item-price"><span class="item-price-icon">🪙</span><span class="item-price-val">800</span></div>
+                  <button class="item-btn item-btn-buy">Buy</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panda -->
+            <div class="item-card" onclick="equipItem(this)">
+              <div class="item-img-wrap">
+                <img src="img_M/panda.png" alt="Panda"/>
+              </div>
+              <div class="item-info">
+                <div class="item-name">Panda</div>
+                <div class="item-footer">
+                  <div class="item-price"><span class="item-price-icon">🪙</span><span class="item-price-val">1,200</span></div>
+                  <button class="item-btn item-btn-buy">Buy</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ── HEAD ACCESSORIES ── -->
+        <div class="store-section" id="section-head">
+          <div class="store-section-title">Head Accessories</div>
+          <div class="store-grid">
+
+            <div class="item-card" onclick="equipItem(this)">
+              <div class="item-img-wrap">
+                <img src="img_M/casquette.png" alt="Cap"/>
+              </div>
+              <div class="item-info">
+                <div class="item-name">Street Cap</div>
+                <div class="item-footer">
+                  <div class="item-price"><span class="item-price-icon">🪙</span><span class="item-price-val">400</span></div>
+                  <button class="item-btn item-btn-buy">Buy</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="item-card" onclick="equipItem(this)">
+              <div class="item-img-wrap">
+                <img src="img_M/casquette.png" alt="Cap Gold"/>
+              </div>
+              <div class="item-info">
+                <div class="item-name">Gold Cap</div>
+                <div class="item-footer">
+                  <div class="item-price"><span class="item-price-icon">🪙</span><span class="item-price-val">750</span></div>
+                  <button class="item-btn item-btn-buy">Buy</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="item-card" onclick="equipItem(this)">
+              <div class="item-img-wrap" style="filter:hue-rotate(260deg);">
+                <img src="img_M/casquette.png" alt="Cap Purple"/>
+              </div>
+              <div class="item-info">
+                <div class="item-name">Purple Cap</div>
+                <div class="item-footer">
+                  <div class="item-price"><span class="item-price-icon">🪙</span><span class="item-price-val">750</span></div>
+                  <button class="item-btn item-btn-buy">Buy</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ── BACK ACCESSORY ── -->
+        <div class="store-section" id="section-back">
+          <div class="store-section-title">Back Accessory</div>
+          <div class="store-grid">
+
+            <div class="item-card" onclick="equipItem(this)">
+              <div class="item-img-wrap">
+                <img src="img_M/manette.png" alt="Controller"/>
+              </div>
+              <div class="item-info">
+                <div class="item-name">Controller</div>
+                <div class="item-footer">
+                  <div class="item-price"><span class="item-price-icon">🪙</span><span class="item-price-val">600</span></div>
+                  <button class="item-btn item-btn-buy">Buy</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="item-card" onclick="equipItem(this)">
+              <div class="item-img-wrap" style="filter:hue-rotate(120deg);">
+                <img src="img_M/manette.png" alt="Controller Green"/>
+              </div>
+              <div class="item-info">
+                <div class="item-name">Controller XL</div>
+                <div class="item-footer">
+                  <div class="item-price"><span class="item-price-icon">🪙</span><span class="item-price-val">900</span></div>
+                  <button class="item-btn item-btn-buy">Buy</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="item-card" onclick="equipItem(this)">
+              <div class="item-img-wrap" style="filter:hue-rotate(200deg) saturate(1.5);">
+                <img src="img_M/manette.png" alt="Controller Blue"/>
+              </div>
+              <div class="item-info">
+                <div class="item-name">Controller Pro</div>
+                <div class="item-footer">
+                  <div class="item-price"><span class="item-price-icon">🪙</span><span class="item-price-val">1,100</span></div>
+                  <button class="item-btn item-btn-buy">Buy</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ── FOOT ACCESSORIES ── -->
+        <div class="store-section" id="section-feet">
+          <div class="store-section-title">Foot Accessories</div>
+          <div class="store-grid">
+
+            <div class="item-card" onclick="equipItem(this)">
+              <div class="item-img-wrap">
+                <img src="img_M/shoes.png" alt="Shoes"/>
+              </div>
+              <div class="item-info">
+                <div class="item-name">Dance Shoes</div>
+                <div class="item-footer">
+                  <div class="item-price"><span class="item-price-icon">🪙</span><span class="item-price-val">500</span></div>
+                  <button class="item-btn item-btn-buy">Buy</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="item-card" onclick="equipItem(this)">
+              <div class="item-img-wrap" style="filter:hue-rotate(30deg);">
+                <img src="img_M/shoes.png" alt="Shoes Gold"/>
+              </div>
+              <div class="item-info">
+                <div class="item-name">Gold Shoes</div>
+                <div class="item-footer">
+                  <div class="item-price"><span class="item-price-icon">🪙</span><span class="item-price-val">850</span></div>
+                  <button class="item-btn item-btn-buy">Buy</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="item-card" onclick="equipItem(this)">
+              <div class="item-img-wrap" style="filter:hue-rotate(260deg);">
+                <img src="img_M/shoes.png" alt="Shoes Purple"/>
+              </div>
+              <div class="item-info">
+                <div class="item-name">Neon Shoes</div>
+                <div class="item-footer">
+                  <div class="item-price"><span class="item-price-icon">🪙</span><span class="item-price-val">850</span></div>
+                  <button class="item-btn item-btn-buy">Buy</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </main>
+
+      <!-- ══ SIDEBAR DROITE — BET SLIP ══ -->
+      <aside class="sidebar-right">
+        <div class="bb-header">
+          <span class="bb-title">Bet Slip</span>
+          <span class="bb-count" id="bb-count">0</span>
+          <button class="bb-toggle" id="bbToggle" title="Collapse / Expand">&#10095;</button>
+        </div>
+        <div id="bb-bets-list"></div>
+        <div class="bb-divider"></div>
+        <div class="bb-combined">
+          <span class="bb-combined-label">Combined odds</span>
+          <span class="bb-combined-val" id="bb-combined-val">1.00</span>
+        </div>
+        <div class="bb-divider"></div>
+        <div class="bb-stake-row">
+          <span class="bb-stake-label">Stake (£)</span>
+          <input class="bb-stake-input" type="number" placeholder="0.00" value="10"/>
+        </div>
+        <div class="bb-quick-amounts">
+          <div class="bb-qa">+5</div>
+          <div class="bb-qa">+10</div>
+          <div class="bb-qa">+25</div>
+          <div class="bb-qa">+50</div>
+        </div>
+        <div class="bb-gains">
+          <span class="bb-gains-label">Potential winnings</span>
+          <span class="bb-gains-val" id="bbGains">£0.00</span>
+        </div>
+        <button class="bb-submit">Place bet</button>
+        <div class="bb-terms">Responsible gambling · 18+ · T&amp;Cs apply</div>
+      </aside>
+
+    </div>
+  </div>
+
+  <script>
+    // ── Equip / Buy logic ──
+    function equipItem(card) {
+      var btn = card.querySelector('.item-btn');
+      if (!btn || btn.disabled) return;
+
+      var section = card.closest('.store-section');
+      if (btn.classList.contains('item-btn-buy')) {
+        // Acheter → devient "Equip"
+        btn.classList.remove('item-btn-buy');
+        btn.classList.add('item-btn-equip');
+        btn.textContent = 'Equip';
+        return;
+      }
+
+      if (btn.classList.contains('item-btn-equip')) {
+        // Déséquiper tous les autres dans la même section
+        section.querySelectorAll('.item-card').forEach(function(c) {
+          c.classList.remove('equipped');
+          var b = c.querySelector('.item-btn');
+          if (b && b.classList.contains('item-btn-equipped')) {
+            b.classList.remove('item-btn-equipped');
+            b.classList.add('item-btn-equip');
+            b.textContent = 'Equip';
+            b.disabled = false;
+          }
+        });
+        // Équiper celui-ci
+        card.classList.add('equipped');
+        btn.classList.remove('item-btn-equip');
+        btn.classList.add('item-btn-equipped');
+        btn.textContent = 'Equipped';
+        btn.disabled = true;
+      }
+    }
+
+    // ── Sidebar nav scroll-to ──
+    document.querySelectorAll('.sl-nav[href="store.html"]').forEach(function(link, i) {
+      var sections = ['section-characters','section-head','section-back','section-feet'];
+      if (sections[i]) {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          document.querySelectorAll('.sl-nav').forEach(function(n){ n.classList.remove('active'); });
+          link.classList.add('active');
+          var target = document.getElementById(sections[i]);
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }
+    });
+  </script>
+
+  <script src="betslip.js"></script>
+</body>
+</html>
